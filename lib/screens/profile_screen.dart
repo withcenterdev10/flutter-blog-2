@@ -77,6 +77,7 @@ class _ProfileState extends State<Profile> {
     setState(() {
       selectedImage = null;
       selectedImagePath = null;
+      webImage = null;
     });
   }
 
@@ -149,13 +150,13 @@ class _ProfileState extends State<Profile> {
     if (selectedImage != null || webImage != null) {
       avatar = Stack(
         children: [
-          Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(shape: BoxShape.circle),
-            child: (kIsWeb)
-                ? Image.memory(webImage!)
-                : Image.file(selectedImage!),
+          CircleAvatar(
+            radius: 40,
+            child: ClipOval(
+              child: (kIsWeb)
+                  ? Image.memory(webImage!, fit: BoxFit.cover)
+                  : Image.file(selectedImage!, fit: BoxFit.cover),
+            ),
           ),
           Positioned(
             top: 0,
