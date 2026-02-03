@@ -40,3 +40,11 @@ Future<String?> uploadImageToCloudinary(File? image) async {
     throw Exception(e);
   }
 }
+
+String truncateText(String text) {
+  if (text.length < 30) {
+    return text;
+  }
+
+  return '${text.substring(0, 30)}...';
+}
