@@ -18,7 +18,7 @@ class BlogsModel {
   }
 
   List<BlogModel> addBlog(BlogModel blog) {
-    blogs.add(blog);
+    blogs.insert(0, blog);
     return blogs;
   }
 }
