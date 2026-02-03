@@ -22,21 +22,6 @@ class Blogs extends StatefulWidget {
   }
 }
 
-var temp = [
-  BlogModel(
-    title: 'lorem ipsum lorem',
-    blog:
-        'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum ',
-    userId: 'asdqwesdsds',
-  ),
-  BlogModel(
-    title: 'lorem ipsum lorem',
-    blog:
-        'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum ',
-    userId: 'asdqwesdsds',
-  ),
-];
-
 class _BlogsState extends State<Blogs> {
   @override
   Widget build(BuildContext context) {
@@ -62,7 +47,7 @@ class _BlogsState extends State<Blogs> {
                     child: Text("Add blog"),
                   ),
             const SizedBox(height: 5),
-            ...temp.map((b) {
+            ...blogsState.blogs.map((b) {
               return Blog(blog: b.blog, title: b.title);
             }),
           ],
