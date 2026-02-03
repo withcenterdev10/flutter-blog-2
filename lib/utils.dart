@@ -7,6 +7,8 @@ enum ExtraAuthProperties { displayName }
 
 enum Pages { profile, blogs }
 
+enum Tables { blogs }
+
 Future<String?> uploadImageToCloudinary(File? image) async {
   if (image == null) return null;
 

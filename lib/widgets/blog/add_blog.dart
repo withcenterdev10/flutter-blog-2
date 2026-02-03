@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/providers/auth_providers.dart';
+import 'package:flutter_blog_2/providers/blog_providers.dart';
+import 'package:provider/provider.dart';
 
 class AddBlog extends StatefulWidget {
   const AddBlog({super.key});
@@ -14,30 +17,38 @@ class _AddBlogState extends State<AddBlog> {
   final titleController = TextEditingController();
   final blogController = TextEditingController();
 
-  void onSubmit() async {
-    if (formKey.currentState!.validate()) {
-      final title = titleController.text;
-      final blog = titleController.text;
-      String message = "";
+  @override
+  Widget build(BuildContext context) {
+    final userState = context.watch<Auth>().getState;
+    final blogState = context.watch<BlogProviders>().getState;
 
-      try {
-        message = "Create blog success";
-      } catch (error) {
-        message = "Create blog failed";
-        debugPrint(error.toString());
-      } finally {
-        if (context.mounted) {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(message)));
+    void onSubmit() async {
+      if (formKey.currentState!.validate()) {
+        final title = titleController.text;
+        final blog = titleController.text;
+        final userId = userState.user!.id;
+        String message = "";
+        try {
+          await context.read<BlogProviders>().createBlog(
+            blog: blog,
+            userId: userId,
+            title: title,
+          );
+          message = "Create blog success";
+        } catch (error) {
+          message = "Create blog failed";
+          debugPrint(error.toString());
+        } finally {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message)));
+          }
         }
       }
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Form(
@@ -65,7 +76,7 @@ class _AddBlogState extends State<AddBlog> {
 
             TextFormField(
               maxLines: 8,
-              controller: titleController,
+              controller: blogController,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                 labelText: "Title",
@@ -83,7 +94,7 @@ class _AddBlogState extends State<AddBlog> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onSubmit,
-                child: true
+                child: blogState.loading
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
