@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,7 +14,10 @@ Future<void> main() async {
   );
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => Auth())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => Auth()),
+        ChangeNotifierProvider(create: (_) => BlogProviders()),
+      ],
       child: const MyApp(),
     ),
   );
