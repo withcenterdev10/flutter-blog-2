@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/screens/add_blog.dart';
+import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class Blogs extends StatefulWidget {
@@ -28,7 +28,7 @@ class _BlogsState extends State<Blogs> {
           children: [
             ElevatedButton(
               onPressed: () {
-                AddBlog.go(context);
+                AddBlogScreen.go(context);
               },
               child: Text("Add blog"),
             ),

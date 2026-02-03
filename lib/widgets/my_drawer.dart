@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
-import 'package:flutter_blog_2/screens/blogs.dart';
+import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_blog_2/screens/profile.dart';
+import 'package:flutter_blog_2/screens/profile_screen.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});

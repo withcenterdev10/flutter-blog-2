@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/screens/add_blog.dart';
+import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blog_2/screens/home_screen.dart';
-import 'package:flutter_blog_2/screens/profile.dart';
-import 'package:flutter_blog_2/screens/blogs.dart';
+import 'package:flutter_blog_2/screens/profile_screen.dart';
+import 'package:flutter_blog_2/screens/blogs_screen.dart';
 
 /// The route configuration.
 final GoRouter router = GoRouter(
@@ -27,9 +27,9 @@ final GoRouter router = GoRouter(
           },
           routes: <RouteBase>[
             GoRoute(
-              path: AddBlog.routeName,
+              path: AddBlogScreen.routeName,
               builder: (BuildContext context, GoRouterState state) {
-                return const AddBlog();
+                return const AddBlogScreen();
               },
             ),
           ],

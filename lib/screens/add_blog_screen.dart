@@ -3,8 +3,8 @@ import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-class AddBlog extends StatefulWidget {
-  const AddBlog({super.key});
+class AddBlogScreen extends StatefulWidget {
+  const AddBlogScreen({super.key});
 
   static const routeName = '/add_blog';
   static const routeNameNested = '/blogs/add_blog';
@@ -16,12 +16,12 @@ class AddBlog extends StatefulWidget {
       context.push(routeName);
 
   @override
-  State<AddBlog> createState() {
-    return _AddBlogState();
+  State<AddBlogScreen> createState() {
+    return _AddBlogScreenState();
   }
 }
 
-class _AddBlogState extends State<AddBlog> {
+class _AddBlogScreenState extends State<AddBlogScreen> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
 
