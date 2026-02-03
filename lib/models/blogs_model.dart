@@ -16,4 +16,9 @@ class BlogsModel {
       loading: loading ?? this.loading,
     );
   }
+
+  List<BlogModel> addBlog(BlogModel blog) {
+    blogs.add(blog);
+    return blogs;
+  }
 }

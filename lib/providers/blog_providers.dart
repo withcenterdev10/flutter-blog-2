@@ -50,6 +50,16 @@ class BlogProviders extends ChangeNotifier {
           userId: res['user_id'],
         ),
       );
+
+      final updatedBlogs = blogs.addBlog(
+        BlogModel(
+          blog: res['blog'],
+          title: res['title'],
+          userId: res['user_id'],
+        ),
+      );
+
+      _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
     } catch (err) {
       debugPrint(err.toString());
     } finally {
