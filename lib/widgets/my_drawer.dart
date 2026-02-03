@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/screens/blogs.dart';
-import 'package:flutter_blog_2/utils.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blog_2/screens/profile.dart';
 
