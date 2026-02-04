@@ -48,6 +48,7 @@ class BlogProviders extends ChangeNotifier {
 
       _setBlogState(
         getBlogState.copyWith(
+          id: res['id'],
           blog: res['blog'],
           title: res['title'],
           user: res['user'],
@@ -55,7 +56,12 @@ class BlogProviders extends ChangeNotifier {
       );
 
       final updatedBlogs = blogs.addBlog(
-        BlogModel(blog: res['blog'], title: res['title'], user: res['user']),
+        BlogModel(
+          id: res['id'],
+          blog: res['blog'],
+          title: res['title'],
+          user: res['user'],
+        ),
       );
 
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
@@ -78,7 +84,8 @@ class BlogProviders extends ChangeNotifier {
       final myBlogs = [
         for (var i = 0; i < res.length - 1; i++)
           BlogModel(
-            title: res[i]['blog'],
+            id: res[i]['id'],
+            title: res[i]['title'],
             blog: res[i]['blog'],
             user: BlogUserModel(
               id: res[i]['user']['id'],
