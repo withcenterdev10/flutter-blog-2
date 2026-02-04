@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/utils.dart';
 
 class Blog extends StatelessWidget {
-  const Blog({super.key, this.user, this.blog, this.title});
+  const Blog({super.key, required this.blog});
 
-  final String? title;
-  final String? blog;
-  final String? user;
+  final BlogModel blog;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,12 @@ class Blog extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(radius: 25, child: Text("JA")),
+              CircleAvatar(
+                radius: 25,
+                child: Text(
+                  blog.user!.displayName!.substring(0, 2).toUpperCase(),
+                ),
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -26,7 +30,7 @@ class Blog extends StatelessWidget {
                   children: [
                     const SizedBox(height: 10),
                     Text(
-                      truncateText(title!),
+                      truncateText(blog.title!),
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
@@ -38,7 +42,7 @@ class Blog extends StatelessWidget {
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-            child: Text(blog!),
+            child: Text(blog.blog!),
           ),
         ],
       ),

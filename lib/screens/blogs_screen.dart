@@ -48,7 +48,7 @@ class _BlogsState extends State<Blogs> {
                   ),
             const SizedBox(height: 5),
             ...blogsState.blogs.map((b) {
-              return Blog(blog: b.blog, title: b.title);
+              return Blog(blog: b);
             }),
           ],
         ),

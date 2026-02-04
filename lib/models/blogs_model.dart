@@ -1,19 +1,26 @@
 import 'package:flutter_blog_2/models/blog_model.dart';
+import 'package:flutter_blog_2/models/blog_user_model.dart';
 
 class BlogsModel {
-  BlogsModel({required this.blogs, this.loading = false});
+  BlogsModel({required this.blogs, this.loading = false, required this.user});
 
   final List<BlogModel> blogs;
+  final BlogUserModel? user;
   final bool loading;
 
   factory BlogsModel.initial() {
-    return BlogsModel(blogs: [], loading: false);
+    return BlogsModel(blogs: [], loading: false, user: null);
   }
 
-  BlogsModel copyWith({List<BlogModel>? blogs, bool? loading}) {
+  BlogsModel copyWith({
+    List<BlogModel>? blogs,
+    bool? loading,
+    BlogUserModel? user,
+  }) {
     return BlogsModel(
       blogs: blogs ?? this.blogs,
       loading: loading ?? this.loading,
+      user: user ?? this.user,
     );
   }
 

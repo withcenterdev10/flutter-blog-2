@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/db.dart';
 import 'package:flutter_blog_2/models/blog_model.dart';
+import 'package:flutter_blog_2/models/blog_user_model.dart';
 import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/utils.dart';
 
@@ -40,23 +41,21 @@ class BlogProviders extends ChangeNotifier {
       final res = await supabase
           .from(Tables.blogs.name)
           .insert({'title': title, 'blog': blog, 'user_id': userId})
-          .select("id, title, created_at, blog")
+          .select(
+            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+          )
           .single();
 
       _setBlogState(
         getBlogState.copyWith(
           blog: res['blog'],
           title: res['title'],
-          userId: res['user_id'],
+          user: res['user'],
         ),
       );
 
       final updatedBlogs = blogs.addBlog(
-        BlogModel(
-          blog: res['blog'],
-          title: res['title'],
-          userId: res['user_id'],
-        ),
+        BlogModel(blog: res['blog'], title: res['title'], user: res['user']),
       );
 
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
@@ -71,7 +70,9 @@ class BlogProviders extends ChangeNotifier {
     try {
       final res = await supabase
           .from(Tables.blogs.name)
-          .select("*")
+          .select(
+            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+          )
           .eq("is_deleted", false);
 
       final myBlogs = [
@@ -79,7 +80,11 @@ class BlogProviders extends ChangeNotifier {
           BlogModel(
             title: res[i]['blog'],
             blog: res[i]['blog'],
-            userId: res[i]['user_id'],
+            user: BlogUserModel(
+              id: res[i]['user']['id'],
+              imageUrl: res[i]['user']['image_url'],
+              displayName: res[i]['user']['display_name'],
+            ),
           ),
       ];
 
