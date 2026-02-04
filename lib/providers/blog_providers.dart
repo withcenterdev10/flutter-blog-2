@@ -134,7 +134,8 @@ class BlogProvider extends ChangeNotifier {
           .select(
             "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
           )
-          .eq("is_deleted", false);
+          .eq("is_deleted", false)
+          .order('created_at', ascending: false);
 
       final myBlogs = [
         for (var i = 0; i < res.length - 1; i++)
