@@ -5,11 +5,11 @@ import 'package:flutter_blog_2/models/blog_user_model.dart';
 import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/utils.dart';
 
-class BlogProviders extends ChangeNotifier {
+class BlogProvider extends ChangeNotifier {
   BlogModel blog = BlogModel.initial();
   BlogsModel blogs = BlogsModel.initial();
 
-  BlogProviders() {
+  BlogProvider() {
     getBlogs();
   }
 
@@ -21,9 +21,10 @@ class BlogProviders extends ChangeNotifier {
     return blogs;
   }
 
-  void _setBlogState(BlogModel newState) {
+  BlogModel _setBlogState(BlogModel newState) {
     blog = newState;
     notifyListeners();
+    return blog;
   }
 
   void _setBlogsState(BlogsModel newState) {
@@ -46,24 +47,20 @@ class BlogProviders extends ChangeNotifier {
           )
           .single();
 
-      _setBlogState(
+      final newBlog = _setBlogState(
         getBlogState.copyWith(
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
-          user: res['user'],
+          user: BlogUserModel(
+            id: res['user']['id'],
+            imageUrl: res['user']['image_url'],
+            displayName: res['user']['display_name'],
+          ),
         ),
       );
 
-      final updatedBlogs = blogs.addBlog(
-        BlogModel(
-          id: res['id'],
-          blog: res['blog'],
-          title: res['title'],
-          user: res['user'],
-        ),
-      );
-
+      final updatedBlogs = blogs.addBlog(newBlog);
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
     } catch (err) {
       debugPrint(err.toString());
@@ -96,6 +93,41 @@ class BlogProviders extends ChangeNotifier {
       ];
 
       _setBlogsState(blogs.copyWith(blogs: myBlogs));
+    } catch (err) {
+      debugPrint(err.toString());
+    } finally {
+      _setBlogState(getBlogState.copyWith(loading: false));
+    }
+  }
+
+  Future<void> getBlog(String id) async {
+    _setBlogState(getBlogState.copyWith(loading: true));
+    try {
+      if (blog.id == id) {
+        return;
+      }
+
+      final res = await supabase
+          .from(Tables.blogs.name)
+          .select(
+            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+          )
+          .eq("is_deleted", false)
+          .eq('id', id)
+          .single();
+
+      _setBlogState(
+        getBlogState.copyWith(
+          id: res['id'],
+          blog: res['blog'],
+          title: res['title'],
+          user: BlogUserModel(
+            id: res['user']['id'],
+            imageUrl: res['user']['image_url'],
+            displayName: res['user']['display_name'],
+          ),
+        ),
+      );
     } catch (err) {
       debugPrint(err.toString());
     } finally {
