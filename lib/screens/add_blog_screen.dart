@@ -7,11 +7,11 @@ import 'package:go_router/go_router.dart';
 class AddBlogScreen extends StatefulWidget {
   const AddBlogScreen({super.key});
 
-  static const routeName = '/add_blog';
-  static const routeNameNested = '/blogs/add_blog';
+  static const routeName = 'add_blog';
+  static const callRouteName = '/$routeName';
 
   static Function(BuildContext context) go = (context) =>
-      context.go(routeNameNested);
+      context.go(callRouteName);
 
   static Function(BuildContext context) push = (context) =>
       context.push(routeName);

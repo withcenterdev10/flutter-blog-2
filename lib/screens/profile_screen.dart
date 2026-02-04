@@ -16,9 +16,11 @@ class Profile extends StatefulWidget {
   // static Function(BuildContext context, String id) go = (context, id) =>
   //     context.go(routeName.replaceFirst(':id', id));
 
-  static const routeName = '/profile';
+  static const routeName = 'profile';
+  static const callRouteName = '/$routeName';
 
-  static Function(BuildContext context) go = (context) => context.go(routeName);
+  static Function(BuildContext context) go = (context) =>
+      context.go(callRouteName);
 
   static Function(BuildContext context) push = (context) =>
       context.push(routeName);

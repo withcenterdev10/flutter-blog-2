@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/screens/add_blog_screen.dart';
+import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blog_2/screens/home_screen.dart';
 import 'package:flutter_blog_2/screens/profile_screen.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_blog_2/screens/blogs_screen.dart';
 
 /// The route configuration.
 final GoRouter router = GoRouter(
+  debugLogDiagnostics: true,
   routes: <RouteBase>[
     GoRoute(
       path: '/',
@@ -21,18 +23,22 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
-          path: Blogs.routeName,
+          path: BlogsScreen.routeName,
           builder: (BuildContext context, GoRouterState state) {
-            return const Blogs();
+            return const BlogsScreen();
           },
-          routes: <RouteBase>[
-            GoRoute(
-              path: AddBlogScreen.routeName,
-              builder: (BuildContext context, GoRouterState state) {
-                return const AddBlogScreen();
-              },
-            ),
-          ],
+        ),
+        GoRoute(
+          path: AddBlogScreen.routeName,
+          builder: (BuildContext context, GoRouterState state) {
+            return const AddBlogScreen();
+          },
+        ),
+        GoRoute(
+          path: ViewBlogScreen.routeName,
+          builder: (BuildContext context, GoRouterState state) {
+            return ViewBlogScreen(id: state.pathParameters['id']!);
+          },
         ),
       ],
     ),
