@@ -71,6 +71,23 @@ class BlogProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> deleteBlog({final String? id, final String? userId}) async {
+    _setBlogState(getBlogState.copyWith(loading: true));
+    try {
+      await supabase
+          .from(Tables.blogs.name)
+          .update({'user_id': userId, 'is_deleted': true})
+          .eq("id", id!);
+
+      final updatedBlogs = blogs.deleteBlog(id);
+      _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
+    } catch (err) {
+      debugPrint(err.toString());
+    } finally {
+      _setBlogState(getBlogState.copyWith(loading: false));
+    }
+  }
+
   Future<void> createBlog({
     final String? title,
     final String? blog,

@@ -29,6 +29,10 @@ class BlogsModel {
     return blogs;
   }
 
+  List<BlogModel> deleteBlog(String id) {
+    return blogs.where((b) => b.id != id).toList();
+  }
+
   List<BlogModel> updateBlog(BlogModel blog) {
     final updatedBlog = blogs.map((b) {
       if (blog.id == b.id) {

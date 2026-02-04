@@ -27,7 +27,7 @@ class BlogsScreen extends StatefulWidget {
 class _BlogsScreenState extends State<BlogsScreen> {
   @override
   Widget build(BuildContext context) {
-    final blogsScreenState = context.watch<BlogProvider>().getBlogsState;
+    final blogsState = context.watch<BlogProvider>().getBlogsState;
 
     return Scaffold(
       appBar: AppBar(
@@ -42,9 +42,9 @@ class _BlogsScreenState extends State<BlogsScreen> {
         ],
       ),
       body: ListView.builder(
-        itemCount: temp.length,
+        itemCount: blogsState.blogs.length,
         itemBuilder: (BuildContext context, int index) {
-          return Blog(blog: temp[index]);
+          return Blog(blog: blogsState.blogs[index]);
         },
       ),
     );

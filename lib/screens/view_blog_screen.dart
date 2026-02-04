@@ -34,6 +34,71 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     Widget content = Center(child: CircularProgressIndicator(strokeWidth: 2));
     bool isAuthor = userState.user?.id == blogState.user?.id;
 
+    void handleDelete() async {
+      if (isAuthor) {
+        String message = "";
+        try {
+          await context.read<BlogProvider>().deleteBlog(
+            id: blogState.id,
+            userId: userState.user!.id,
+          );
+          message = "Blog deleted";
+        } catch (error) {
+          message = "Delete blog failed";
+          debugPrint(error.toString());
+        } finally {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message)));
+          }
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Action not allowed")));
+        }
+      }
+    }
+
+    Future<void> showDeleteDialog() async {
+      return showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete blog'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('Are you sure you want to delete this blog?'),
+                  SizedBox(height: 10),
+                  Text(blogState.title!),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Approve'),
+                onPressed: () {
+                  handleDelete();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     if (blogState.blog != null) {
       content = ListView(
         padding: EdgeInsets.all(12),
@@ -80,7 +145,9 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                   : const SizedBox.shrink(),
               isAuthor
                   ? IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDeleteDialog();
+                      },
                       icon: Icon(Icons.delete, size: 20),
                     )
                   : const SizedBox.shrink(),
