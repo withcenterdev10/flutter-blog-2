@@ -9,11 +9,10 @@ import "package:flutter_blog_2/temp.dart";
 class BlogsScreen extends StatefulWidget {
   const BlogsScreen({super.key});
 
-  static const routeName = 'blog-screen';
+  static const routeName = '/blog-screen';
   static const callRouteName = "/$routeName";
 
-  static Function(BuildContext context) go = (context) =>
-      context.go(callRouteName);
+  static Function(BuildContext context) go = (context) => context.go(routeName);
 
   static Function(BuildContext context) push = (context) =>
       context.push(routeName);

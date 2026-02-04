@@ -10,14 +10,14 @@ class ViewBlogScreen extends StatefulWidget {
   const ViewBlogScreen({super.key, required this.id});
   final String id;
 
-  static const routeName = 'blogs/:id';
+  static const routeName = '/blogs/:id';
   static const callRouteName = "/$routeName";
 
   static Function(BuildContext context, String id) go = (context, id) =>
-      context.go(callRouteName.replaceFirst(":id", id));
+      context.go(routeName.replaceFirst(":id", id));
 
   static Function(BuildContext context, String id) push = (context, id) =>
-      context.push(callRouteName.replaceFirst(":id", id));
+      context.push(routeName.replaceFirst(":id", id));
 
   @override
   State<ViewBlogScreen> createState() {

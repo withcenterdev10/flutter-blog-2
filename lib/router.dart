@@ -16,38 +16,36 @@ final GoRouter router = GoRouter(
       builder: (BuildContext contehomext, GoRouterState state) {
         return const HomeScreen();
       },
-      routes: <RouteBase>[
-        GoRoute(
-          path: Profile.routeName,
-          builder: (BuildContext context, GoRouterState state) {
-            return const Profile();
-          },
-        ),
-        GoRoute(
-          path: BlogsScreen.routeName,
-          builder: (BuildContext context, GoRouterState state) {
-            return const BlogsScreen();
-          },
-        ),
-        GoRoute(
-          path: AddBlogScreen.routeName,
-          builder: (BuildContext context, GoRouterState state) {
-            return const AddBlogScreen();
-          },
-        ),
-        GoRoute(
-          path: EditBlogScreen.routeName,
-          builder: (BuildContext context, GoRouterState state) {
-            return const EditBlogScreen();
-          },
-        ),
-        GoRoute(
-          path: ViewBlogScreen.routeName,
-          builder: (BuildContext context, GoRouterState state) {
-            return ViewBlogScreen(id: state.pathParameters['id']!);
-          },
-        ),
-      ],
+    ),
+    GoRoute(
+      path: Profile.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return const Profile();
+      },
+    ),
+    GoRoute(
+      path: BlogsScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return const BlogsScreen();
+      },
+    ),
+    GoRoute(
+      path: AddBlogScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return const AddBlogScreen();
+      },
+    ),
+    GoRoute(
+      path: EditBlogScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return const EditBlogScreen();
+      },
+    ),
+    GoRoute(
+      path: ViewBlogScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return ViewBlogScreen(id: state.pathParameters['id']!);
+      },
     ),
   ],
 );

@@ -61,8 +61,8 @@ class _MyDrawerState extends State<MyDrawer> {
             leading: Icon(Icons.settings, size: 26),
             title: Text('Profile'),
             onTap: () {
-              Navigator.of(context).pop();
-              Profile.go(context);
+              // Navigator.of(context).pop();
+              Profile.push(context);
             },
           ),
           ListTile(
