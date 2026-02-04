@@ -32,6 +32,45 @@ class BlogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateBlog({
+    final String? id,
+    final String? title,
+    final String? blog,
+    final String? userId,
+  }) async {
+    _setBlogState(getBlogState.copyWith(loading: true));
+    try {
+      final res = await supabase
+          .from(Tables.blogs.name)
+          .update({'title': title, 'blog': blog, 'user_id': userId})
+          .eq("id", id!)
+          .select(
+            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+          )
+          .single();
+
+      final newBlog = _setBlogState(
+        getBlogState.copyWith(
+          id: res['id'],
+          blog: res['blog'],
+          title: res['title'],
+          user: BlogUserModel(
+            id: res['user']['id'],
+            imageUrl: res['user']['image_url'],
+            displayName: res['user']['display_name'],
+          ),
+        ),
+      );
+
+      final updatedBlogs = blogs.updateBlog(newBlog);
+      _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
+    } catch (err) {
+      debugPrint(err.toString());
+    } finally {
+      _setBlogState(getBlogState.copyWith(loading: false));
+    }
+  }
+
   Future<void> createBlog({
     final String? title,
     final String? blog,

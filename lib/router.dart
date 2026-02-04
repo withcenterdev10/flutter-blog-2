@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/screens/add_blog_screen.dart';
+import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blog_2/screens/home_screen.dart';
@@ -32,6 +33,12 @@ final GoRouter router = GoRouter(
           path: AddBlogScreen.routeName,
           builder: (BuildContext context, GoRouterState state) {
             return const AddBlogScreen();
+          },
+        ),
+        GoRoute(
+          path: EditBlogScreen.routeName,
+          builder: (BuildContext context, GoRouterState state) {
+            return const EditBlogScreen();
           },
         ),
         GoRoute(

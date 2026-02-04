@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
+import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,9 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
               const SizedBox(width: 8),
               isAuthor
                   ? IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        EditBlogScreen.push(context);
+                      },
                       icon: Icon(Icons.edit, size: 20),
                     )
                   : const SizedBox.shrink(),

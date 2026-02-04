@@ -28,4 +28,16 @@ class BlogsModel {
     blogs.insert(0, blog);
     return blogs;
   }
+
+  List<BlogModel> updateBlog(BlogModel blog) {
+    final updatedBlog = blogs.map((b) {
+      if (blog.id == b.id) {
+        return blog;
+      } else {
+        return b;
+      }
+    }).toList();
+
+    return updatedBlog;
+  }
 }
