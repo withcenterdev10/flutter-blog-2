@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
+import 'package:flutter_blog_2/screens/blogs_screen.dart';
+import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:provider/provider.dart';
 
 class AddBlog extends StatefulWidget {
@@ -29,18 +31,20 @@ class _AddBlogState extends State<AddBlog> {
         final userId = userState.user!.id;
         String message = "";
         try {
-          await context.read<BlogProvider>().createBlog(
+          final blogId = await context.read<BlogProvider>().createBlog(
             blog: blog,
             userId: userId,
             title: title,
           );
           message = "Create blog success";
+          if (context.mounted) {
+            ViewBlogScreen.go(context, blogId as String);
+          }
         } catch (error) {
           message = "Create blog failed";
           debugPrint(error.toString());
         } finally {
           if (context.mounted) {
-            Navigator.of(context).pop();
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(message)));
