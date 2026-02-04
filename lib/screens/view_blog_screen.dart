@@ -126,7 +126,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                           ),
                     const SizedBox(width: 8),
                     Text(
-                      toUpperCaseFirstChar(blogState.title!),
+                      toUpperCaseFirstChar(blogState.user!.displayName!),
                       maxLines: 1,
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
