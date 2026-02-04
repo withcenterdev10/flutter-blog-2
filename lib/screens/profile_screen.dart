@@ -40,7 +40,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-    final authState = context.read<Auth>().getState;
+    final authState = context.read<AuthProvider>().getState;
     nameController = TextEditingController(
       text: authState.user?.userMetadata?['display_name'],
     );
@@ -85,7 +85,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<Auth>().getState;
+    final authState = context.watch<AuthProvider>().getState;
     final profileImage = authState.user?.userMetadata?['image_url'];
     final displayName = authState.user?.userMetadata?['display_name'];
 
@@ -94,7 +94,7 @@ class _ProfileState extends State<Profile> {
         final name = nameController.text;
         String message = "";
         try {
-          await context.read<Auth>().updateUser(
+          await context.read<AuthProvider>().updateUser(
             name: name,
             image: selectedImage,
           );

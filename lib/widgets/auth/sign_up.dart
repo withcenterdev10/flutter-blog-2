@@ -53,7 +53,7 @@ class _SignUpState extends State<SignUp> {
         final password = passwordController.text;
         String message = "";
         try {
-          await context.read<Auth>().signUp(
+          await context.read<AuthProvider>().signUp(
             email: email,
             password: password,
             displayName: name,
@@ -76,7 +76,7 @@ class _SignUpState extends State<SignUp> {
       }
     }
 
-    final authState = context.watch<Auth>().getState;
+    final authState = context.watch<AuthProvider>().getState;
     return Form(
       key: formKey,
       child: Padding(

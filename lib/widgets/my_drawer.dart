@@ -19,7 +19,7 @@ class _MyDrawerState extends State<MyDrawer> {
     void handleLogout() async {
       String? message;
       try {
-        await context.read<Auth>().logout();
+        await context.read<AuthProvider>().logout();
       } catch (error) {
         debugPrint(error.toString());
         message = "Something went wrong";
@@ -70,7 +70,7 @@ class _MyDrawerState extends State<MyDrawer> {
             title: Text('My blogs'),
             onTap: () {
               Navigator.of(context).pop();
-              Blogs.go(context);
+              BlogsScreen.go(context);
             },
           ),
           const Spacer(),

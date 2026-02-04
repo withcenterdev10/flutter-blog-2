@@ -42,7 +42,7 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<Auth>().getState;
+    final authState = context.watch<AuthProvider>().getState;
 
     void onSubmit() async {
       if (formKey.currentState!.validate()) {

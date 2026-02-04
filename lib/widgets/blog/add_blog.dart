@@ -19,8 +19,8 @@ class _AddBlogState extends State<AddBlog> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<Auth>().getState;
-    final blogState = context.watch<BlogProviders>().getBlogState;
+    final userState = context.watch<AuthProvider>().getState;
+    final blogState = context.watch<BlogProvider>().getBlogState;
 
     void onSubmit() async {
       if (formKey.currentState!.validate()) {
@@ -29,7 +29,7 @@ class _AddBlogState extends State<AddBlog> {
         final userId = userState.user!.id;
         String message = "";
         try {
-          await context.read<BlogProviders>().createBlog(
+          await context.read<BlogProvider>().createBlog(
             blog: blog,
             userId: userId,
             title: title,

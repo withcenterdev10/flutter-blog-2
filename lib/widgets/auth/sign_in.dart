@@ -45,7 +45,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<Auth>().getState;
+    final authState = context.watch<AuthProvider>().getState;
 
     void onSubmit() async {
       if (formKey.currentState!.validate()) {
@@ -53,7 +53,10 @@ class _SignInState extends State<SignIn> {
         final password = passwordController.text;
         String message = "";
         try {
-          await context.read<Auth>().signIn(email: email, password: password);
+          await context.read<AuthProvider>().signIn(
+            email: email,
+            password: password,
+          );
           message = "Sign in success";
           if (context.mounted) {
             Navigator.of(context).pop();

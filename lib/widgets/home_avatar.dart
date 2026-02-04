@@ -26,7 +26,7 @@ class _HomeAvatarState extends State<HomeAvatar> {
 
   @override
   build(BuildContext context) {
-    final authState = context.watch<Auth>().getState;
+    final authState = context.watch<AuthProvider>().getState;
     final profileImage = authState.user?.userMetadata?['image_url'];
     final displayName = authState.user?.userMetadata?['display_name'];
 

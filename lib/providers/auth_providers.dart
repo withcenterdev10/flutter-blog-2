@@ -5,14 +5,14 @@ import 'package:flutter_blog_2/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
 
-class Auth extends ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   AuthModel state = AuthModel.initial();
 
   AuthModel get getState {
     return state;
   }
 
-  Auth() {
+  AuthProvider() {
     if (state.user == null) {
       getUser();
     }

@@ -27,7 +27,7 @@ class BlogsScreen extends StatefulWidget {
 class _BlogsScreenState extends State<BlogsScreen> {
   @override
   Widget build(BuildContext context) {
-    final blogsScreenState = context.watch<BlogProviders>().getBlogsState;
+    final blogsScreenState = context.watch<BlogProvider>().getBlogsState;
 
     return Scaffold(
       appBar: AppBar(
