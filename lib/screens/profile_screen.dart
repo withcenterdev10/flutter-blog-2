@@ -190,7 +190,6 @@ class _ProfileState extends State<Profile> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           child: Column(
             children: [
-              ElevatedButton(onPressed: openImagePicker, child: Text("test")),
               avatar,
               const SizedBox(height: 15),
               const Divider(),
