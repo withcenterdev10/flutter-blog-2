@@ -4,7 +4,6 @@ import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
 
 class Blog extends StatelessWidget {
   const Blog({super.key, required this.blog});
@@ -13,7 +12,7 @@ class Blog extends StatelessWidget {
 
   void handleSelectBlog(BuildContext context, String id) async {
     try {
-      ViewBlogScreen.go(context, blog.id!);
+      ViewBlogScreen.push(context, blog.id!);
       await context.read<BlogProvider>().getBlog(id);
     } catch (error) {
       debugPrint(error.toString());
