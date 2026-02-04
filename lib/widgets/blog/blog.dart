@@ -17,12 +17,17 @@ class Blog extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 25,
-                child: Text(
-                  blog.user!.displayName!.substring(0, 2).toUpperCase(),
-                ),
-              ),
+              blog.user?.imageUrl != null
+                  ? CircleAvatar(
+                      radius: 25,
+                      backgroundImage: NetworkImage(blog.user!.imageUrl!),
+                    )
+                  : CircleAvatar(
+                      radius: 25,
+                      child: Text(
+                        blog.user!.displayName!.substring(0, 2).toUpperCase(),
+                      ),
+                    ),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
