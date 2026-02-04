@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -26,6 +25,7 @@ class _BlogsState extends State<Blogs> {
   @override
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProviders>().getBlogsState;
+
     return Scaffold(
       appBar: AppBar(title: const Text('My blogs')),
       body: Center(
@@ -47,9 +47,12 @@ class _BlogsState extends State<Blogs> {
                     child: Text("Add blog"),
                   ),
             const SizedBox(height: 5),
-            ...blogsState.blogs.map((b) {
-              return Blog(blog: b);
-            }),
+            ListView.builder(
+              itemCount: blogsState.blogs.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Blog(blog: blogsState.blogs[index]);
+              },
+            ),
           ],
         ),
       ),
