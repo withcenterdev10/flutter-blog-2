@@ -107,6 +107,8 @@ class _ProfileState extends State<Profile> {
               context,
             ).showSnackBar(SnackBar(content: Text(message)));
           }
+
+          removeSelectedImage();
         }
       }
     }
