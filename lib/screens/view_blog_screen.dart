@@ -49,8 +49,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
           debugPrint(error.toString());
         } finally {
           if (context.mounted) {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
+            BlogsScreen.go(context);
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(message)));
