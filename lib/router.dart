@@ -10,6 +10,7 @@ import 'package:flutter_blog_2/screens/blogs_screen.dart';
 /// The route configuration.
 final GoRouter router = GoRouter(
   debugLogDiagnostics: true,
+  initialLocation: '/',
   routes: <RouteBase>[
     GoRoute(
       path: '/',
