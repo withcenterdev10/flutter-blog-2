@@ -1,9 +1,16 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
-import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
+import 'package:flutter_blog_2/widgets/blog_image.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+int imageLimit = 3;
 
 class AddBlog extends StatefulWidget {
   const AddBlog({super.key});
@@ -18,6 +25,53 @@ class _AddBlogState extends State<AddBlog> {
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final blogController = TextEditingController();
+  List<BlogImage> selectedBlogImages = [];
+
+  void removeImage(int imageId) {
+    setState(() {
+      selectedBlogImages = selectedBlogImages
+          .where((img) => img.id != imageId)
+          .toList();
+    });
+  }
+
+  Future<({File? mobileImage, Uint8List? webImage})> openImagePicker() async {
+    final ImagePicker picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    File? mobileImage;
+    Uint8List? webImage;
+
+    // mobile
+    if (!kIsWeb) {
+      if (image != null) {
+        mobileImage = File(image.path);
+      }
+    } else {
+      // web
+      if (image != null) {
+        webImage = await image.readAsBytes();
+      }
+    }
+
+    return (mobileImage: mobileImage, webImage: webImage);
+  }
+
+  void handleAddImage() async {
+    var (:mobileImage, :webImage) = await openImagePicker();
+    var updatedImages = [
+      ...selectedBlogImages,
+      BlogImage(
+        mobileImage: mobileImage,
+        webImage: webImage,
+        id: selectedBlogImages.length + 1,
+        onRemove: removeImage,
+      ),
+    ];
+
+    setState(() {
+      selectedBlogImages = updatedImages;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +113,7 @@ class _AddBlogState extends State<AddBlog> {
       child: Form(
         key: formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
             TextFormField(
@@ -94,7 +149,29 @@ class _AddBlogState extends State<AddBlog> {
                 return null;
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            Text("${selectedBlogImages.length} / $imageLimit"),
+            Padding(
+              padding: EdgeInsetsGeometry.symmetric(vertical: 10),
+              child: Row(
+                children: [
+                  ...selectedBlogImages,
+                  if (selectedBlogImages.length < imageLimit)
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).highlightColor,
+                        border: BoxBorder.all(width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      child: IconButton(
+                        onPressed: handleAddImage,
+                        icon: Icon(Icons.add),
+                      ),
+                    ),
+                ],
+              ),
+            ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
