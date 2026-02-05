@@ -9,14 +9,16 @@ class BlogImage extends StatefulWidget {
     super.key,
     this.mobileImage,
     this.webImage,
+    this.networImage,
     required this.id,
     required this.onRemove,
   });
 
   File? mobileImage;
   Uint8List? webImage;
-  final int id;
-  final void Function(int id) onRemove;
+  String? networImage;
+  final String id;
+  final void Function(String id) onRemove;
 
   @override
   State<StatefulWidget> createState() {
@@ -27,6 +29,33 @@ class BlogImage extends StatefulWidget {
 class _BlogImageState extends State<BlogImage> {
   @override
   Widget build(BuildContext context) {
+    Widget image = SizedBox.shrink();
+
+    if (widget.networImage == null) {
+      if (kIsWeb && widget.webImage != null) {
+        image = Image.memory(
+          widget.webImage!,
+          height: 70,
+          width: 80,
+          fit: BoxFit.cover,
+        );
+      } else if (!kIsWeb && widget.mobileImage != null) {
+        image = Image.file(
+          widget.mobileImage!,
+          height: 70,
+          width: 80,
+          fit: BoxFit.cover,
+        );
+      }
+    } else {
+      image = Image.network(
+        widget.networImage!,
+        height: 70,
+        width: 80,
+        fit: BoxFit.cover,
+      );
+    }
+
     return Stack(
       children: [
         Container(
@@ -35,19 +64,7 @@ class _BlogImageState extends State<BlogImage> {
             border: BoxBorder.all(width: 1),
             borderRadius: BorderRadius.all(Radius.circular(4)),
           ),
-          child: (kIsWeb)
-              ? Image.memory(
-                  widget.webImage!,
-                  height: 70,
-                  width: 80,
-                  fit: BoxFit.cover,
-                )
-              : Image.file(
-                  widget.mobileImage!,
-                  height: 70,
-                  width: 80,
-                  fit: BoxFit.cover,
-                ),
+          child: image,
         ),
         Positioned(
           top: -2,
