@@ -1,7 +1,14 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
+import 'package:flutter_blog_2/widgets/blog_image.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class EditBlog extends StatefulWidget {
   const EditBlog({super.key});
@@ -16,13 +23,78 @@ class _EditBlogState extends State<EditBlog> {
   final formKey = GlobalKey<FormState>();
   late TextEditingController titleController;
   late TextEditingController blogController;
+  List<BlogImage> selectedBlogImages = [];
+  List<File>? selectedImages = [];
+
+  void removeImage(String imageId) {
+    setState(() {
+      selectedBlogImages = selectedBlogImages
+          .where((img) => img.id != imageId)
+          .toList();
+    });
+  }
 
   @override
   void initState() {
     final blogState = context.read<BlogProvider>().getBlogState;
     titleController = TextEditingController(text: blogState.title);
     blogController = TextEditingController(text: blogState.blog);
+
+    if (blogState.imageUrls != null) {
+      blogState.imageUrls!.forEach((b) {
+        selectedBlogImages.add(
+          BlogImage(id: b, networImage: b, onRemove: removeImage),
+        );
+      });
+    }
+
     super.initState();
+  }
+
+  Future<({File? mobileImage, Uint8List? webImage})> openImagePicker() async {
+    final ImagePicker picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    File? mobileImage;
+    Uint8List? webImage;
+
+    // mobile
+    if (!kIsWeb) {
+      if (image != null) {
+        mobileImage = File(image.path);
+      }
+    } else {
+      // web
+      if (image != null) {
+        webImage = await image.readAsBytes();
+      }
+    }
+
+    return (mobileImage: mobileImage, webImage: webImage);
+  }
+
+  void handleAddImage() async {
+    var (:mobileImage, :webImage) = await openImagePicker();
+
+    List<BlogImage> updatedImages = [
+      ...selectedBlogImages,
+      BlogImage(
+        mobileImage: mobileImage,
+        webImage: webImage,
+        id: '${selectedBlogImages.length + 1}',
+        onRemove: removeImage,
+      ),
+    ];
+
+    var updatedSelectedImages = selectedImages;
+
+    if (mobileImage != null) {
+      updatedSelectedImages?.add(mobileImage);
+    }
+
+    setState(() {
+      selectedBlogImages = updatedImages;
+      selectedImages = updatedSelectedImages;
+    });
   }
 
   @override
@@ -99,6 +171,27 @@ class _EditBlogState extends State<EditBlog> {
               },
             ),
             const SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsetsGeometry.symmetric(vertical: 10),
+              child: Row(
+                children: [
+                  ...selectedBlogImages,
+                  if (selectedBlogImages.length < imageLimit)
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).highlightColor,
+                        border: BoxBorder.all(width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      child: IconButton(
+                        onPressed: handleAddImage,
+                        icon: Icon(Icons.add),
+                      ),
+                    ),
+                ],
+              ),
+            ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
