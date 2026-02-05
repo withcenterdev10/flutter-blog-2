@@ -138,12 +138,17 @@ class BlogProvider extends ChangeNotifier {
           )
           .single();
 
+      List<String> imgUrls = [];
+      if (res['image_urls'] != null) {
+        imgUrls = [...res['image_urls']];
+      }
+
       final newBlog = _setBlogState(
         getBlogState.copyWith(
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
-          imageUrls: res['image_urls'],
+          imageUrls: imgUrls,
           user: BlogUserModel(
             id: res['user']['id'],
             imageUrl: res['user']['image_url'],
@@ -187,20 +192,27 @@ class BlogProvider extends ChangeNotifier {
             .order('created_at', ascending: false);
       }
 
-      final myBlogs = [
-        for (var i = 0; i < res.length; i++)
+      List<BlogModel> myBlogs = [];
+
+      for (var i = 0; i < res.length; i++) {
+        List<String> imageUrls = [];
+        if (res[i]['image_urls'] != null) {
+          imageUrls = [...res[i]['image_urls']];
+        }
+        myBlogs.add(
           BlogModel(
             id: res[i]['id'],
             title: res[i]['title'],
             blog: res[i]['blog'],
-            imageUrls: res[i]['image_urls'],
+            imageUrls: imageUrls,
             user: BlogUserModel(
               id: res[i]['user']['id'],
               imageUrl: res[i]['user']['image_url'],
               displayName: res[i]['user']['display_name'],
             ),
           ),
-      ];
+        );
+      }
 
       _setBlogsState(blogs.copyWith(blogs: myBlogs));
     } catch (err) {
@@ -220,18 +232,23 @@ class BlogProvider extends ChangeNotifier {
       final res = await supabase
           .from(Tables.blogs.name)
           .select(
-            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url)",
           )
           .eq("is_deleted", false)
           .eq('id', id)
           .single();
+
+      List<String> imageUrls = [];
+      if (res['image_urls'] != null) {
+        imageUrls = [...res['image_urls']];
+      }
 
       _setBlogState(
         getBlogState.copyWith(
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
-          imageUrls: res['image_urls'],
+          imageUrls: imageUrls,
           user: BlogUserModel(
             id: res['user']['id'],
             imageUrl: res['user']['image_url'],

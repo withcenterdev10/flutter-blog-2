@@ -14,7 +14,7 @@ class BlogModel {
   final String? blog;
   final BlogUserModel? user;
   final bool loading;
-  final List<dynamic>? imageUrls;
+  final List<String>? imageUrls;
 
   factory BlogModel.initial() {
     return BlogModel(
@@ -33,7 +33,7 @@ class BlogModel {
     String? blog,
     BlogUserModel? user,
     bool? loading,
-    List<dynamic>? imageUrls,
+    List<String>? imageUrls,
   }) {
     return BlogModel(
       imageUrls: imageUrls ?? this.imageUrls,
