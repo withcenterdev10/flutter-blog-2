@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: const Text('Home Screen'),
+        title: const Text('Home'),
         actions: [HomeAvatar(scaffoldKey: scaffoldKey)],
       ),
       endDrawer: authState.user != null ? const MyDrawer() : null,
