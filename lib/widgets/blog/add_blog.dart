@@ -44,6 +44,7 @@ class _AddBlogState extends State<AddBlog> {
           message = "Create blog failed";
           debugPrint(error.toString());
         } finally {
+          formKey.currentState!.reset();
           if (context.mounted) {
             ScaffoldMessenger.of(
               context,
