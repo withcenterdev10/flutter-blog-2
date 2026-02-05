@@ -10,7 +10,7 @@ class BlogProvider extends ChangeNotifier {
   BlogsModel blogs = BlogsModel.initial();
 
   BlogProvider() {
-    getBlogs();
+    getBlogs(null);
   }
 
   BlogModel get getBlogState {
@@ -127,18 +127,30 @@ class BlogProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getBlogs() async {
+  Future<void> getBlogs(String? userId) async {
     try {
-      final res = await supabase
-          .from(Tables.blogs.name)
-          .select(
-            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
-          )
-          .eq("is_deleted", false)
-          .order('created_at', ascending: false);
+      late List<Map<String, dynamic>> res;
+      if (userId == null) {
+        res = await supabase
+            .from(Tables.blogs.name)
+            .select(
+              "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+            )
+            .eq("is_deleted", false)
+            .order('created_at', ascending: false);
+      } else {
+        res = await supabase
+            .from(Tables.blogs.name)
+            .select(
+              "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+            )
+            .eq("is_deleted", false)
+            .eq("user_id", userId)
+            .order('created_at', ascending: false);
+      }
 
       final myBlogs = [
-        for (var i = 0; i < res.length - 1; i++)
+        for (var i = 0; i < res.length; i++)
           BlogModel(
             id: res[i]['id'],
             title: res[i]['title'],

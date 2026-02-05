@@ -28,6 +28,27 @@ class _BlogsScreenState extends State<BlogsScreen> {
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
 
+    Widget content = Center(
+      child: const SizedBox(
+        width: 15,
+        height: 15,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
+    );
+
+    if (blogsState.blogs.isNotEmpty && !blogsState.loading) {
+      content = ListView.builder(
+        itemCount: blogsState.blogs.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Blog(blog: blogsState.blogs[index]);
+        },
+      );
+    }
+
+    if (blogsState.blogs.isEmpty && !blogsState.loading) {
+      content = Center(child: Text("No blogs found"));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My blogs'),
@@ -40,14 +61,7 @@ class _BlogsScreenState extends State<BlogsScreen> {
           ),
         ],
       ),
-      body: blogsState.blogs.isNotEmpty
-          ? ListView.builder(
-              itemCount: blogsState.blogs.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Blog(blog: blogsState.blogs[index]);
-              },
-            )
-          : Center(child: Text("No blogs found")),
+      body: content,
     );
   }
 }
