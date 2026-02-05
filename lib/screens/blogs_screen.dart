@@ -55,7 +55,7 @@ class _BlogsScreenState extends State<BlogsScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              AddBlogScreen.go(context);
+              AddBlogScreen.push(context);
             },
             icon: Icon(Icons.add),
           ),
