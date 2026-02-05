@@ -41,29 +41,6 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthProvider>().getState;
-
-    void onSubmit() async {
-      if (formKey.currentState!.validate()) {
-        String message = "";
-        try {
-          message = "Sign in success";
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        } catch (error) {
-          message = "Sign in failed";
-          debugPrint(error.toString());
-        } finally {
-          if (context.mounted) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(message)));
-          }
-        }
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text('Add new blog')),
       body: Center(child: Column(children: [AddBlog()])),
