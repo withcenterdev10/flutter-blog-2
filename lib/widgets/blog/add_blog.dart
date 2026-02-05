@@ -9,8 +9,7 @@ import 'package:flutter_blog_2/widgets/blog_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-
-int imageLimit = 3;
+import 'package:flutter_blog_2/utils.dart';
 
 class AddBlog extends StatefulWidget {
   const AddBlog({super.key});
@@ -28,7 +27,7 @@ class _AddBlogState extends State<AddBlog> {
   List<BlogImage> selectedBlogImages = [];
   List<File>? selectedImages = [];
 
-  void removeImage(int imageId) {
+  void removeImage(String imageId) {
     setState(() {
       selectedBlogImages = selectedBlogImages
           .where((img) => img.id != imageId)
@@ -64,7 +63,7 @@ class _AddBlogState extends State<AddBlog> {
       BlogImage(
         mobileImage: mobileImage,
         webImage: webImage,
-        id: selectedBlogImages.length + 1,
+        id: '${selectedBlogImages.length + 1}',
         onRemove: removeImage,
       ),
     ];
