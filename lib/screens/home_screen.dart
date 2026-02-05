@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/widgets/blog/blog.dart';
+import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
 import 'package:flutter_blog_2/widgets/home_avatar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  static const routeName = '/';
+
+  static Function(BuildContext context) go = (context) => context.go(routeName);
+
+  static Function(BuildContext context) push = (context) =>
+      context.push(routeName);
 
   @override
   State<StatefulWidget> createState() {
@@ -52,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       endDrawer: authState.user != null ? const MyDrawer() : null,
       body: content,
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }
