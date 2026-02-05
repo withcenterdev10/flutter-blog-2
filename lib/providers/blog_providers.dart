@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/db.dart';
 import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/models/blog_user_model.dart';
 import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/utils.dart';
+
+const blogLimit = 6;
 
 class BlogProvider extends ChangeNotifier {
   BlogModel blog = BlogModel.initial();
@@ -37,12 +41,27 @@ class BlogProvider extends ChangeNotifier {
     final String? title,
     final String? blog,
     final String? userId,
+    final List<File>? images,
   }) async {
     _setBlogState(getBlogState.copyWith(loading: true));
     try {
+      // List<dynamic>? imageUrls;
+
+      // if (images != null && images.isNotEmpty) {
+      //   List<Future<dynamic>> futures = images
+      //       .map((img) => uploadImageToCloudinary(img))
+      //       .toList();
+      //   imageUrls = await Future.wait(futures);
+      // }
+
       final res = await supabase
           .from(Tables.blogs.name)
-          .update({'title': title, 'blog': blog, 'user_id': userId})
+          .update({
+            'title': title,
+            'blog': blog,
+            'user_id': userId,
+            // 'image_urls': ?imageUrls,
+          })
           .eq("id", id!)
           .select(
             "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
@@ -54,6 +73,7 @@ class BlogProvider extends ChangeNotifier {
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
+
           user: BlogUserModel(
             id: res['user']['id'],
             imageUrl: res['user']['image_url'],
@@ -92,14 +112,29 @@ class BlogProvider extends ChangeNotifier {
     final String? title,
     final String? blog,
     final String? userId,
+    final List<File>? images,
   }) async {
     _setBlogState(getBlogState.copyWith(loading: true));
     try {
+      List<dynamic>? imageUrls;
+
+      if (images != null && images.isNotEmpty) {
+        List<Future<dynamic>> futures = images
+            .map((img) => uploadImageToCloudinary(img))
+            .toList();
+        imageUrls = await Future.wait(futures);
+      }
+
       final res = await supabase
           .from(Tables.blogs.name)
-          .insert({'title': title, 'blog': blog, 'user_id': userId})
+          .insert({
+            'title': title,
+            'blog': blog,
+            'user_id': userId,
+            'image_urls': ?imageUrls,
+          })
           .select(
-            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url)",
           )
           .single();
 
@@ -108,6 +143,7 @@ class BlogProvider extends ChangeNotifier {
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
+          imageUrls: res['image_urls'],
           user: BlogUserModel(
             id: res['user']['id'],
             imageUrl: res['user']['image_url'],
@@ -134,18 +170,20 @@ class BlogProvider extends ChangeNotifier {
         res = await supabase
             .from(Tables.blogs.name)
             .select(
-              "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+              "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url)",
             )
             .eq("is_deleted", false)
+            .limit(blogLimit)
             .order('created_at', ascending: false);
       } else {
         res = await supabase
             .from(Tables.blogs.name)
             .select(
-              "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+              "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url)",
             )
             .eq("is_deleted", false)
             .eq("user_id", userId)
+            .limit(blogLimit)
             .order('created_at', ascending: false);
       }
 
@@ -155,6 +193,7 @@ class BlogProvider extends ChangeNotifier {
             id: res[i]['id'],
             title: res[i]['title'],
             blog: res[i]['blog'],
+            imageUrls: res[i]['image_urls'],
             user: BlogUserModel(
               id: res[i]['user']['id'],
               imageUrl: res[i]['user']['image_url'],
@@ -192,6 +231,7 @@ class BlogProvider extends ChangeNotifier {
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
+          imageUrls: res['image_urls'],
           user: BlogUserModel(
             id: res['user']['id'],
             imageUrl: res['user']['image_url'],

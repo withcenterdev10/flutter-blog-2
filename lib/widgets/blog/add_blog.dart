@@ -26,6 +26,7 @@ class _AddBlogState extends State<AddBlog> {
   final titleController = TextEditingController();
   final blogController = TextEditingController();
   List<BlogImage> selectedBlogImages = [];
+  List<File>? selectedImages = [];
 
   void removeImage(int imageId) {
     setState(() {
@@ -58,7 +59,7 @@ class _AddBlogState extends State<AddBlog> {
 
   void handleAddImage() async {
     var (:mobileImage, :webImage) = await openImagePicker();
-    var updatedImages = [
+    List<BlogImage> updatedImages = [
       ...selectedBlogImages,
       BlogImage(
         mobileImage: mobileImage,
@@ -68,8 +69,15 @@ class _AddBlogState extends State<AddBlog> {
       ),
     ];
 
+    var updatedSelectedImages = selectedImages;
+
+    if (mobileImage != null) {
+      updatedSelectedImages?.add(mobileImage);
+    }
+
     setState(() {
       selectedBlogImages = updatedImages;
+      selectedImages = updatedSelectedImages;
     });
   }
 
@@ -89,6 +97,7 @@ class _AddBlogState extends State<AddBlog> {
             blog: blog,
             userId: userId,
             title: title,
+            images: selectedImages,
           );
           message = "Create blog success";
           if (context.mounted) {
