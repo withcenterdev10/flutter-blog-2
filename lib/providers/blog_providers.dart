@@ -37,43 +37,50 @@ class BlogProvider extends ChangeNotifier {
   }
 
   Future<void> updateBlog({
-    final String? id,
+    required String id,
     final String? title,
-    final String? blog,
+    final String? blogContent,
     final String? userId,
-    final List<File>? images,
+    final List<File>? newImages,
+    final List<String>? networkImages,
   }) async {
     _setBlogState(getBlogState.copyWith(loading: true));
     try {
-      // List<dynamic>? imageUrls;
+      List<String> imageUrls = [];
+      if (newImages != null && newImages.isNotEmpty) {
+        List<Future<String>> futures = newImages
+            .map((img) => uploadImageToCloudinary(img))
+            .toList();
+        imageUrls = await Future.wait(futures);
+      }
 
-      // if (images != null && images.isNotEmpty) {
-      //   List<Future<dynamic>> futures = images
-      //       .map((img) => uploadImageToCloudinary(img))
-      //       .toList();
-      //   imageUrls = await Future.wait(futures);
-      // }
+      final images = [...?networkImages, ...imageUrls];
 
       final res = await supabase
           .from(Tables.blogs.name)
           .update({
             'title': title,
-            'blog': blog,
+            'blog': blogContent,
             'user_id': userId,
-            // 'image_urls': ?imageUrls,
+            'image_urls': images,
           })
-          .eq("id", id!)
+          .eq("id", id)
           .select(
-            "id, title, created_at, blog, user: profiles (id, display_name, image_url)",
+            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url)",
           )
           .single();
+
+      List<String> imgUrls = [];
+      if (res['image_urls'] != null) {
+        imgUrls = [...res['image_urls']];
+      }
 
       final newBlog = _setBlogState(
         getBlogState.copyWith(
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
-
+          imageUrls: imgUrls,
           user: BlogUserModel(
             id: res['user']['id'],
             imageUrl: res['user']['image_url'],

@@ -24,7 +24,7 @@ class _EditBlogState extends State<EditBlog> {
   late TextEditingController titleController;
   late TextEditingController blogController;
   List<BlogImage> selectedBlogImages = [];
-  List<File>? selectedImages = [];
+  List<File> selectedImages = [];
 
   void removeImage(String imageId) {
     setState(() {
@@ -88,7 +88,7 @@ class _EditBlogState extends State<EditBlog> {
     var updatedSelectedImages = selectedImages;
 
     if (mobileImage != null) {
-      updatedSelectedImages?.add(mobileImage);
+      updatedSelectedImages.add(mobileImage);
     }
 
     setState(() {
@@ -107,13 +107,28 @@ class _EditBlogState extends State<EditBlog> {
         final title = titleController.text;
         final blog = blogController.text;
         final userId = userState.user!.id;
+
+        List<String> remainingPreviousImgUrls = [];
+
+        if (selectedBlogImages.isNotEmpty) {
+          for (var i = 0; i < selectedBlogImages.length; i++) {
+            if (selectedBlogImages[i].networImage != null) {
+              remainingPreviousImgUrls.add(
+                selectedBlogImages[i].networImage as String,
+              );
+            }
+          }
+        }
+
         String message = "";
         try {
           await context.read<BlogProvider>().updateBlog(
-            id: blogState.id,
-            blog: blog,
+            id: blogState.id!,
+            blogContent: blog,
             userId: userId,
             title: title,
+            newImages: selectedImages,
+            networkImages: remainingPreviousImgUrls,
           );
           message = "Update blog success";
         } catch (error) {
@@ -221,3 +236,9 @@ class _EditBlogState extends State<EditBlog> {
     );
   }
 }
+
+/// What should happen when you are updating the blog images?
+/// if there's new image to be added, just append it to the existing images
+///     
+/// what will happen if the user delete an image,
+///     You should have a list 

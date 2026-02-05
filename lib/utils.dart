@@ -11,8 +11,8 @@ enum Tables { blogs }
 
 const int imageLimit = 3;
 
-Future<String?> uploadImageToCloudinary(File? image) async {
-  if (image == null) return null;
+Future<String> uploadImageToCloudinary(File? image) async {
+  if (image == null) return "";
 
   try {
     final cloudName = dotenv.env['CLOUDINARY_NAME'];
@@ -34,7 +34,7 @@ Future<String?> uploadImageToCloudinary(File? image) async {
     );
 
     if (response.statusCode == 200) {
-      return response.data['url'] as String?;
+      return response.data['url'];
     } else {
       throw Exception('Something went wrong while uploading the image');
     }
