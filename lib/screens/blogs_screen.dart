@@ -4,7 +4,6 @@ import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_blog_2/widgets/blog/blog.dart";
-import "package:flutter_blog_2/temp.dart";
 
 class BlogsScreen extends StatefulWidget {
   const BlogsScreen({super.key});
@@ -61,14 +60,7 @@ class _BlogsScreenState extends State<BlogsScreen> {
           ),
         ],
       ),
-      body: PopScope(
-        child: content,
-        onPopInvokedWithResult: (bool didPop, Object? result) {
-          if (didPop) {
-            context.read<BlogProvider>().getBlogs(null);
-          }
-        },
-      ),
+      body: content,
     );
   }
 }
