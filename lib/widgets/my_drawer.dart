@@ -3,6 +3,7 @@ import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blog_2/screens/profile_screen.dart';
+import 'package:flutter_blog_2/providers/blog_providers.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
@@ -16,6 +17,7 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
+    final userState = context.watch<AuthProvider>().getState;
     void handleLogout() async {
       String? message;
       try {
@@ -61,7 +63,7 @@ class _MyDrawerState extends State<MyDrawer> {
             leading: Icon(Icons.settings, size: 26),
             title: Text('Profile'),
             onTap: () {
-              // Navigator.of(context).pop();
+              Navigator.of(context).pop();
               Profile.push(context);
             },
           ),
@@ -70,7 +72,8 @@ class _MyDrawerState extends State<MyDrawer> {
             title: Text('My blogs'),
             onTap: () {
               Navigator.of(context).pop();
-              BlogsScreen.go(context);
+              BlogsScreen.push(context);
+              context.read<BlogProvider>().getBlogs(userState.user?.id);
             },
           ),
           const Spacer(),

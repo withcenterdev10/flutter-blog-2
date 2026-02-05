@@ -61,7 +61,14 @@ class _BlogsScreenState extends State<BlogsScreen> {
           ),
         ],
       ),
-      body: content,
+      body: PopScope(
+        child: content,
+        onPopInvokedWithResult: (bool didPop, Object? result) {
+          if (didPop) {
+            context.read<BlogProvider>().getBlogs(null);
+          }
+        },
+      ),
     );
   }
 }
