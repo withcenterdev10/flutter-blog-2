@@ -4,6 +4,7 @@ import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter_blog_2/widgets/blog_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -100,54 +101,84 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     }
 
     if (blogState.blog != null) {
-      content = ListView(
-        padding: EdgeInsets.all(12),
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    blogState.user?.imageUrl != null
-                        ? CircleAvatar(
-                            radius: 25,
-                            backgroundImage: NetworkImage(
-                              blogState.user!.imageUrl!,
+      content = Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      blogState.user?.imageUrl != null
+                          ? CircleAvatar(
+                              radius: 25,
+                              backgroundImage: NetworkImage(
+                                blogState.user!.imageUrl!,
+                              ),
+                            )
+                          : CircleAvatar(
+                              radius: 25,
+                              child: Text(
+                                blogState.user!.displayName!
+                                    .substring(0, 2)
+                                    .toUpperCase(),
+                              ),
                             ),
-                          )
-                        : CircleAvatar(
-                            radius: 25,
-                            child: Text(
-                              blogState.user!.displayName!
-                                  .substring(0, 2)
-                                  .toUpperCase(),
+                      const SizedBox(width: 8),
+                      Text(
+                        toUpperCaseFirstChar(blogState.user!.displayName!),
+                        maxLines: 1,
+                        softWrap: false,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsetsGeometry.symmetric(vertical: 6),
+              child: const Divider(),
+            ),
+            Text(
+              toUpperCaseFirstChar(blogState.title!),
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 15),
+            Text(blogState.blog!),
+            const SizedBox(height: 15),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                children: blogState.imageUrls != null
+                    ? [
+                        ...blogState.imageUrls!.map(
+                          (b) => Padding(
+                            padding: EdgeInsetsGeometry.all(4),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8.0),
+                                topRight: Radius.circular(8.0),
+                              ),
+                              child: Image.network(
+                                b,
+                                // width: 300,
+                                height: 150,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                    const SizedBox(width: 8),
-                    Text(
-                      toUpperCaseFirstChar(blogState.user!.displayName!),
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
+                        ),
+                      ]
+                    : [],
               ),
-              const SizedBox(width: 8),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsetsGeometry.symmetric(vertical: 6),
-            child: const Divider(),
-          ),
-          Text(
-            toUpperCaseFirstChar(blogState.title!),
-            style: TextStyle(fontSize: 18),
-          ),
-          const SizedBox(height: 15),
-          Text(blogState.blog!),
-        ],
+            ),
+          ],
+        ),
       );
     }
     return Scaffold(
