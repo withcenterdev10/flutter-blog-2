@@ -17,12 +17,11 @@ class Profile extends StatefulWidget {
   //     context.go(routeName.replaceFirst(':id', id));
 
   static const routeName = '/profile';
-  static const callRouteName = '/$routeName';
 
   static Function(BuildContext context) go = (context) => context.go(routeName);
 
   static Function(BuildContext context) push = (context) =>
-      context.push(callRouteName);
+      context.push(routeName);
 
   @override
   State<Profile> createState() {
