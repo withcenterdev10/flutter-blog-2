@@ -135,22 +135,6 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              isAuthor
-                  ? IconButton(
-                      onPressed: () {
-                        EditBlogScreen.push(context);
-                      },
-                      icon: Icon(Icons.edit, size: 20),
-                    )
-                  : const SizedBox.shrink(),
-              isAuthor
-                  ? IconButton(
-                      onPressed: () {
-                        showDeleteDialog();
-                      },
-                      icon: Icon(Icons.delete, size: 20),
-                    )
-                  : const SizedBox.shrink(),
             ],
           ),
           Padding(
@@ -168,7 +152,25 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     }
     return Scaffold(
       // key: scaffoldKey,
-      appBar: AppBar(title: const Text('View Blog')),
+      appBar: AppBar(
+        title: const Text('View Blog'),
+        actions: isAuthor
+            ? [
+                IconButton(
+                  onPressed: () {
+                    EditBlogScreen.push(context);
+                  },
+                  icon: Icon(Icons.edit, size: 20),
+                ),
+                IconButton(
+                  onPressed: () {
+                    showDeleteDialog();
+                  },
+                  icon: Icon(Icons.delete, size: 20),
+                ),
+              ]
+            : [],
+      ),
       body: PopScope(
         child: content,
         onPopInvokedWithResult: (didPop, result) => {
