@@ -40,12 +40,14 @@ class _BlogsScreenState extends State<BlogsScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: blogsState.blogs.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Blog(blog: blogsState.blogs[index]);
-        },
-      ),
+      body: blogsState.blogs.isNotEmpty
+          ? ListView.builder(
+              itemCount: blogsState.blogs.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Blog(blog: blogsState.blogs[index]);
+              },
+            )
+          : Center(child: Text("No blogs found")),
     );
   }
 }
