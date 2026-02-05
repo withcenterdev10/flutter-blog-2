@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
+import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:go_router/go_router.dart';
@@ -169,7 +170,12 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     return Scaffold(
       // key: scaffoldKey,
       appBar: AppBar(title: const Text('View Blog')),
-      body: content,
+      body: PopScope(
+        child: content,
+        onPopInvokedWithResult: (didPop, result) => {
+          if (didPop) {BlogsScreen.go(context)},
+        },
+      ),
     );
   }
 }

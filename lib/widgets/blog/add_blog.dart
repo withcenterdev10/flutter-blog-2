@@ -38,7 +38,7 @@ class _AddBlogState extends State<AddBlog> {
           );
           message = "Create blog success";
           if (context.mounted) {
-            ViewBlogScreen.go(context, blogId as String);
+            ViewBlogScreen.push(context, blogId as String);
           }
         } catch (error) {
           message = "Create blog failed";
