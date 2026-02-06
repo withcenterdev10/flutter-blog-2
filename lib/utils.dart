@@ -5,7 +5,7 @@ import 'package:flutter_blog_2/dio.dart';
 
 enum ExtraAuthProperties { displayName }
 
-enum Pages { profile, blogs }
+enum Pages { profile, blogs, comments }
 
 enum Tables { blogs }
 
