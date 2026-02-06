@@ -158,19 +158,17 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
             Text(blogState.blog!),
             const SizedBox(height: 15),
             if (blogState.imageUrls != null)
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: blogState.imageUrls!.length,
-                  itemBuilder: (BuildContext context, int index) => Padding(
-                    padding: EdgeInsetsGeometry.all(4),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      child: Image.network(
-                        blogState.imageUrls![index],
-                        height: 200,
-                        fit: BoxFit.cover,
-                      ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: blogState.imageUrls!.length,
+                itemBuilder: (BuildContext context, int index) => Padding(
+                  padding: EdgeInsetsGeometry.all(4),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                    child: Image.network(
+                      blogState.imageUrls![index],
+                      height: 200,
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
