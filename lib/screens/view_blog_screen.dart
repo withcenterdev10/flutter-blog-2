@@ -29,6 +29,12 @@ class ViewBlogScreen extends StatefulWidget {
 
 class _ViewBlogScreenState extends State<ViewBlogScreen> {
   @override
+  void dispose() {
+    context.read<BlogProvider>().resetBlogState();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final blogState = context.watch<BlogProvider>().getBlogState;
     final userState = context.watch<AuthProvider>().getState;
@@ -103,8 +109,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     if (blogState.blog != null) {
       content = Padding(
         padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,43 +145,36 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                 const SizedBox(width: 8),
               ],
             ),
+
             Padding(
               padding: EdgeInsetsGeometry.symmetric(vertical: 6),
               child: const Divider(),
             ),
             Text(
               toUpperCaseFirstChar(blogState.title!),
-              style: TextStyle(fontSize: 18),
+              style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: 15),
             Text(blogState.blog!),
             const SizedBox(height: 15),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                children: blogState.imageUrls != null
-                    ? [
-                        ...blogState.imageUrls!.map(
-                          (b) => Padding(
-                            padding: EdgeInsetsGeometry.all(4),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8.0),
-                                topRight: Radius.circular(8.0),
-                              ),
-                              child: Image.network(
-                                b,
-                                // width: 300,
-                                height: 150,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]
-                    : [],
+            if (blogState.imageUrls != null)
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: blogState.imageUrls!.length,
+                  itemBuilder: (BuildContext context, int index) => Padding(
+                    padding: EdgeInsetsGeometry.all(4),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      child: Image.network(
+                        blogState.imageUrls![index],
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
           ],
         ),
       );
@@ -185,7 +183,9 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     return Scaffold(
       // key: scaffoldKey,
       appBar: AppBar(
-        title: const Text('View Blog'),
+        title: Text(
+          truncateText(toUpperCaseFirstChar(blogState.title!), limit: 20),
+        ),
         actions: isAuthor
             ? [
                 IconButton(

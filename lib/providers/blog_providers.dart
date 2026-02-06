@@ -27,6 +27,10 @@ class BlogProvider extends ChangeNotifier {
     return blog;
   }
 
+  void resetBlogState() {
+    _setBlogState(BlogModel.initial());
+  }
+
   void _setBlogsState(BlogsModel newState) {
     blogs = newState;
     notifyListeners();
