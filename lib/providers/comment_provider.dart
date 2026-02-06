@@ -40,6 +40,8 @@ class CommentProvider extends ChangeNotifier {
             "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
           )
           .single();
+
+      _setState(state.copyWith(loading: false));
     } catch (err) {
       debugPrint(err.toString());
       throw Exception('Create comment failed');

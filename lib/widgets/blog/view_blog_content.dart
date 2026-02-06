@@ -21,34 +21,30 @@ class _VewBlogContentState extends State<ViewBlogContent> {
       child: ListView(
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    widget.blog.user?.imageUrl != null
-                        ? CircleAvatar(
-                            radius: 25,
-                            backgroundImage: NetworkImage(
-                              widget.blog.user!.imageUrl!,
-                            ),
-                          )
-                        : CircleAvatar(
-                            radius: 25,
-                            child: Text(
-                              widget.blog.user!.displayName!
-                                  .substring(0, 2)
-                                  .toUpperCase(),
-                            ),
-                          ),
-                    const SizedBox(width: 8),
-                    Text(
-                      toUpperCaseFirstChar(widget.blog.user!.displayName!),
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.ellipsis,
+              widget.blog.user?.imageUrl != null
+                  ? CircleAvatar(
+                      radius: 25,
+                      backgroundImage: NetworkImage(
+                        widget.blog.user!.imageUrl!,
+                      ),
+                    )
+                  : CircleAvatar(
+                      radius: 25,
+                      child: Text(
+                        widget.blog.user!.displayName!
+                            .substring(0, 2)
+                            .toUpperCase(),
+                      ),
                     ),
-                  ],
+              const SizedBox(width: 8),
+              Center(
+                child: Text(
+                  toUpperCaseFirstChar(widget.blog.user!.displayName!),
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(width: 8),
