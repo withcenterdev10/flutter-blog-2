@@ -3,7 +3,6 @@ import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
-import 'package:flutter_blog_2/screens/home_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -173,6 +172,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                   ),
                 ),
               ),
+            const SizedBox(height: 10),
           ],
         ),
       );
