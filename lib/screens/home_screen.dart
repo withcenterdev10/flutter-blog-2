@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       endDrawer: authState.user != null ? const MyDrawer() : null,
       body: content,
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: authState.user != null ? BottomNavigation() : null,
     );
   }
 }

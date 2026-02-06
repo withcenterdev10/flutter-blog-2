@@ -36,6 +36,7 @@ class _BlogsScreenState extends State<BlogsScreen> {
   @override
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
+    final authState = context.read<AuthProvider>().getState;
 
     Widget content = Center(
       child: const SizedBox(
@@ -71,7 +72,7 @@ class _BlogsScreenState extends State<BlogsScreen> {
         ],
       ),
       body: content,
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: authState.user != null ? BottomNavigation() : null,
     );
   }
 }
