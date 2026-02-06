@@ -150,6 +150,7 @@ class _EditBlogState extends State<EditBlog> {
       child: Form(
         key: formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 16),
             TextFormField(
