@@ -43,8 +43,8 @@ Future<String> uploadImageToCloudinary(File? image) async {
   }
 }
 
-String truncateText(String text) {
-  if (text.length < 30) {
+String truncateText(String text, {int limit = 30}) {
+  if (text.length < limit) {
     return text;
   }
 
