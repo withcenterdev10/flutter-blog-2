@@ -27,11 +27,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void initState() {
-    context.read<BlogProvider>().getBlogs(null);
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   // context.read<BlogProvider>().getBlogs(null);
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {

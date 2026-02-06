@@ -69,7 +69,7 @@ class AuthProvider extends ChangeNotifier {
       _setState(state.copyWith(user: res.user));
     } catch (err) {
       debugPrint(err.toString());
-      throw Exception('Something went wrong');
+      // throw Exception('Something went wrong');
     } finally {
       _setState(state.copyWith(loading: false));
     }

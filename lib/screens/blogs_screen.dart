@@ -26,13 +26,6 @@ class BlogsScreen extends StatefulWidget {
 
 class _BlogsScreenState extends State<BlogsScreen> {
   @override
-  void initState() {
-    final authState = context.read<AuthProvider>().getState;
-    context.read<BlogProvider>().getBlogs(authState.user?.id);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
     final authState = context.watch<AuthProvider>().getState;
