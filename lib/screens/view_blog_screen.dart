@@ -203,18 +203,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
               ]
             : [],
       ),
-      body: PopScope(
-        child: content,
-        onPopInvokedWithResult: (didPop, result) => {
-          if (didPop)
-            {
-              if (userState.user != null)
-                {BlogsScreen.go(context)}
-              else
-                {HomeScreen.go(context)},
-            },
-        },
-      ),
+      body: content,
     );
   }
 }
