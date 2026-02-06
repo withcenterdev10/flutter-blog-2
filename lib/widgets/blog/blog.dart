@@ -73,6 +73,25 @@ class Blog extends StatelessWidget {
                 child: const Divider(),
               ),
               Text(blog.blog!),
+
+              if (blog.imageUrls != null)
+                Wrap(
+                  children: [
+                    for (var i = 0; i < blog.imageUrls!.length; i++)
+                      Padding(
+                        padding: EdgeInsetsGeometry.all(4),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          child: Image.network(
+                            blog.imageUrls![i],
+                            width: 140,
+                            height: 150,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -80,3 +99,6 @@ class Blog extends StatelessWidget {
     );
   }
 }
+
+
+// blogState.imageUrls
