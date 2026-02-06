@@ -81,7 +81,7 @@ class _VewBlogContentState extends State<ViewBlogContent> {
                 ),
               ),
             ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
         ],
       ),
     );

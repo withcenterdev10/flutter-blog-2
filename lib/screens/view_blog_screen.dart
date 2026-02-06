@@ -5,6 +5,7 @@ import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_content.dart';
+import 'package:flutter_blog_2/widgets/comment/comment.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -105,7 +106,13 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     if (blogState.blog != null) {
       content = Padding(
         padding: const EdgeInsets.all(12),
-        child: Column(children: [ViewBlogContent(blog: blogState)]),
+        child: Column(
+          children: [
+            ViewBlogContent(blog: blogState),
+            const CommentInput(),
+            const SizedBox(height: 10),
+          ],
+        ),
       );
     }
 
