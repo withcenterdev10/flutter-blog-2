@@ -5,7 +5,7 @@ import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_content.dart';
-import 'package:flutter_blog_2/widgets/comment/comment.dart';
+import 'package:flutter_blog_2/widgets/comment/comment_input_box.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
