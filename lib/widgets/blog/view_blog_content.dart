@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter_blog_2/widgets/comment/comments.dart';
 
 class ViewBlogContent extends StatefulWidget {
   const ViewBlogContent({super.key, required this.blog});
@@ -66,22 +67,24 @@ class _VewBlogContentState extends State<ViewBlogContent> {
           Text(widget.blog.blog!),
           const SizedBox(height: 15),
           if (widget.blog.imageUrls != null)
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.blog.imageUrls!.length,
-              itemBuilder: (BuildContext context, int index) => Padding(
-                padding: EdgeInsetsGeometry.all(4),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                  child: Image.network(
-                    widget.blog.imageUrls![index],
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+            Column(
+              spacing: 10,
+              children: [
+                ...widget.blog.imageUrls!.map((b) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
+                    child: Image.network(
+                      b,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  );
+                }),
+              ],
             ),
           const SizedBox(height: 5),
+          Comments(),
         ],
       ),
     );

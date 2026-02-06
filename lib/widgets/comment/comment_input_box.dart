@@ -57,30 +57,33 @@ class _CommentInputState extends State<CommentInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: SizedBox(
-        height: 40,
-        child: TextFormField(
-          controller: commentController,
-          decoration: InputDecoration(
-            labelText: "Comment",
-            border: OutlineInputBorder(),
-            isDense: true,
-            contentPadding: EdgeInsets.all(8.0),
-            suffixIcon: IconButton(
-              onPressed: () {
-                onSubmit(context);
-              },
-              icon: Icon(Icons.send),
+    return Padding(
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+      child: Form(
+        key: formKey,
+        child: SizedBox(
+          height: 40,
+          child: TextFormField(
+            controller: commentController,
+            decoration: InputDecoration(
+              labelText: "Comment",
+              border: OutlineInputBorder(),
+              isDense: true,
+              contentPadding: EdgeInsets.all(8.0),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  onSubmit(context);
+                },
+                icon: Icon(Icons.send),
+              ),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Type your comment';
+              }
+              return null;
+            },
           ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Type your comment';
-            }
-            return null;
-          },
         ),
       ),
     );
