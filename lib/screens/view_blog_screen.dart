@@ -3,6 +3,7 @@ import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
+import 'package:flutter_blog_2/screens/home_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -180,6 +181,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
         ),
       );
     }
+
     return Scaffold(
       // key: scaffoldKey,
       appBar: AppBar(
@@ -204,7 +206,13 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
       body: PopScope(
         child: content,
         onPopInvokedWithResult: (didPop, result) => {
-          if (didPop) {BlogsScreen.go(context)},
+          if (didPop)
+            {
+              if (userState.user != null)
+                {BlogsScreen.go(context)}
+              else
+                {HomeScreen.go(context)},
+            },
         },
       ),
     );

@@ -66,7 +66,7 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Update blog')),
-      body: Center(child: Column(children: [EditBlog()])),
+      body: EditBlog(),
     );
   }
 }

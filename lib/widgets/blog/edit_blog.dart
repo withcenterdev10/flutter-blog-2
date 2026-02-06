@@ -88,7 +88,7 @@ class _EditBlogState extends State<EditBlog> {
     var updatedSelectedImages = selectedImages;
 
     if (mobileImage != null) {
-      updatedSelectedImages.add(mobileImage);
+      updatedSelectedImages.insert(0, mobileImage);
     }
 
     setState(() {
@@ -146,7 +146,7 @@ class _EditBlogState extends State<EditBlog> {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Form(
         key: formKey,
         child: Column(
@@ -171,42 +171,44 @@ class _EditBlogState extends State<EditBlog> {
             const SizedBox(height: 15),
 
             TextFormField(
-              maxLines: 8,
+              maxLines: 6,
               controller: blogController,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
-                labelText: "Title",
+                labelText: "Blog",
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter title of your blog';
+                  return 'Blog content must not be empty';
                 }
                 return null;
               },
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(vertical: 10),
-              child: Row(
-                children: [
-                  ...selectedBlogImages,
-                  if (selectedBlogImages.length < imageLimit)
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).highlightColor,
-                        border: BoxBorder.all(width: 1),
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                      ),
-                      child: IconButton(
-                        onPressed: handleAddImage,
-                        icon: Icon(Icons.add),
-                      ),
-                    ),
-                ],
-              ),
+            const Divider(),
+            Row(
+              children: [
+                Text("Upload images"),
+                const Spacer(),
+                IconButton(
+                  onPressed: handleAddImage,
+                  icon: Icon(Icons.add_a_photo, size: 20),
+                ),
+              ],
             ),
+
+            if (selectedBlogImages.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: selectedBlogImages.length,
+                  itemBuilder: (BuildContext context, int index) =>
+                      selectedBlogImages[index],
+                ),
+              ),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -236,9 +238,3 @@ class _EditBlogState extends State<EditBlog> {
     );
   }
 }
-
-/// What should happen when you are updating the blog images?
-/// if there's new image to be added, just append it to the existing images
-///     
-/// what will happen if the user delete an image,
-///     You should have a list 
