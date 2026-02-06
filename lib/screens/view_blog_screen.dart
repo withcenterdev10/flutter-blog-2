@@ -27,11 +27,7 @@ class ViewBlogScreen extends StatefulWidget {
 }
 
 class _ViewBlogScreenState extends State<ViewBlogScreen> {
-  @override
-  void dispose() {
-    context.read<BlogProvider>().resetBlogState();
-    super.dispose();
-  }
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +175,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     }
 
     return Scaffold(
-      // key: scaffoldKey,
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text(
           blogState.title != null
@@ -203,7 +199,15 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
               ]
             : [],
       ),
-      body: content,
+      body: PopScope(
+        child: content,
+        onPopInvokedWithResult: (bool didPop, Object? result) async {
+          if (didPop) {
+            context.read<BlogProvider>().resetBlogState();
+            return;
+          }
+        },
+      ),
     );
   }
 }
