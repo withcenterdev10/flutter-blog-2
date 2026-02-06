@@ -13,10 +13,6 @@ class BlogProvider extends ChangeNotifier {
   BlogModel blog = BlogModel.initial();
   BlogsModel blogs = BlogsModel.initial();
 
-  BlogProvider() {
-    getBlogs(null);
-  }
-
   BlogModel get getBlogState {
     return blog;
   }

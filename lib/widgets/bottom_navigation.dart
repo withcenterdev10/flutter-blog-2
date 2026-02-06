@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/providers/auth_providers.dart';
-import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/screen_provider.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/home_screen.dart';
@@ -18,14 +16,11 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   void handleNavigationClick(BuildContext context, int screenIndex) {
     context.read<ScreenProvider>().setScreen(screenIndex);
-    final authState = context.read<AuthProvider>().getState;
     if (screenIndex == 1) {
       BlogsScreen.go(context);
-      context.read<BlogProvider>().getBlogs(authState.user?.id);
     }
     if (screenIndex == 0) {
       HomeScreen.go(context);
-      context.read<BlogProvider>().getBlogs(null);
     }
   }
 

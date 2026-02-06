@@ -28,6 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  void initState() {
+    context.read<BlogProvider>().getBlogs(null);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
     final authState = context.watch<AuthProvider>().getState;

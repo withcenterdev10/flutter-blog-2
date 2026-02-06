@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
@@ -24,6 +25,14 @@ class BlogsScreen extends StatefulWidget {
 }
 
 class _BlogsScreenState extends State<BlogsScreen> {
+  @override
+  void initState() {
+    final authState = context.read<AuthProvider>().getState;
+    context.read<BlogProvider>().getBlogs(authState.user?.id);
+    context.read<BlogProvider>().getBlogs(null);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
