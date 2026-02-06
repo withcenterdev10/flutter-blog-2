@@ -117,7 +117,7 @@ class _AddBlogState extends State<AddBlog> {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
       child: Form(
         key: formKey,
         child: Column(
@@ -143,43 +143,46 @@ class _AddBlogState extends State<AddBlog> {
             const SizedBox(height: 15),
 
             TextFormField(
-              maxLines: 8,
+              maxLines: 6,
               controller: blogController,
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
-                labelText: "Title",
+                labelText: "Blog",
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter title of your blog';
+                  return 'Blog must not be empty';
                 }
                 return null;
               },
             ),
             const SizedBox(height: 10),
-            Text("${selectedBlogImages.length} / $imageLimit"),
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(vertical: 10),
-              child: Row(
-                children: [
-                  ...selectedBlogImages,
-                  if (selectedBlogImages.length < imageLimit)
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).highlightColor,
-                        border: BoxBorder.all(width: 1),
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                      ),
-                      child: IconButton(
-                        onPressed: handleAddImage,
-                        icon: Icon(Icons.add),
-                      ),
-                    ),
-                ],
-              ),
+
+            const SizedBox(height: 20),
+            const Divider(),
+            Row(
+              children: [
+                Text("Upload images"),
+                const Spacer(),
+                IconButton(
+                  onPressed: handleAddImage,
+                  icon: Icon(Icons.add_a_photo, size: 20),
+                ),
+              ],
             ),
+
+            if (selectedBlogImages.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: selectedBlogImages.length,
+                  itemBuilder: (BuildContext context, int index) =>
+                      selectedBlogImages[index],
+                ),
+              ),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

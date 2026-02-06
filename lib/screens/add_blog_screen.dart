@@ -43,7 +43,7 @@ class _AddBlogScreenState extends State<AddBlogScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Add new blog')),
-      body: Center(child: Column(children: [AddBlog()])),
+      body: AddBlog(),
     );
   }
 }
