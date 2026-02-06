@@ -184,7 +184,9 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
       // key: scaffoldKey,
       appBar: AppBar(
         title: Text(
-          truncateText(toUpperCaseFirstChar(blogState.title!), limit: 20),
+          blogState.title != null
+              ? truncateText(toUpperCaseFirstChar(blogState.title!), limit: 20)
+              : "",
         ),
         actions: isAuthor
             ? [
