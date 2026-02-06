@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
-import 'package:flutter_blog_2/widgets/blog_image.dart';
+import 'package:flutter_blog_2/widgets/blog/blog_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;

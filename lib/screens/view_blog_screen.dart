@@ -4,6 +4,7 @@ import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter_blog_2/widgets/blog/view_blog_content.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -104,73 +105,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     if (blogState.blog != null) {
       content = Padding(
         padding: const EdgeInsets.all(12),
-        child: ListView(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      blogState.user?.imageUrl != null
-                          ? CircleAvatar(
-                              radius: 25,
-                              backgroundImage: NetworkImage(
-                                blogState.user!.imageUrl!,
-                              ),
-                            )
-                          : CircleAvatar(
-                              radius: 25,
-                              child: Text(
-                                blogState.user!.displayName!
-                                    .substring(0, 2)
-                                    .toUpperCase(),
-                              ),
-                            ),
-                      const SizedBox(width: 8),
-                      Text(
-                        toUpperCaseFirstChar(blogState.user!.displayName!),
-                        maxLines: 1,
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(vertical: 6),
-              child: const Divider(),
-            ),
-            Text(
-              toUpperCaseFirstChar(blogState.title!),
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const SizedBox(height: 15),
-            Text(blogState.blog!),
-            const SizedBox(height: 15),
-            if (blogState.imageUrls != null)
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: blogState.imageUrls!.length,
-                itemBuilder: (BuildContext context, int index) => Padding(
-                  padding: EdgeInsetsGeometry.all(4),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                    child: Image.network(
-                      blogState.imageUrls![index],
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            const SizedBox(height: 10),
-          ],
-        ),
+        child: Column(children: [ViewBlogContent(blog: blogState)]),
       );
     }
 
