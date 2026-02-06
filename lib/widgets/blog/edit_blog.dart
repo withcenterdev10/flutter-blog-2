@@ -146,7 +146,7 @@ class _EditBlogState extends State<EditBlog> {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      padding: const EdgeInsets.all(20),
       child: Form(
         key: formKey,
         child: Column(
