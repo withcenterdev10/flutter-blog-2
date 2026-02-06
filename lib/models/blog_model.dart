@@ -1,4 +1,5 @@
 import 'package:flutter_blog_2/models/blog_user_model.dart';
+import 'package:flutter_blog_2/models/comment_model.dart';
 
 class BlogModel {
   BlogModel({
@@ -7,6 +8,7 @@ class BlogModel {
     required this.blog,
     required this.user,
     required this.imageUrls,
+    required this.comments,
     this.loading = false,
   });
   final String? id;
@@ -15,6 +17,7 @@ class BlogModel {
   final BlogUserModel? user;
   final bool loading;
   final List<String>? imageUrls;
+  final List<CommentModel>? comments;
 
   factory BlogModel.initial() {
     return BlogModel(
@@ -22,6 +25,7 @@ class BlogModel {
       title: null,
       blog: null,
       user: null,
+      comments: null,
       loading: false,
       imageUrls: null,
     );
@@ -34,10 +38,12 @@ class BlogModel {
     BlogUserModel? user,
     bool? loading,
     List<String>? imageUrls,
+    List<CommentModel>? comments,
   }) {
     return BlogModel(
       imageUrls: imageUrls ?? this.imageUrls,
       id: id ?? this.id,
+      comments: comments ?? this.comments,
       title: title ?? this.title,
       blog: blog ?? this.blog,
       user: user ?? this.user,

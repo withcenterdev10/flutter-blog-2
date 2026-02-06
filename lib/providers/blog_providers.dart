@@ -5,6 +5,7 @@ import 'package:flutter_blog_2/db.dart';
 import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/models/blog_user_model.dart';
 import 'package:flutter_blog_2/models/blogs_model.dart';
+import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/utils.dart';
 
 const blogLimit = 6;
@@ -217,6 +218,7 @@ class BlogProvider extends ChangeNotifier {
             title: res[i]['title'],
             blog: res[i]['blog'],
             imageUrls: imageUrls,
+            comments: null,
             user: BlogUserModel(
               id: res[i]['user']['id'],
               imageUrl: res[i]['user']['image_url'],
@@ -244,15 +246,44 @@ class BlogProvider extends ChangeNotifier {
       final res = await supabase
           .from(Tables.blogs.name)
           .select(
-            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url)",
+            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url), comments (id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, user: profiles (id, display_name, image_url))",
           )
           .eq("is_deleted", false)
           .eq('id', id)
           .single();
 
-      List<String> imageUrls = [];
+      List<CommentModel> comments = [];
+      List<String> commentImageUrls = [];
+      List<String> blogImageUrls = [];
+
       if (res['image_urls'] != null) {
-        imageUrls = [...res['image_urls']];
+        blogImageUrls = [...res['image_urls']];
+      }
+
+      if (res['comments'] != null) {
+        final myComments = res['comments'];
+
+        // not good, change this later
+        for (var k = 0; k < myComments.length; k++) {
+          final comment = myComments[k];
+
+          if (comment['image_urls'] != null) {
+            commentImageUrls = [...comment['image_urls']];
+          }
+
+          comments.add(
+            CommentModel(
+              id: comment['id'],
+              comment: comment['comment'],
+              user: BlogUserModel(
+                id: comment['user']['id'],
+                imageUrl: comment['user']['image_url'],
+                displayName: comment['user']['display_name'],
+              ),
+              imageUrls: commentImageUrls,
+            ),
+          );
+        }
       }
 
       _setBlogState(
@@ -260,7 +291,8 @@ class BlogProvider extends ChangeNotifier {
           id: res['id'],
           blog: res['blog'],
           title: res['title'],
-          imageUrls: imageUrls,
+          imageUrls: blogImageUrls,
+          comments: comments,
           user: BlogUserModel(
             id: res['user']['id'],
             imageUrl: res['user']['image_url'],
