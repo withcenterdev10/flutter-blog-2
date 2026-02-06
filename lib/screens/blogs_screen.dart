@@ -29,14 +29,13 @@ class _BlogsScreenState extends State<BlogsScreen> {
   void initState() {
     final authState = context.read<AuthProvider>().getState;
     context.read<BlogProvider>().getBlogs(authState.user?.id);
-    context.read<BlogProvider>().getBlogs(null);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
-    final authState = context.read<AuthProvider>().getState;
+    final authState = context.watch<AuthProvider>().getState;
 
     Widget content = Center(
       child: const SizedBox(

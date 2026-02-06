@@ -172,6 +172,7 @@ class BlogProvider extends ChangeNotifier {
   }
 
   Future<void> getBlogs(String? userId) async {
+    _setBlogsState(getBlogsState.copyWith(loading: true));
     try {
       late List<Map<String, dynamic>> res;
       if (userId == null) {
@@ -221,7 +222,7 @@ class BlogProvider extends ChangeNotifier {
     } catch (err) {
       debugPrint(err.toString());
     } finally {
-      _setBlogState(getBlogState.copyWith(loading: false));
+      _setBlogsState(getBlogsState.copyWith(loading: false));
     }
   }
 
