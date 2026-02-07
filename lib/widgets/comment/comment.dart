@@ -27,8 +27,8 @@ class Comment extends StatelessWidget {
         spacing: 8,
         children: [
           Avatar(
-            profileImage: comment.user!.imageUrl,
-            displayName: comment.user!.displayName!,
+            profileImage: comment.user.imageUrl,
+            displayName: comment.user.displayName!,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,11 +37,11 @@ class Comment extends StatelessWidget {
                 style: Theme.of(
                   context,
                 ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
-                toUpperCaseFirstChar(comment.user!.displayName!),
+                toUpperCaseFirstChar(comment.user.displayName!),
               ),
               Text(timeAgo(comment.createdAt!)),
               const SizedBox(height: 6),
-              Text(toUpperCaseFirstChar(comment.comment!)),
+              Text(toUpperCaseFirstChar(comment.comment)),
               const SizedBox(height: 6),
               if (comment.imageUrls != null && comment.imageUrls!.isNotEmpty)
                 CommentImage(imageUrl: comment.imageUrls![0]),
