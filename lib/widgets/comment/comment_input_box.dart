@@ -52,6 +52,12 @@ class _CommentInputState extends State<CommentInput> {
 
   @override
   Widget build(BuildContext context) {
+    final commentState = context.watch<CommentProvider>().getState;
+    final focusNode = FocusNode();
+    if (commentState.id != null) {
+      focusNode.requestFocus();
+    }
+
     return Padding(
       padding: EdgeInsetsGeometry.symmetric(horizontal: 8, vertical: 4),
       child: Form(
@@ -59,6 +65,7 @@ class _CommentInputState extends State<CommentInput> {
         child: SizedBox(
           height: 40,
           child: TextFormField(
+            focusNode: focusNode,
             controller: commentController,
             decoration: InputDecoration(
               labelText: "Comment",
