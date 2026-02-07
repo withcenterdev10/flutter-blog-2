@@ -37,11 +37,6 @@ class _CommentInputState extends State<CommentInput> {
           comment: comment,
           imageUrls: [],
         );
-        if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Comment added")));
-        }
       } catch (error) {
         debugPrint(error.toString());
       } finally {
@@ -58,7 +53,7 @@ class _CommentInputState extends State<CommentInput> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+      padding: EdgeInsetsGeometry.symmetric(horizontal: 8, vertical: 4),
       child: Form(
         key: formKey,
         child: SizedBox(
