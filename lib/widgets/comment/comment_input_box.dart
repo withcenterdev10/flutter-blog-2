@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
@@ -13,14 +15,39 @@ class CommentInput extends StatefulWidget {
   }
 }
 
-class _CommentInputState extends State<CommentInput> {
+class _CommentInputState extends State<CommentInput>
+    with WidgetsBindingObserver {
   final formKey = GlobalKey<FormState>();
   final commentController = TextEditingController();
+  bool _keyboardVisible = false;
+  final focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    focusNode.dispose();
     commentController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset =
+        PlatformDispatcher.instance.views.first.viewInsets.bottom;
+    final isVisible = bottomInset > 0;
+
+    if (_keyboardVisible && !isVisible) {
+      context.read<CommentProvider>().resetState();
+      focusNode.unfocus();
+    }
+
+    _keyboardVisible = isVisible;
   }
 
   void onSubmit(BuildContext context) async {
@@ -53,13 +80,17 @@ class _CommentInputState extends State<CommentInput> {
   @override
   Widget build(BuildContext context) {
     final commentState = context.watch<CommentProvider>().getState;
-    final focusNode = FocusNode();
     if (commentState.id != null) {
       focusNode.requestFocus();
     }
 
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: 8, vertical: 4),
+      padding: EdgeInsetsGeometry.fromLTRB(
+        8,
+        4,
+        8,
+        4 + MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Form(
         key: formKey,
         child: SizedBox(
