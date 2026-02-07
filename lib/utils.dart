@@ -54,3 +54,15 @@ String truncateText(String text, {int limit = 30}) {
 String toUpperCaseFirstChar(String text) {
   return text.substring(0, 1).toUpperCase() + text.substring(1);
 }
+
+String timeAgo(String timeStamp) {
+  final now = DateTime.now();
+  final diff = now.difference(DateTime.parse(timeStamp));
+
+  if (diff.inSeconds < 60) return 'just now';
+  if (diff.inMinutes < 60) return '${diff.inMinutes} minutes ago';
+  if (diff.inHours < 24) return '${diff.inHours} hours ago';
+  if (diff.inDays < 7) return '${diff.inDays} days ago';
+
+  return '${(diff.inDays / 7).floor()} weeks ago';
+}
