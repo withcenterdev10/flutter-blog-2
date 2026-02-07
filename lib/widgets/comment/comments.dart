@@ -34,10 +34,7 @@ class _CommentsState extends State<Comments> {
             return Column(
               spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Comment(comment: comment),
-                Comment(comment: comment),
-              ],
+              children: [Comment(comment: comment)],
             );
           }),
       ],
