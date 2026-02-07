@@ -10,8 +10,13 @@ class CommentProvider extends ChangeNotifier {
     return state;
   }
 
-  void _setState(CommentModel newState) {
+  void setState(CommentModel newState) {
     state = newState;
+    notifyListeners();
+  }
+
+  void resetState() {
+    state = CommentModel.initial();
     notifyListeners();
   }
 
@@ -22,10 +27,10 @@ class CommentProvider extends ChangeNotifier {
     String? comment,
     List<String>? imageUrls,
   }) async {
-    _setState(state.copyWith(loading: true));
+    setState(state.copyWith(loading: true));
     try {
       // final res = await supabase.Comment.getUser();
-      // _setState(state.copyWith(user: res.user));
+      // setState(state.copyWith(user: res.user));
       // final now = DateTime.now().toIso8601String();
       final res = await supabase
           .from(Pages.comments.name)
@@ -41,12 +46,12 @@ class CommentProvider extends ChangeNotifier {
           )
           .single();
 
-      _setState(state.copyWith(loading: false));
+      setState(state.copyWith(loading: false));
     } catch (err) {
       debugPrint(err.toString());
       throw Exception('Create comment failed');
     } finally {
-      _setState(state.copyWith(loading: false));
+      setState(state.copyWith(loading: false));
     }
   }
 }

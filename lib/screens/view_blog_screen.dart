@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
-import 'package:flutter_blog_2/screens/blogs_screen.dart';
-import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
+import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_content.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_screen_action.dart';
@@ -46,6 +44,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
         onPopInvokedWithResult: (bool didPop, Object? result) async {
           if (didPop) {
             context.read<BlogProvider>().resetBlogState();
+            context.read<CommentProvider>().resetState();
             return;
           }
         },
