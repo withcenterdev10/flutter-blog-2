@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
+import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/avatar.dart';
 import 'package:flutter_blog_2/widgets/comment/comment_image.dart';
+import 'package:flutter_blog_2/widgets/comment/comment_reply.dart';
+import 'package:provider/provider.dart';
 
 class Comment extends StatelessWidget {
   const Comment({super.key, required this.comment});
@@ -11,7 +14,13 @@ class Comment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final commentState = context.watch<CommentProvider>().getState;
+    bool isSelectedComment = commentState.id == comment.id;
+
     return Container(
+      color: isSelectedComment
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.10)
+          : null,
       padding: EdgeInsets.all(2),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,6 +45,12 @@ class Comment extends StatelessWidget {
               const SizedBox(height: 6),
               if (comment.imageUrls != null && comment.imageUrls!.isNotEmpty)
                 CommentImage(imageUrl: comment.imageUrls![0]),
+              const SizedBox(height: 6),
+              CommentReply(
+                onClick: () {
+                  context.read<CommentProvider>().setState(comment);
+                },
+              ),
             ],
           ),
         ],
