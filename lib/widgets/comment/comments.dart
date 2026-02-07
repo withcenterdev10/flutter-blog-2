@@ -45,7 +45,14 @@ class _CommentsState extends State<Comments> {
                           "https://placehold.co/600x400",
                         ),
                       ),
-                      Text(toUpperCaseFirstChar(comment.user!.displayName!)),
+                      Column(
+                        children: [
+                          Text(
+                            toUpperCaseFirstChar(comment.user!.displayName!),
+                          ),
+                          //  Text(comment.created_at),
+                        ],
+                      ),
                     ],
                   ),
                 ),

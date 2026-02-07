@@ -274,6 +274,7 @@ class BlogProvider extends ChangeNotifier {
           comments.add(
             CommentModel(
               id: comment['id'],
+              createdAt: comment['created_at'],
               comment: comment['comment'],
               user: BlogUserModel(
                 id: comment['user']['id'],
