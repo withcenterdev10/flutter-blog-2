@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
-import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter_blog_2/widgets/comment/comment.dart';
 import 'package:provider/provider.dart';
 
 class Comments extends StatefulWidget {
@@ -32,31 +32,11 @@ class _CommentsState extends State<Comments> {
         if (blogState.comments != null)
           ...blogState.comments!.map((comment) {
             return Column(
+              spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: EdgeInsets.all(2),
-                  child: Row(
-                    spacing: 6,
-                    children: [
-                      CircleAvatar(
-                        // change this la
-                        backgroundImage: NetworkImage(
-                          "https://placehold.co/600x400",
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            toUpperCaseFirstChar(comment.user!.displayName!),
-                          ),
-                          //  Text(comment.created_at),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Text(comment.comment!),
+                Comment(comment: comment),
+                Comment(comment: comment),
               ],
             );
           }),
