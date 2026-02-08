@@ -25,27 +25,22 @@ class CommentProvider extends ChangeNotifier {
     required String? parentId,
     required String blogId,
     required String userId,
-    required CommentParentType parentType,
     String? comment,
     List<String>? imageUrls,
   }) async {
     setState(state.copyWith(loading: true));
     try {
-      // final res = await supabase.Comment.getUser();
-      // setState(state.copyWith(user: res.user));
-      // final now = DateTime.now().toIso8601String();
       final res = await supabase
           .from(Pages.comments.name)
           .insert({
             'parent_id': parentId,
             'blog_id': blogId,
             'comment': comment,
-            'parent_type': parentType.name,
             'user_id': userId,
             'image_urls': [],
           })
           .select(
-            "id, blog_id, parent_type, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
+            "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
           )
           .single();
 
@@ -59,6 +54,33 @@ class CommentProvider extends ChangeNotifier {
     }
   }
 
+  Future<CommentModel> updateComment({
+    required String commentId,
+    required String userId,
+    String? comment,
+    List<String>? imageUrls,
+  }) async {
+    setState(state.copyWith(loading: true));
+    try {
+      final res = await supabase
+          .from(Pages.comments.name)
+          .update({'comment': comment, 'user_id': userId, 'image_urls': []})
+          .eq("id", commentId)
+          .select(
+            "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
+          )
+          .single();
+
+      setState(state.copyWith(loading: false));
+      return CommentModel.fromJson(res);
+    } catch (err) {
+      debugPrint(err.toString());
+      throw Exception('Update comment failed');
+    } finally {
+      setState(state.copyWith(loading: false));
+    }
+  }
+
   static Future<PostgrestList> getFirstLevelComments({
     required String blogId,
   }) async {
@@ -66,7 +88,7 @@ class CommentProvider extends ChangeNotifier {
       final res = await supabase
           .from(Pages.comments.name)
           .select(
-            "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, parent_type, user: profiles (id, display_name, image_url)",
+            "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, user: profiles (id, display_name, image_url)",
           )
           .eq("blog_id", blogId)
           .isFilter("parent_id", null);
@@ -85,7 +107,7 @@ class CommentProvider extends ChangeNotifier {
       final res = await supabase
           .from(Pages.comments.name)
           .select(
-            "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, parent_type, user: profiles (id, display_name, image_url)",
+            "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, user: profiles (id, display_name, image_url)",
           )
           .inFilter('parent_id', parentIds);
 

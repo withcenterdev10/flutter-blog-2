@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
@@ -19,13 +20,14 @@ class CommentInput extends StatefulWidget {
 class _CommentInputState extends State<CommentInput>
     with WidgetsBindingObserver {
   final formKey = GlobalKey<FormState>();
-  final commentController = TextEditingController();
+  late TextEditingController commentController;
   bool _keyboardVisible = false;
   final focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    commentController = TextEditingController();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -39,6 +41,16 @@ class _CommentInputState extends State<CommentInput>
 
   @override
   void didChangeMetrics() {
+    final commentState = context.read<CommentProvider>().getState;
+
+    if (commentState.id != null) {
+      focusNode.requestFocus();
+    }
+
+    if (commentState.isEditting) {
+      commentController = TextEditingController(text: commentState.comment);
+    }
+
     final bottomInset =
         PlatformDispatcher.instance.views.first.viewInsets.bottom;
     final isVisible = bottomInset > 0;
@@ -46,6 +58,7 @@ class _CommentInputState extends State<CommentInput>
     if (_keyboardVisible && !isVisible) {
       context.read<CommentProvider>().resetState();
       focusNode.unfocus();
+      commentController = TextEditingController();
     }
 
     _keyboardVisible = isVisible;
@@ -59,19 +72,33 @@ class _CommentInputState extends State<CommentInput>
 
       final comment = commentController.text;
       try {
-        final newComment = await context.read<CommentProvider>().createComment(
-          parentId: commentState.id,
-          parentType: commentState.id == null
-              ? CommentParentType.blog
-              : CommentParentType.comment,
-          blogId: blogState.id!,
-          userId: authState.user!.id,
-          comment: comment,
-          imageUrls: [],
-        );
+        CommentModel returnedComment;
+
+        if (commentState.isEditting) {
+          returnedComment = await context.read<CommentProvider>().updateComment(
+            commentId: commentState.id!,
+            userId: authState.user!.id,
+            comment: comment,
+            imageUrls: [],
+          );
+        } else {
+          returnedComment = await context.read<CommentProvider>().createComment(
+            parentId: commentState.id,
+            blogId: blogState.id!,
+            userId: authState.user!.id,
+            comment: comment,
+            imageUrls: [],
+          );
+        }
 
         if (context.mounted) {
-          context.read<BlogProvider>().insertComment(newComment);
+          if (commentState.isEditting) {
+            context.read<BlogProvider>().updateComment(returnedComment);
+            focusNode.requestFocus();
+            context.read<CommentProvider>().resetState();
+          } else {
+            context.read<BlogProvider>().insertComment(returnedComment);
+          }
         }
       } catch (error) {
         debugPrint(error.toString());
@@ -92,8 +119,11 @@ class _CommentInputState extends State<CommentInput>
   @override
   Widget build(BuildContext context) {
     final commentState = context.watch<CommentProvider>().getState;
+
     if (commentState.id != null) {
-      focusNode.requestFocus();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        focusNode.requestFocus();
+      });
     }
 
     return Padding(

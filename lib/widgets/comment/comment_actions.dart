@@ -39,7 +39,9 @@ class CommentActions extends StatelessWidget {
         if (authState.user?.id == comment.user.id)
           IconButton(
             onPressed: () {
-              // context.read<CommentProvider>().setState(comment);
+              context.read<CommentProvider>().setState(
+                comment.copyWith(isEditting: true),
+              );
             },
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,

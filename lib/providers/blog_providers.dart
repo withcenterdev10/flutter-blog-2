@@ -31,21 +31,28 @@ class BlogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  CommentModel findParentCommentAndInsert(
+  void updateComment(CommentModel comment) {
+    List<CommentModel>? updatedComments = blog.comments;
+    if (blog.comments != null && blog.comments!.isNotEmpty) {
+      updatedComments = blog.comments!.map((com) {
+        return findCommentAndUpdate(com, comment);
+      }).toList();
+    }
+
+    _setBlogState(blog.copyWith(comments: updatedComments));
+  }
+
+  CommentModel findCommentAndUpdate(
     CommentModel comment,
-    CommentModel toInsertComment,
+    CommentModel toUpdateComment,
   ) {
-    if (comment.id == toInsertComment.parentId) {
-      return comment.copyWith(
-        comments: comment.comments != null
-            ? [...comment.comments!, toInsertComment]
-            : [toInsertComment],
-      );
+    if (comment.id == toUpdateComment.id) {
+      return toUpdateComment;
     }
 
     if (comment.comments != null && comment.comments!.isNotEmpty) {
       final updatedComments = comment.comments!.map((com) {
-        return findParentCommentAndInsert(com, toInsertComment);
+        return findCommentAndUpdate(com, toUpdateComment);
       }).toList();
 
       return comment.copyWith(comments: [...updatedComments]);
@@ -65,6 +72,29 @@ class BlogProvider extends ChangeNotifier {
         ),
       );
       return;
+    }
+
+    CommentModel findParentCommentAndInsert(
+      CommentModel comment,
+      CommentModel toInsertComment,
+    ) {
+      if (comment.id == toInsertComment.parentId) {
+        return comment.copyWith(
+          comments: comment.comments != null
+              ? [...comment.comments!, toInsertComment]
+              : [toInsertComment],
+        );
+      }
+
+      if (comment.comments != null && comment.comments!.isNotEmpty) {
+        final updatedComments = comment.comments!.map((com) {
+          return findParentCommentAndInsert(com, toInsertComment);
+        }).toList();
+
+        return comment.copyWith(comments: [...updatedComments]);
+      }
+
+      return comment;
     }
 
     // other wise, find the parent comment first, once found insert as one of the child comment

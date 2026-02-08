@@ -16,10 +16,10 @@ class CommentModel {
     required this.createdAt,
     required this.blogId,
     required this.parentId,
-    required this.parentType,
     this.comments,
     this.imageUrls,
     this.loading = false,
+    this.isEditting = false,
   });
   final String? id;
   final String comment;
@@ -28,7 +28,7 @@ class CommentModel {
   final bool loading;
   final String blogId;
   final String? parentId;
-  final CommentParentType parentType;
+  final bool isEditting;
   final List<CommentModel>? comments;
   final List<String>? imageUrls;
 
@@ -37,9 +37,9 @@ class CommentModel {
       id: null,
       createdAt: null,
       comment: "",
-      parentType: CommentParentType.blog,
       user: BlogUserModel(displayName: "", id: "", imageUrl: null),
       loading: false,
+      isEditting: false,
       imageUrls: null,
       blogId: "",
       parentId: "",
@@ -57,8 +57,8 @@ class CommentModel {
     bool? loading,
     List<String>? imageUrls,
     String? parentId,
-    CommentParentType? parentType,
     List<CommentModel>? comments,
+    bool? isEditting,
   }) {
     return CommentModel(
       blogId: blogId ?? this.blogId,
@@ -69,8 +69,8 @@ class CommentModel {
       user: user ?? this.user,
       loading: loading ?? this.loading,
       parentId: parentId ?? this.parentId,
-      parentType: parentType ?? this.parentType,
       comments: comments ?? this.comments,
+      isEditting: isEditting ?? this.isEditting,
     );
   }
 
@@ -81,7 +81,6 @@ class CommentModel {
       'comment': final String comment,
       'blog_id': final String blogId,
       'parent_id': final String? parentId,
-      'parent_type': final String parentType,
       'user': final Map<String, dynamic> user,
       'image_urls': final List<dynamic>? imageUrls,
     }) {
@@ -92,7 +91,6 @@ class CommentModel {
         comments: [], // build the comment tree
         blogId: blogId,
         parentId: parentId,
-        parentType: parseParentType(parentType),
         user: BlogUserModel.formJson(user),
         imageUrls: imageUrls != null
             ? imageUrls.map((url) => url as String).toList()
