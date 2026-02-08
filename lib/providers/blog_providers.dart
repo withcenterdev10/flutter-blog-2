@@ -151,25 +151,7 @@ class BlogProvider extends ChangeNotifier {
           )
           .single();
 
-      List<String> imgUrls = [];
-      if (res['image_urls'] != null) {
-        imgUrls = [...res['image_urls']];
-      }
-
-      final newBlog = _setBlogState(
-        getBlogState.copyWith(
-          id: res['id'],
-          blog: res['blog'],
-          title: res['title'],
-          imageUrls: imgUrls,
-          user: BlogUserModel(
-            id: res['user']['id'],
-            imageUrl: res['user']['image_url'],
-            displayName: res['user']['display_name'],
-          ),
-        ),
-      );
-
+      final newBlog = _setBlogState(BlogModel.fromJson(res));
       final updatedBlogs = blogs.addBlog(newBlog);
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
       return res['id'];
