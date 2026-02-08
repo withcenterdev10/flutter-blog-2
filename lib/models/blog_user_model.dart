@@ -16,7 +16,7 @@ class BlogUserModel {
   factory BlogUserModel.formJson(Map<String, dynamic> json) {
     if (json case {
       'id': final String id,
-      'image_url': final String imageUrl,
+      'image_url': final String? imageUrl,
       'display_name': final String displayName,
     }) {
       return BlogUserModel(

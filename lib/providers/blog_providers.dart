@@ -6,6 +6,7 @@ import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/models/blog_user_model.dart';
 import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
+import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/utils.dart';
 
 const blogLimit = 6;
@@ -242,53 +243,43 @@ class BlogProvider extends ChangeNotifier {
       if (blog.id == id) {
         return;
       }
+      List<CommentModel> comments = [];
+      List<String> blogImageUrls = [];
+      List<String> rootCommentIds = [];
 
       final res = await supabase
           .from(Tables.blogs.name)
           .select(
-            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url), comments (id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, parent_type, user: profiles (id, display_name, image_url))",
+            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url)",
           )
           .eq("is_deleted", false)
           .eq('id', id)
           .single();
 
-      List<CommentModel> comments = [];
-      List<String> commentImageUrls = [];
-      List<String> blogImageUrls = [];
+      final rootComments = await CommentProvider.getFirstLevelComments(
+        blogId: id,
+      );
+
+      if (rootComments.isNotEmpty) {
+        rootCommentIds = rootComments.map((c) {
+          return c['id'] as String;
+        }).toList();
+      }
+
+      if (rootCommentIds.isNotEmpty) {
+        final childrenComments =
+            await CommentProvider.getCommentsUsingParentIds(
+              parentIds: rootCommentIds,
+            );
+
+        comments = CommentProvider.buildRootComments(
+          rootComments,
+          childrenComments,
+        );
+      }
 
       if (res['image_urls'] != null) {
         blogImageUrls = [...res['image_urls']];
-      }
-
-      if (res['comments'] != null) {
-        final myComments = res['comments'];
-
-        for (var k = 0; k < myComments.length; k++) {
-          final comment = myComments[k];
-
-          if (comment['image_urls'] != null) {
-            commentImageUrls = [...comment['image_urls']];
-          }
-
-          comments.add(
-            CommentModel(
-              id: comment['id'],
-              createdAt: comment['created_at'],
-              comment: comment['comment'],
-              blogId: comment['blog_id'],
-              parentId: comment['parent_id'],
-              parentType: comment['parent_type'] == CommentParentType.blog.name
-                  ? CommentParentType.blog
-                  : CommentParentType.comment,
-              user: BlogUserModel(
-                id: comment['user']['id'],
-                imageUrl: comment['user']['image_url'],
-                displayName: comment['user']['display_name'],
-              ),
-              imageUrls: commentImageUrls,
-            ),
-          );
-        }
       }
 
       _setBlogState(

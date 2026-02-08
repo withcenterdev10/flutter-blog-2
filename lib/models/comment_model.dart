@@ -27,7 +27,7 @@ class CommentModel {
   final BlogUserModel user;
   final bool loading;
   final String blogId;
-  final String parentId;
+  final String? parentId;
   final CommentParentType parentType;
   final List<CommentModel>? comments;
   final List<String>? imageUrls;
@@ -43,6 +43,7 @@ class CommentModel {
       imageUrls: null,
       blogId: "",
       parentId: "",
+      comments: null,
     );
   }
 
@@ -57,6 +58,7 @@ class CommentModel {
     List<String>? imageUrls,
     String? parentId,
     CommentParentType? parentType,
+    List<CommentModel>? comments,
   }) {
     return CommentModel(
       blogId: blogId ?? this.blogId,
@@ -68,6 +70,7 @@ class CommentModel {
       loading: loading ?? this.loading,
       parentId: parentId ?? this.parentId,
       parentType: parentType ?? this.parentType,
+      comments: comments ?? this.comments,
     );
   }
 
@@ -77,7 +80,7 @@ class CommentModel {
       'created_at': final String createdAt,
       'comment': final String comment,
       'blog_id': final String blogId,
-      'parent_id': final String parentId,
+      'parent_id': final String? parentId,
       'parent_type': final String parentType,
       'user': final Map<String, dynamic> user,
       'image_urls': final List<dynamic> imageUrls,
@@ -86,7 +89,7 @@ class CommentModel {
         id: id,
         createdAt: createdAt,
         comment: comment,
-        comments: [],
+        comments: [], // build the comment tree
         blogId: blogId,
         parentId: parentId,
         parentType: parseParentType(parentType),

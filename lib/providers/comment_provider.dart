@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blog_2/db.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/utils.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommentProvider extends ChangeNotifier {
   CommentModel state = CommentModel.initial();
@@ -39,11 +40,12 @@ class CommentProvider extends ChangeNotifier {
             'parent_id': parentId,
             'blog_id': blogId,
             'comment': comment,
+            'parent_type': parentType.name,
             'user_id': userId,
             'image_urls': [],
           })
           .select(
-            "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
+            "id, blog_id, parent_type, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
           )
           .single();
 
@@ -54,5 +56,77 @@ class CommentProvider extends ChangeNotifier {
     } finally {
       setState(state.copyWith(loading: false));
     }
+  }
+
+  static Future<PostgrestList> getFirstLevelComments({
+    required String blogId,
+  }) async {
+    try {
+      final res = await supabase
+          .from(Pages.comments.name)
+          .select(
+            "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, parent_type, user: profiles (id, display_name, image_url)",
+          )
+          .eq("blog_id", blogId)
+          .isFilter("parent_id", null);
+
+      return res;
+    } catch (err) {
+      debugPrint(err.toString());
+      throw Exception('Fetching comments failed');
+    }
+  }
+
+  static Future<PostgrestList> getCommentsUsingParentIds({
+    required List<String> parentIds,
+  }) async {
+    try {
+      final res = await supabase
+          .from(Pages.comments.name)
+          .select(
+            "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, parent_type, user: profiles (id, display_name, image_url)",
+          )
+          .inFilter('parent_id', parentIds);
+
+      return res;
+    } catch (err) {
+      debugPrint(err.toString());
+      throw Exception('Fetching comments failed');
+    }
+  }
+
+  static CommentModel buildNestedComments(
+    PostgrestMap comment,
+    PostgrestList comments,
+  ) {
+    // find all the comments that are having the current comment as parent_id
+    final childrenComments = comments
+        .where((c) => c['parent_id'] == comment['id'])
+        .toList();
+
+    // once it each the last child, convert it into comment model before returining
+    if (childrenComments.isEmpty) {
+      return CommentModel.fromJson(comment);
+    }
+
+    // keep converting each nested comments into CommentModel
+    List<CommentModel> convertedChildrenComments = childrenComments.map((c) {
+      return buildNestedComments(c, comments);
+    }).toList();
+
+    // convert the parent comment
+    final updatedComment = CommentModel.fromJson(comment);
+
+    // update the parent comment comments property
+    return updatedComment.copyWith(comments: convertedChildrenComments);
+  }
+
+  static List<CommentModel> buildRootComments(
+    PostgrestList rootComments,
+    PostgrestList childrenComments,
+  ) {
+    return rootComments.map((e) {
+      return buildNestedComments(e, childrenComments);
+    }).toList();
   }
 }
