@@ -4,7 +4,7 @@ import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/avatar.dart';
 import 'package:flutter_blog_2/widgets/comment/comment_image.dart';
-import 'package:flutter_blog_2/widgets/comment/comment_reply.dart';
+import 'package:flutter_blog_2/widgets/comment/comment_actions.dart';
 import 'package:provider/provider.dart';
 
 class Comment extends StatelessWidget {
@@ -46,11 +46,7 @@ class Comment extends StatelessWidget {
                 if (comment.imageUrls != null && comment.imageUrls!.isNotEmpty)
                   CommentImage(imageUrl: comment.imageUrls![0]),
                 const SizedBox(height: 6),
-                CommentReply(
-                  onClick: () {
-                    context.read<CommentProvider>().setState(comment);
-                  },
-                ),
+                CommentActions(comment: comment),
                 const SizedBox(height: 6),
                 if (comment.comments != null && comment.comments!.isNotEmpty)
                   ...comment.comments!.map((c) => Comment(comment: c)),
