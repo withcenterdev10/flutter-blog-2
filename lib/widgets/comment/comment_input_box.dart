@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -5,8 +6,9 @@ import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
-import 'package:flutter_blog_2/utils.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CommentInput extends StatefulWidget {
   const CommentInput({super.key});
@@ -23,6 +25,8 @@ class _CommentInputState extends State<CommentInput>
   late TextEditingController commentController;
   bool _keyboardVisible = false;
   final focusNode = FocusNode();
+  File? selectedImage;
+  String? selectedImagePath;
 
   @override
   void initState() {
@@ -79,7 +83,8 @@ class _CommentInputState extends State<CommentInput>
             commentId: commentState.id!,
             userId: authState.user!.id,
             comment: comment,
-            imageUrls: [],
+            image: selectedImage,
+            existingImageUrls: commentState.imageUrls,
           );
         } else {
           returnedComment = await context.read<CommentProvider>().createComment(
@@ -87,7 +92,7 @@ class _CommentInputState extends State<CommentInput>
             blogId: blogState.id!,
             userId: authState.user!.id,
             comment: comment,
-            imageUrls: [],
+            image: selectedImage,
           );
         }
 
@@ -116,6 +121,28 @@ class _CommentInputState extends State<CommentInput>
     }
   }
 
+  void openImagePicker() async {
+    final ImagePicker picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    // mobile
+    if (!kIsWeb) {
+      if (image != null) {
+        setState(() {
+          selectedImage = File(image.path);
+          selectedImagePath = image.path;
+        });
+      }
+    } else {
+      // web
+      // if (image != null) {
+      //   var f = await image.readAsBytes();
+      //   setState(() {
+      //     webImage = f;
+      //   });
+      // }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final commentState = context.watch<CommentProvider>().getState;
@@ -135,30 +162,53 @@ class _CommentInputState extends State<CommentInput>
       ),
       child: Form(
         key: formKey,
-        child: SizedBox(
-          height: 40,
-          child: TextFormField(
-            focusNode: focusNode,
-            controller: commentController,
-            decoration: InputDecoration(
-              labelText: "Comment",
-              border: OutlineInputBorder(),
-              isDense: true,
-              contentPadding: EdgeInsets.all(8.0),
-              suffixIcon: IconButton(
-                onPressed: () {
-                  onSubmit(context);
-                },
-                icon: Icon(Icons.send),
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: openImagePicker,
+              icon: Icon(Icons.camera_alt),
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 40,
+                child: TextFormField(
+                  focusNode: focusNode,
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    labelText: "Comment",
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                    contentPadding: EdgeInsets.all(8.0),
+                    suffixIconConstraints: BoxConstraints(
+                      minWidth: 24,
+                      minHeight: 24,
+                    ),
+                    suffixIcon: commentState.loading
+                        ? Padding(
+                            padding: EdgeInsets.all(10),
+                            child: SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              onSubmit(context);
+                            },
+                            icon: Icon(Icons.send),
+                          ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Type your comment';
+                    }
+                    return null;
+                  },
+                ),
               ),
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Type your comment';
-              }
-              return null;
-            },
-          ),
+          ],
         ),
       ),
     );

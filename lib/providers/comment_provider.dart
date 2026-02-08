@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blog_2/db.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
@@ -26,10 +28,16 @@ class CommentProvider extends ChangeNotifier {
     required String blogId,
     required String userId,
     String? comment,
-    List<String>? imageUrls,
+    File? image,
   }) async {
     setState(state.copyWith(loading: true));
     try {
+      String? imageUrl; // add later.
+
+      if (image != null) {
+        imageUrl = await uploadImageToCloudinary(image);
+      }
+
       final res = await supabase
           .from(Pages.comments.name)
           .insert({
@@ -37,7 +45,7 @@ class CommentProvider extends ChangeNotifier {
             'blog_id': blogId,
             'comment': comment,
             'user_id': userId,
-            'image_urls': [],
+            'image_urls': [?imageUrl],
           })
           .select(
             "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
@@ -58,13 +66,26 @@ class CommentProvider extends ChangeNotifier {
     required String commentId,
     required String userId,
     String? comment,
-    List<String>? imageUrls,
+    File? image,
+    List<String>? existingImageUrls,
   }) async {
     setState(state.copyWith(loading: true));
     try {
+      String? imageUrl; // add later.
+
+      if (image != null) {
+        imageUrl = await uploadImageToCloudinary(image);
+      }
+
+      final toUpdateImageUrls = [...?existingImageUrls, ?imageUrl];
+
       final res = await supabase
           .from(Pages.comments.name)
-          .update({'comment': comment, 'user_id': userId, 'image_urls': []})
+          .update({
+            'comment': comment,
+            'user_id': userId,
+            'image_urls': toUpdateImageUrls,
+          })
           .eq("id", commentId)
           .select(
             "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
