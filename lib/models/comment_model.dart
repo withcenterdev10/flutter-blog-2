@@ -1,6 +1,13 @@
 import 'package:flutter_blog_2/models/blog_user_model.dart';
 import 'package:flutter_blog_2/utils.dart';
 
+CommentParentType parseParentType(String? value) {
+  if (value == CommentParentType.blog.name) {
+    return CommentParentType.blog;
+  }
+  return CommentParentType.comment;
+}
+
 class CommentModel {
   CommentModel({
     required this.id,
@@ -62,5 +69,34 @@ class CommentModel {
       parentId: parentId ?? this.parentId,
       parentType: parentType ?? this.parentType,
     );
+  }
+
+  factory CommentModel.fromJson(Map<String, dynamic> json) {
+    if (json case {
+      'id': final String id,
+      'created_at': final String createdAt,
+      'comment': final String comment,
+      'blog_id': final String blogId,
+      'parent_id': final String parentId,
+      'parent_type': final String parentType,
+      'user': final Map<String, dynamic> user,
+      'image_urls': final List<dynamic> imageUrls,
+    }) {
+      return CommentModel(
+        id: id,
+        createdAt: createdAt,
+        comment: comment,
+        comments: [],
+        blogId: blogId,
+        parentId: parentId,
+        parentType: parseParentType(parentType),
+        user: BlogUserModel.formJson(user),
+        imageUrls: imageUrls.map((url) => url as String).toList(),
+      );
+    } else {
+      throw const FormatException(
+        'Unexpected JSON format (CommentModel.fromJson)',
+      );
+    }
   }
 }
