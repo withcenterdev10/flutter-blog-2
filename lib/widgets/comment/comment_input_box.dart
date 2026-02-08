@@ -59,8 +59,8 @@ class _CommentInputState extends State<CommentInput>
 
       final comment = commentController.text;
       try {
-        await context.read<CommentProvider>().createComment(
-          parentId: commentState.id == null ? blogState.id! : commentState.id!,
+        final newComment = await context.read<CommentProvider>().createComment(
+          parentId: commentState.id,
           parentType: commentState.id == null
               ? CommentParentType.blog
               : CommentParentType.comment,
@@ -69,14 +69,21 @@ class _CommentInputState extends State<CommentInput>
           comment: comment,
           imageUrls: [],
         );
+
+        if (context.mounted) {
+          context.read<BlogProvider>().insertComment(newComment);
+        }
       } catch (error) {
         debugPrint(error.toString());
-      } finally {
-        formKey.currentState!.reset();
         if (context.mounted) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text("Comment failed")));
+        }
+      } finally {
+        formKey.currentState!.reset();
+        if (context.mounted) {
+          context.read<CommentProvider>().resetState();
         }
       }
     }

@@ -31,6 +31,53 @@ class BlogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  CommentModel findParentCommentAndInsert(
+    CommentModel comment,
+    CommentModel toInsertComment,
+  ) {
+    if (comment.id == toInsertComment.parentId) {
+      return comment.copyWith(
+        comments: comment.comments != null
+            ? [...comment.comments!, toInsertComment]
+            : [toInsertComment],
+      );
+    }
+
+    if (comment.comments != null && comment.comments!.isNotEmpty) {
+      final updatedComments = comment.comments!.map((com) {
+        return findParentCommentAndInsert(com, toInsertComment);
+      }).toList();
+
+      return comment.copyWith(comments: [...updatedComments]);
+    }
+
+    return comment;
+  }
+
+  void insertComment(CommentModel comment) {
+    // insert the comment as root comment if theres no parent id
+    if (comment.parentId == null) {
+      _setBlogState(
+        blog.copyWith(
+          comments: blog.comments != null
+              ? [...blog.comments!, comment]
+              : [comment],
+        ),
+      );
+      return;
+    }
+
+    // other wise, find the parent comment first, once found insert as one of the child comment
+    List<CommentModel>? updatedComments = blog.comments;
+    if (blog.comments != null && blog.comments!.isNotEmpty) {
+      updatedComments = blog.comments!.map((com) {
+        return findParentCommentAndInsert(com, comment);
+      }).toList();
+    }
+
+    _setBlogState(blog.copyWith(comments: updatedComments));
+  }
+
   void resetBlogState() {
     _setBlogState(BlogModel.initial());
   }

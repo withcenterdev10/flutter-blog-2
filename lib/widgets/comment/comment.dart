@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 
 class Comment extends StatelessWidget {
   const Comment({super.key, required this.comment});
-
   final CommentModel comment;
 
   @override
@@ -30,28 +29,33 @@ class Comment extends StatelessWidget {
             profileImage: comment.user.imageUrl,
             displayName: comment.user.displayName!,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                style: Theme.of(
-                  context,
-                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
-                toUpperCaseFirstChar(comment.user.displayName!),
-              ),
-              Text(timeAgo(comment.createdAt!)),
-              const SizedBox(height: 6),
-              Text(toUpperCaseFirstChar(comment.comment)),
-              const SizedBox(height: 6),
-              if (comment.imageUrls != null && comment.imageUrls!.isNotEmpty)
-                CommentImage(imageUrl: comment.imageUrls![0]),
-              const SizedBox(height: 6),
-              CommentReply(
-                onClick: () {
-                  context.read<CommentProvider>().setState(comment);
-                },
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+                  toUpperCaseFirstChar(comment.user.displayName!),
+                ),
+                Text(timeAgo(comment.createdAt!)),
+                const SizedBox(height: 6),
+                Text(toUpperCaseFirstChar(comment.comment)),
+                const SizedBox(height: 6),
+                if (comment.imageUrls != null && comment.imageUrls!.isNotEmpty)
+                  CommentImage(imageUrl: comment.imageUrls![0]),
+                const SizedBox(height: 6),
+                CommentReply(
+                  onClick: () {
+                    context.read<CommentProvider>().setState(comment);
+                  },
+                ),
+                const SizedBox(height: 6),
+                if (comment.comments != null && comment.comments!.isNotEmpty)
+                  ...comment.comments!.map((c) => Comment(comment: c)),
+              ],
+            ),
           ),
         ],
       ),

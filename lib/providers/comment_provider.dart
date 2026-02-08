@@ -21,8 +21,8 @@ class CommentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createComment({
-    required String parentId,
+  Future<CommentModel> createComment({
+    required String? parentId,
     required String blogId,
     required String userId,
     required CommentParentType parentType,
@@ -50,6 +50,7 @@ class CommentProvider extends ChangeNotifier {
           .single();
 
       setState(state.copyWith(loading: false));
+      return CommentModel.fromJson(res);
     } catch (err) {
       debugPrint(err.toString());
       throw Exception('Create comment failed');
