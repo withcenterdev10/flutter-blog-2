@@ -7,6 +7,7 @@ import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter_blog_2/widgets/comment/comment.dart';
 
 const blogLimit = 6;
 
@@ -29,6 +30,37 @@ class BlogProvider extends ChangeNotifier {
   void _setBlogState(BlogModel newState) {
     blog = newState;
     notifyListeners();
+  }
+
+  void deleteComment(CommentModel comment) {
+    if (blog.comments != null && blog.comments!.isNotEmpty) {
+      final updatedComments = blog.comments!
+          .map((com) => findCommentAndDelete(com, comment))
+          .where((com) => com != null)
+          .cast<CommentModel>()
+          .toList();
+      _setBlogState(blog.copyWith(comments: [...updatedComments]));
+    }
+  }
+
+  CommentModel? findCommentAndDelete(
+    CommentModel comment,
+    CommentModel toDeleteComment,
+  ) {
+    if (comment.id == toDeleteComment.id) {
+      return null;
+    }
+
+    if (comment.comments != null && comment.comments!.isNotEmpty) {
+      final updatedComments = comment.comments!.where((com) {
+        final returnVal = findCommentAndDelete(com, toDeleteComment);
+        return returnVal != null;
+      }).toList();
+
+      return comment.copyWith(comments: [...updatedComments]);
+    }
+
+    return comment;
   }
 
   void updateComment(CommentModel comment) {
@@ -74,29 +106,6 @@ class BlogProvider extends ChangeNotifier {
       return;
     }
 
-    CommentModel findParentCommentAndInsert(
-      CommentModel comment,
-      CommentModel toInsertComment,
-    ) {
-      if (comment.id == toInsertComment.parentId) {
-        return comment.copyWith(
-          comments: comment.comments != null
-              ? [...comment.comments!, toInsertComment]
-              : [toInsertComment],
-        );
-      }
-
-      if (comment.comments != null && comment.comments!.isNotEmpty) {
-        final updatedComments = comment.comments!.map((com) {
-          return findParentCommentAndInsert(com, toInsertComment);
-        }).toList();
-
-        return comment.copyWith(comments: [...updatedComments]);
-      }
-
-      return comment;
-    }
-
     // other wise, find the parent comment first, once found insert as one of the child comment
     List<CommentModel>? updatedComments = blog.comments;
     if (blog.comments != null && blog.comments!.isNotEmpty) {
@@ -106,6 +115,29 @@ class BlogProvider extends ChangeNotifier {
     }
 
     _setBlogState(blog.copyWith(comments: updatedComments));
+  }
+
+  CommentModel findParentCommentAndInsert(
+    CommentModel comment,
+    CommentModel toInsertComment,
+  ) {
+    if (comment.id == toInsertComment.parentId) {
+      return comment.copyWith(
+        comments: comment.comments != null
+            ? [...comment.comments!, toInsertComment]
+            : [toInsertComment],
+      );
+    }
+
+    if (comment.comments != null && comment.comments!.isNotEmpty) {
+      final updatedComments = comment.comments!.map((com) {
+        return findParentCommentAndInsert(com, toInsertComment);
+      }).toList();
+
+      return comment.copyWith(comments: [...updatedComments]);
+    }
+
+    return comment;
   }
 
   void resetBlogState() {

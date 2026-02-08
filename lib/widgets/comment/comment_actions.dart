@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/models/auth_model.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
+import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -8,10 +10,87 @@ class CommentActions extends StatelessWidget {
   const CommentActions({super.key, required this.comment});
 
   final CommentModel comment;
+  void handleDelete(
+    BuildContext context,
+    CommentModel commentState,
+    AuthModel authState,
+  ) async {
+    final isAuthor = authState.user?.id == commentState.user.id;
+    if (isAuthor) {
+      String message = "";
+      try {
+        final deletedComment = await context
+            .read<CommentProvider>()
+            .deleteComment(
+              commentId: commentState.id!,
+              userId: authState.user!.id,
+            );
+        message = "Comment deleted";
+
+        if (context.mounted) {
+          context.read<BlogProvider>().deleteComment(deletedComment);
+        }
+      } catch (error) {
+        message = "Delete Comment failed";
+        debugPrint(error.toString());
+      } finally {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(message)));
+        }
+      }
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Action not allowed")));
+      }
+    }
+  }
+
+  Future<void> showDeleteDialog(
+    BuildContext context,
+    CommentModel commentState,
+    AuthModel authState,
+  ) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete comment'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to delete this comment?'),
+                SizedBox(height: 10),
+                Text(comment.comment),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Approve'),
+              onPressed: () {
+                handleDelete(context, commentState, authState);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   build(BuildContext context) {
-    final commentState = context.watch<CommentProvider>().getState;
     final authState = context.watch<AuthProvider>().getState;
 
     return Row(
@@ -56,7 +135,10 @@ class CommentActions extends StatelessWidget {
         if (authState.user?.id == comment.user.id)
           IconButton(
             onPressed: () {
-              // context.read<CommentProvider>().setState(comment);
+              context.read<CommentProvider>().setState(
+                comment.copyWith(isDeleting: true),
+              );
+              showDeleteDialog(context, comment, authState);
             },
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -71,16 +153,3 @@ class CommentActions extends StatelessWidget {
     );
   }
 }
-
-    // Row(
-    //               mainAxisAlignment: MainAxisAlignment.start,
-    //               children: [
-    //                 CommentActions(
-    //                   onClick: () {
-    //                     context.read<CommentProvider>().setState(comment);
-    //                   },
-    //                 ),
-    //                 const 
-               
-    //               ],
-    //             ),

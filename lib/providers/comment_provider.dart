@@ -81,6 +81,28 @@ class CommentProvider extends ChangeNotifier {
     }
   }
 
+  Future<CommentModel> deleteComment({
+    required String commentId,
+    required String userId,
+  }) async {
+    setState(state.copyWith(loading: true));
+    try {
+      final now = DateTime.now().toIso8601String();
+      await supabase
+          .from(Pages.comments.name)
+          .update({'user_id': userId, 'is_deleted': true, 'deleted_at': now})
+          .eq("id", commentId);
+
+      setState(state.copyWith(loading: false));
+      return state;
+    } catch (err) {
+      debugPrint(err.toString());
+      throw Exception('Delete comment failed');
+    } finally {
+      setState(state.copyWith(loading: false));
+    }
+  }
+
   static Future<PostgrestList> getFirstLevelComments({
     required String blogId,
   }) async {
@@ -91,6 +113,7 @@ class CommentProvider extends ChangeNotifier {
             "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, user: profiles (id, display_name, image_url)",
           )
           .eq("blog_id", blogId)
+          .eq('is_deleted', false)
           .isFilter("parent_id", null);
 
       return res;
@@ -109,6 +132,7 @@ class CommentProvider extends ChangeNotifier {
           .select(
             "id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, user: profiles (id, display_name, image_url)",
           )
+          .eq('is_deleted', false)
           .inFilter('parent_id', parentIds);
 
       return res;

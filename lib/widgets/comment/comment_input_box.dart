@@ -120,7 +120,7 @@ class _CommentInputState extends State<CommentInput>
   Widget build(BuildContext context) {
     final commentState = context.watch<CommentProvider>().getState;
 
-    if (commentState.id != null) {
+    if (commentState.id != null && !commentState.isDeleting) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         focusNode.requestFocus();
       });

@@ -20,6 +20,7 @@ class CommentModel {
     this.imageUrls,
     this.loading = false,
     this.isEditting = false,
+    this.isDeleting = false,
   });
   final String? id;
   final String comment;
@@ -29,6 +30,7 @@ class CommentModel {
   final String blogId;
   final String? parentId;
   final bool isEditting;
+  final bool isDeleting;
   final List<CommentModel>? comments;
   final List<String>? imageUrls;
 
@@ -40,6 +42,7 @@ class CommentModel {
       user: BlogUserModel(displayName: "", id: "", imageUrl: null),
       loading: false,
       isEditting: false,
+      isDeleting: false,
       imageUrls: null,
       blogId: "",
       parentId: "",
@@ -59,6 +62,7 @@ class CommentModel {
     String? parentId,
     List<CommentModel>? comments,
     bool? isEditting,
+    bool? isDeleting,
   }) {
     return CommentModel(
       blogId: blogId ?? this.blogId,
@@ -71,6 +75,7 @@ class CommentModel {
       parentId: parentId ?? this.parentId,
       comments: comments ?? this.comments,
       isEditting: isEditting ?? this.isEditting,
+      isDeleting: isDeleting ?? this.isDeleting,
     );
   }
 
