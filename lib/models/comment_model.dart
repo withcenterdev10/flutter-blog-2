@@ -83,7 +83,7 @@ class CommentModel {
       'parent_id': final String? parentId,
       'parent_type': final String parentType,
       'user': final Map<String, dynamic> user,
-      'image_urls': final List<dynamic> imageUrls,
+      'image_urls': final List<dynamic>? imageUrls,
     }) {
       return CommentModel(
         id: id,
@@ -94,7 +94,9 @@ class CommentModel {
         parentId: parentId,
         parentType: parseParentType(parentType),
         user: BlogUserModel.formJson(user),
-        imageUrls: imageUrls.map((url) => url as String).toList(),
+        imageUrls: imageUrls != null
+            ? imageUrls.map((url) => url as String).toList()
+            : [],
       );
     } else {
       throw const FormatException(

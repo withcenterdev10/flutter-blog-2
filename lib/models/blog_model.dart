@@ -36,14 +36,16 @@ class BlogModel {
       'id': final String id,
       'blog': final String blog,
       'title': final String title,
-      'image_urls': final List<dynamic> imageUrls,
+      'image_urls': final List<dynamic>? imageUrls,
       'user': final Map<String, dynamic> user,
     }) {
       return BlogModel(
         id: id,
         blog: blog,
         title: title,
-        imageUrls: imageUrls.map((img) => img as String).toList(),
+        imageUrls: imageUrls != null
+            ? imageUrls.map((img) => img as String).toList()
+            : [],
         comments: [],
         user: BlogUserModel.formJson(user),
       );
