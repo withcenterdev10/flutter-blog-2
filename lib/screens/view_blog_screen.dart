@@ -51,7 +51,13 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
 
         child: blogState.blog != null
             ? ViewBlogContent(blog: blogState)
-            : Center(child: CircularProgressIndicator(strokeWidth: 2)),
+            : Center(
+                child: const SizedBox(
+                  width: 15,
+                  height: 15,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
       ),
       bottomNavigationBar: SafeArea(child: const CommentInput()),
     );
