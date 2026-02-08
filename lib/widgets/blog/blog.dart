@@ -3,6 +3,7 @@ import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter_blog_2/widgets/avatar.dart';
 import 'package:provider/provider.dart';
 
 class Blog extends StatelessWidget {
@@ -37,19 +38,10 @@ class Blog extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  blog.user?.imageUrl != null
-                      ? CircleAvatar(
-                          radius: 25,
-                          backgroundImage: NetworkImage(blog.user!.imageUrl!),
-                        )
-                      : CircleAvatar(
-                          radius: 25,
-                          child: Text(
-                            blog.user!.displayName!
-                                .substring(0, 2)
-                                .toUpperCase(),
-                          ),
-                        ),
+                  Avatar(
+                    profileImage: blog.user?.imageUrl,
+                    displayName: blog.user!.displayName!,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Column(
