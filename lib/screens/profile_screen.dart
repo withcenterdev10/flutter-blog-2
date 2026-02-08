@@ -154,11 +154,9 @@ class _ProfileState extends State<Profile> {
         children: [
           CircleAvatar(
             radius: 40,
-            child: ClipOval(
-              child: (kIsWeb)
-                  ? Image.memory(webImage!, fit: BoxFit.cover)
-                  : Image.file(selectedImage!, fit: BoxFit.cover),
-            ),
+            backgroundImage: kIsWeb
+                ? MemoryImage(webImage!)
+                : FileImage(selectedImage!),
           ),
           Positioned(
             top: 0,
