@@ -15,6 +15,18 @@ class CommentActions extends StatelessWidget {
     CommentModel commentState,
     AuthModel authState,
   ) async {
+    if (context.mounted) {
+      if (commentState.comments != null && commentState.comments!.isNotEmpty) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Cannot delete comment having nested comment"),
+          ),
+        );
+        return;
+      }
+    }
+
     final isAuthor = authState.user?.id == commentState.user.id;
     if (isAuthor) {
       String message = "";
@@ -26,7 +38,6 @@ class CommentActions extends StatelessWidget {
               userId: authState.user!.id,
             );
         message = "Comment deleted";
-
         if (context.mounted) {
           context.read<BlogProvider>().deleteComment(deletedComment);
         }
@@ -42,11 +53,9 @@ class CommentActions extends StatelessWidget {
         }
       }
     } else {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Action not allowed")));
-      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Action not allowed")));
     }
   }
 
