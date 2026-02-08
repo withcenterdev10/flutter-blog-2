@@ -244,7 +244,6 @@ class BlogProvider extends ChangeNotifier {
         return;
       }
       List<CommentModel> comments = [];
-      List<String> blogImageUrls = [];
       List<String> rootCommentIds = [];
 
       final res = await supabase
@@ -278,24 +277,7 @@ class BlogProvider extends ChangeNotifier {
         );
       }
 
-      if (res['image_urls'] != null) {
-        blogImageUrls = [...res['image_urls']];
-      }
-
-      _setBlogState(
-        getBlogState.copyWith(
-          id: res['id'],
-          blog: res['blog'],
-          title: res['title'],
-          imageUrls: blogImageUrls,
-          comments: comments,
-          user: BlogUserModel(
-            id: res['user']['id'],
-            imageUrl: res['user']['image_url'],
-            displayName: res['user']['display_name'],
-          ),
-        ),
-      );
+      _setBlogState(BlogModel.fromJson(res).copyWith(comments: comments));
     } catch (err) {
       debugPrint(err.toString());
     } finally {

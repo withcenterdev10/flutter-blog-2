@@ -31,6 +31,29 @@ class BlogModel {
     );
   }
 
+  factory BlogModel.fromJson(Map<String, dynamic> json) {
+    if (json case {
+      'id': final String id,
+      'blog': final String blog,
+      'title': final String title,
+      'image_urls': final List<dynamic> imageUrls,
+      'user': final Map<String, dynamic> user,
+    }) {
+      return BlogModel(
+        id: id,
+        blog: blog,
+        title: title,
+        imageUrls: imageUrls.map((img) => img as String).toList(),
+        comments: [],
+        user: BlogUserModel.formJson(user),
+      );
+    } else {
+      throw const FormatException(
+        'Unexpected JSON format (BlogModel.fromJson)',
+      );
+    }
+  }
+
   BlogModel copyWith({
     String? id,
     String? title,
