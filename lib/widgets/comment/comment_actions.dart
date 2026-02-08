@@ -95,25 +95,26 @@ class CommentActions extends StatelessWidget {
 
     return Row(
       children: [
-        TextButton.icon(
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            visualDensity: VisualDensity.compact,
-            foregroundColor: Theme.of(context).colorScheme.primary,
+        if (authState.user != null)
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.compact,
+              foregroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            onPressed: () {
+              context.read<CommentProvider>().setState(comment);
+            },
+            icon: Icon(Icons.reply, size: 18),
+            label: Text(
+              "Reply",
+              style: Theme.of(
+                context,
+              ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
           ),
-          onPressed: () {
-            context.read<CommentProvider>().setState(comment);
-          },
-          icon: Icon(Icons.reply, size: 18),
-          label: Text(
-            "Reply",
-            style: Theme.of(
-              context,
-            ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ),
         const SizedBox(width: 8),
         if (authState.user?.id == comment.user.id)
           IconButton(
