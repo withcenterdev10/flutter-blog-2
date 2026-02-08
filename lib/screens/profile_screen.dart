@@ -167,6 +167,9 @@ class _ProfileState extends State<Profile> {
               decoration: BoxDecoration(
                 color: const Color.fromARGB(255, 255, 255, 255),
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                ),
               ),
               child: IconButton(
                 padding: EdgeInsets.all(2),
