@@ -99,7 +99,6 @@ class _CommentInputState extends State<CommentInput>
         if (context.mounted) {
           if (commentState.isEditting) {
             context.read<BlogProvider>().updateComment(returnedComment);
-            focusNode.requestFocus();
             context.read<CommentProvider>().resetState();
           } else {
             context.read<BlogProvider>().insertComment(returnedComment);
@@ -114,6 +113,7 @@ class _CommentInputState extends State<CommentInput>
         }
       } finally {
         formKey.currentState!.reset();
+        focusNode.unfocus();
         if (context.mounted) {
           context.read<CommentProvider>().resetState();
         }
