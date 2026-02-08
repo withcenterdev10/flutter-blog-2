@@ -207,28 +207,9 @@ class BlogProvider extends ChangeNotifier {
       }
 
       List<BlogModel> myBlogs = [];
-
       for (var i = 0; i < res.length; i++) {
-        List<String> imageUrls = [];
-        if (res[i]['image_urls'] != null) {
-          imageUrls = [...res[i]['image_urls']];
-        }
-        myBlogs.add(
-          BlogModel(
-            id: res[i]['id'],
-            title: res[i]['title'],
-            blog: res[i]['blog'],
-            imageUrls: imageUrls,
-            comments: null,
-            user: BlogUserModel(
-              id: res[i]['user']['id'],
-              imageUrl: res[i]['user']['image_url'],
-              displayName: res[i]['user']['display_name'],
-            ),
-          ),
-        );
+        myBlogs.add(BlogModel.fromJson(res[i]));
       }
-
       _setBlogsState(blogs.copyWith(blogs: myBlogs));
     } catch (err) {
       debugPrint(err.toString());
