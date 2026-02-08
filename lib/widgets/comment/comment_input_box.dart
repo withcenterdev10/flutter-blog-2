@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
+import 'package:flutter_blog_2/utils.dart';
 import 'package:provider/provider.dart';
 
 class CommentInput extends StatefulWidget {
@@ -54,11 +55,15 @@ class _CommentInputState extends State<CommentInput>
     if (formKey.currentState!.validate()) {
       final authState = context.read<AuthProvider>().getState;
       final blogState = context.read<BlogProvider>().getBlogState;
+      final commentState = context.read<CommentProvider>().getState;
 
       final comment = commentController.text;
       try {
         await context.read<CommentProvider>().createComment(
-          parentId: blogState.id!,
+          parentId: commentState.id == null ? blogState.id! : commentState.id!,
+          parentType: commentState.id == null
+              ? CommentParentType.blog
+              : CommentParentType.comment,
           blogId: blogState.id!,
           userId: authState.user!.id,
           comment: comment,

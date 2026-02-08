@@ -9,6 +9,8 @@ enum Pages { profile, blogs, comments }
 
 enum Tables { blogs }
 
+enum CommentParentType { blog, comment }
+
 const int imageLimit = 3;
 
 Future<String> uploadImageToCloudinary(File? image) async {

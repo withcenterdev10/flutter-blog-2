@@ -24,6 +24,7 @@ class CommentProvider extends ChangeNotifier {
     required String parentId,
     required String blogId,
     required String userId,
+    required CommentParentType parentType,
     String? comment,
     List<String>? imageUrls,
   }) async {

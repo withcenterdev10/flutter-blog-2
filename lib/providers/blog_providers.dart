@@ -246,7 +246,7 @@ class BlogProvider extends ChangeNotifier {
       final res = await supabase
           .from(Tables.blogs.name)
           .select(
-            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url), comments (id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, user: profiles (id, display_name, image_url))",
+            "id, title, created_at, blog, image_urls, user: profiles (id, display_name, image_url), comments (id, blog_id, user_id, comment, image_urls, created_at, updated_at, parent_id, parent_type, user: profiles (id, display_name, image_url))",
           )
           .eq("is_deleted", false)
           .eq('id', id)
@@ -263,7 +263,6 @@ class BlogProvider extends ChangeNotifier {
       if (res['comments'] != null) {
         final myComments = res['comments'];
 
-        // not good, change this later
         for (var k = 0; k < myComments.length; k++) {
           final comment = myComments[k];
 
@@ -276,6 +275,11 @@ class BlogProvider extends ChangeNotifier {
               id: comment['id'],
               createdAt: comment['created_at'],
               comment: comment['comment'],
+              blogId: comment['blog_id'],
+              parentId: comment['parent_id'],
+              parentType: comment['parent_type'] == CommentParentType.blog.name
+                  ? CommentParentType.blog
+                  : CommentParentType.comment,
               user: BlogUserModel(
                 id: comment['user']['id'],
                 imageUrl: comment['user']['image_url'],

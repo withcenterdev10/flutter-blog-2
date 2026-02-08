@@ -1,4 +1,5 @@
 import 'package:flutter_blog_2/models/blog_user_model.dart';
+import 'package:flutter_blog_2/utils.dart';
 
 class CommentModel {
   CommentModel({
@@ -8,6 +9,7 @@ class CommentModel {
     required this.createdAt,
     required this.blogId,
     required this.parentId,
+    required this.parentType,
     this.comments,
     this.imageUrls,
     this.loading = false,
@@ -19,6 +21,7 @@ class CommentModel {
   final bool loading;
   final String blogId;
   final String parentId;
+  final CommentParentType parentType;
   final List<CommentModel>? comments;
   final List<String>? imageUrls;
 
@@ -27,6 +30,7 @@ class CommentModel {
       id: null,
       createdAt: null,
       comment: "",
+      parentType: CommentParentType.blog,
       user: BlogUserModel(displayName: "", id: "", imageUrl: null),
       loading: false,
       imageUrls: null,
@@ -45,6 +49,7 @@ class CommentModel {
     bool? loading,
     List<String>? imageUrls,
     String? parentId,
+    CommentParentType? parentType,
   }) {
     return CommentModel(
       blogId: blogId ?? this.blogId,
@@ -55,6 +60,7 @@ class CommentModel {
       user: user ?? this.user,
       loading: loading ?? this.loading,
       parentId: parentId ?? this.parentId,
+      parentType: parentType ?? this.parentType,
     );
   }
 }
