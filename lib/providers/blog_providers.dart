@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/db.dart';
 import 'package:flutter_blog_2/models/blog_model.dart';
-import 'package:flutter_blog_2/models/blog_user_model.dart';
 import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
@@ -27,10 +26,9 @@ class BlogProvider extends ChangeNotifier {
     return blogs;
   }
 
-  BlogModel _setBlogState(BlogModel newState) {
+  void _setBlogState(BlogModel newState) {
     blog = newState;
     notifyListeners();
-    return blog;
   }
 
   void resetBlogState() {
@@ -61,7 +59,7 @@ class BlogProvider extends ChangeNotifier {
       }
 
       final images = [...?networkImages, ...imageUrls];
-
+      final now = DateTime.now().toIso8601String();
       final res = await supabase
           .from(Tables.blogs.name)
           .update({
@@ -69,6 +67,7 @@ class BlogProvider extends ChangeNotifier {
             'blog': blogContent,
             'user_id': userId,
             'image_urls': images,
+            'updated_at': now,
           })
           .eq("id", id)
           .select(
@@ -76,26 +75,9 @@ class BlogProvider extends ChangeNotifier {
           )
           .single();
 
-      List<String> imgUrls = [];
-      if (res['image_urls'] != null) {
-        imgUrls = [...res['image_urls']];
-      }
-
-      final newBlog = _setBlogState(
-        getBlogState.copyWith(
-          id: res['id'],
-          blog: res['blog'],
-          title: res['title'],
-          imageUrls: imgUrls,
-          user: BlogUserModel(
-            id: res['user']['id'],
-            imageUrl: res['user']['image_url'],
-            displayName: res['user']['display_name'],
-          ),
-        ),
-      );
-
-      final updatedBlogs = blogs.updateBlog(newBlog);
+      final updatedBlog = BlogModel.fromJson(res);
+      _setBlogState(updatedBlog);
+      final updatedBlogs = blogs.updateBlog(updatedBlog);
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
     } catch (err) {
       debugPrint(err.toString());
@@ -151,7 +133,8 @@ class BlogProvider extends ChangeNotifier {
           )
           .single();
 
-      final newBlog = _setBlogState(BlogModel.fromJson(res));
+      final newBlog = BlogModel.fromJson(res);
+      _setBlogState(newBlog);
       final updatedBlogs = blogs.addBlog(newBlog);
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
       return res['id'];
