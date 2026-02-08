@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/utils.dart';
@@ -33,6 +34,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
   @override
   Widget build(BuildContext context) {
     final blogState = context.watch<BlogProvider>().getBlogState;
+    final authState = context.watch<AuthProvider>().getState;
     final blogTitle = blogState.title != null
         ? truncateText(toUpperCaseFirstChar(blogState.title!), limit: 20)
         : "";
@@ -59,7 +61,9 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                 ),
               ),
       ),
-      bottomNavigationBar: SafeArea(child: const CommentInput()),
+      bottomNavigationBar: authState.user != null
+          ? SafeArea(child: const CommentInput())
+          : null,
     );
   }
 }
