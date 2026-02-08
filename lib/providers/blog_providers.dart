@@ -89,9 +89,10 @@ class BlogProvider extends ChangeNotifier {
   Future<void> deleteBlog({final String? id, final String? userId}) async {
     _setBlogState(getBlogState.copyWith(loading: true));
     try {
+      final now = DateTime.now().toIso8601String();
       await supabase
           .from(Tables.blogs.name)
-          .update({'user_id': userId, 'is_deleted': true})
+          .update({'user_id': userId, 'is_deleted': true, 'deleted_at': now})
           .eq("id", id!);
 
       final updatedBlogs = blogs.deleteBlog(id);
