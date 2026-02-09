@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
-import 'package:flutter_blog_2/widgets/auth/sign_in.dart';
+import 'package:flutter_blog_2/screens/auth/sign_in.dart';
 import 'package:provider/provider.dart';
 
 class HomeAvatar extends StatefulWidget {
@@ -15,15 +15,6 @@ class HomeAvatar extends StatefulWidget {
 }
 
 class _HomeAvatarState extends State<HomeAvatar> {
-  void openSignUpModal() {
-    showModalBottomSheet(
-      useSafeArea: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (ctx) => const SignIn(),
-    );
-  }
-
   @override
   build(BuildContext context) {
     final authState = context.watch<AuthProvider>().getState;
@@ -31,7 +22,9 @@ class _HomeAvatarState extends State<HomeAvatar> {
     final displayName = authState.user?.userMetadata?['display_name'];
 
     Widget avatar = TextButton(
-      onPressed: openSignUpModal,
+      onPressed: () {
+        SignInScreen.push(context);
+      },
       child: Text("Sign In"),
     );
 

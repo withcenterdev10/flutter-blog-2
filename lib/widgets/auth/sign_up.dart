@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/widgets/auth/sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
+
+  static const routeName = '/sign_up';
+
+  static Function(BuildContext context) go = (context) => context.go(routeName);
+
+  static Function(BuildContext context) push = (context) =>
+      context.push(routeName);
 
   @override
   State<SignUp> createState() {

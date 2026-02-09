@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/screens/add_blog_screen.dart';
+import 'package:flutter_blog_2/screens/auth/sign_in.dart';
+import 'package:flutter_blog_2/screens/auth/sign_up.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +18,18 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (BuildContext contehomext, GoRouterState state) {
         return const HomeScreen();
+      },
+    ),
+    GoRoute(
+      path: SignUpScreen.routeName,
+      builder: (BuildContext contehomext, GoRouterState state) {
+        return const SignUpScreen();
+      },
+    ),
+    GoRoute(
+      path: SignInScreen.routeName,
+      builder: (BuildContext contehomext, GoRouterState state) {
+        return const SignInScreen();
       },
     ),
     GoRoute(
