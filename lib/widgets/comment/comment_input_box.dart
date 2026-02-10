@@ -7,6 +7,7 @@ import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
+import 'package:flutter_blog_2/widgets/blog/blog.dart';
 import 'package:flutter_blog_2/widgets/blog/blog_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,7 @@ class _CommentInputState extends State<CommentInput>
   String? selectedImagePath;
   List<BlogImage> selectedBlogImages = [];
   List<File>? selectedImages = [];
+  bool initialSelectedBlogImagesLoaded = false;
 
   void removeImage(String imageId) {
     setState(() {
@@ -119,7 +121,16 @@ class _CommentInputState extends State<CommentInput>
     if (_keyboardVisible && !isVisible) {
       context.read<CommentProvider>().resetState();
       focusNode.unfocus();
-      commentController = TextEditingController();
+      if (!commentState.isEditting) {
+        commentController = TextEditingController();
+        setState(() {
+          selectedBlogImages = [];
+        });
+      }
+
+      setState(() {
+        initialSelectedBlogImagesLoaded = false;
+      });
     }
 
     _keyboardVisible = isVisible;
@@ -190,6 +201,32 @@ class _CommentInputState extends State<CommentInput>
     if (commentState.id != null && !commentState.isDeleting) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         focusNode.requestFocus();
+        List<BlogImage> tempList = [];
+        if (commentState.imageUrls != null) {
+          for (var i = 0; i < commentState.imageUrls!.length; i++) {
+            final imageUrl = commentState.imageUrls![i];
+            final isExist = selectedBlogImages.contains(
+              (e) => e.id == imageUrl,
+            );
+
+            if (!isExist) {
+              tempList.add(
+                BlogImage(
+                  id: imageUrl,
+                  networImage: imageUrl,
+                  onRemove: removeImage,
+                ),
+              );
+            }
+          }
+
+          if (!initialSelectedBlogImagesLoaded) {
+            setState(() {
+              selectedBlogImages = tempList;
+              initialSelectedBlogImagesLoaded = true;
+            });
+          }
+        }
       });
     }
 
