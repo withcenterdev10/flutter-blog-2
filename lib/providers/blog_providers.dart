@@ -52,10 +52,11 @@ class BlogProvider extends ChangeNotifier {
     }
 
     if (comment.comments != null && comment.comments!.isNotEmpty) {
-      final updatedComments = comment.comments!.where((com) {
-        final returnVal = findCommentAndDelete(com, toDeleteComment);
-        return returnVal != null;
-      }).toList();
+      final updatedComments = comment.comments!
+          .map((com) => findCommentAndDelete(com, toDeleteComment))
+          .where((com) => com != null)
+          .cast<CommentModel>()
+          .toList();
 
       return comment.copyWith(comments: [...updatedComments]);
     }
