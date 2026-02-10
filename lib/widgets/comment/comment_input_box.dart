@@ -178,7 +178,9 @@ class _CommentInputState extends State<CommentInput>
           );
         } else {
           returnedComment = await context.read<CommentProvider>().createComment(
-            parentId: commentState.id,
+            parentId: commentState.isToDeep
+                ? commentState.parentId
+                : commentState.id,
             blogId: blogState.id!,
             userId: authState.user!.id,
             comment: comment,

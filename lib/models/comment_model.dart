@@ -21,6 +21,7 @@ class CommentModel {
     this.loading = false,
     this.isEditting = false,
     this.isDeleting = false,
+    this.isToDeep = false,
   });
   final String? id;
   final String comment;
@@ -31,6 +32,7 @@ class CommentModel {
   final String? parentId;
   final bool isEditting;
   final bool isDeleting;
+  final bool isToDeep;
   final List<CommentModel>? comments;
   final List<String>? imageUrls;
 
@@ -47,6 +49,7 @@ class CommentModel {
       blogId: "",
       parentId: "",
       comments: null,
+      isToDeep: false,
     );
   }
 
@@ -63,6 +66,7 @@ class CommentModel {
     List<CommentModel>? comments,
     bool? isEditting,
     bool? isDeleting,
+    bool? isToDeep,
   }) {
     return CommentModel(
       blogId: blogId ?? this.blogId,
@@ -76,6 +80,7 @@ class CommentModel {
       comments: comments ?? this.comments,
       isEditting: isEditting ?? this.isEditting,
       isDeleting: isDeleting ?? this.isDeleting,
+      isToDeep: isToDeep ?? this.isToDeep,
     );
   }
 
@@ -100,6 +105,7 @@ class CommentModel {
         imageUrls: imageUrls != null
             ? imageUrls.map((url) => url as String).toList()
             : [],
+        isToDeep: false,
       );
     } else {
       throw const FormatException(

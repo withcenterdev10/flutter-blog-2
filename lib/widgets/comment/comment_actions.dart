@@ -7,7 +7,9 @@ import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:provider/provider.dart';
 
 class CommentActions extends StatelessWidget {
-  const CommentActions({super.key, required this.comment});
+  const CommentActions({super.key, required this.comment, required this.depth});
+
+  final int depth;
 
   final CommentModel comment;
   void handleDelete(
@@ -114,7 +116,13 @@ class CommentActions extends StatelessWidget {
               foregroundColor: Theme.of(context).colorScheme.primary,
             ),
             onPressed: () {
-              context.read<CommentProvider>().setState(comment);
+              if (depth == 3) {
+                context.read<CommentProvider>().setState(
+                  comment.copyWith(isToDeep: true),
+                );
+              } else {
+                context.read<CommentProvider>().setState(comment);
+              }
             },
             icon: Icon(Icons.reply, size: 18),
             label: Text(

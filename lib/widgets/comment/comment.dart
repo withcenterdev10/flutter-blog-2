@@ -8,8 +8,9 @@ import 'package:flutter_blog_2/widgets/comment/comment_actions.dart';
 import 'package:provider/provider.dart';
 
 class Comment extends StatelessWidget {
-  const Comment({super.key, required this.comment});
+  const Comment({super.key, required this.comment, this.depth = 1});
   final CommentModel comment;
+  final int depth;
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +50,12 @@ class Comment extends StatelessWidget {
                   }),
 
                 const SizedBox(height: 6),
-                CommentActions(comment: comment),
+                CommentActions(comment: comment, depth: depth),
                 const SizedBox(height: 6),
                 if (comment.comments != null && comment.comments!.isNotEmpty)
-                  ...comment.comments!.map((c) => Comment(comment: c)),
+                  ...comment.comments!.map(
+                    (c) => Comment(comment: c, depth: depth + 1),
+                  ),
               ],
             ),
           ),
