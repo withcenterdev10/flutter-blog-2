@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
+import 'package:flutter_blog_2/widgets/blog/blog_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -27,6 +29,61 @@ class _CommentInputState extends State<CommentInput>
   final focusNode = FocusNode();
   File? selectedImage;
   String? selectedImagePath;
+  List<BlogImage> selectedBlogImages = [];
+  List<File>? selectedImages = [];
+
+  void removeImage(String imageId) {
+    setState(() {
+      selectedBlogImages = selectedBlogImages
+          .where((img) => img.id != imageId)
+          .toList();
+    });
+  }
+
+  Future<({File? mobileImage, Uint8List? webImage})> openImagePicker() async {
+    final ImagePicker picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    File? mobileImage;
+    Uint8List? webImage;
+
+    // mobile
+    if (!kIsWeb) {
+      if (image != null) {
+        mobileImage = File(image.path);
+      }
+    } else {
+      // web
+      if (image != null) {
+        webImage = await image.readAsBytes();
+      }
+    }
+
+    return (mobileImage: mobileImage, webImage: webImage);
+  }
+
+  void handleAddImage() async {
+    var (:mobileImage, :webImage) = await openImagePicker();
+    List<BlogImage> updatedImages = [
+      ...selectedBlogImages,
+      BlogImage(
+        mobileImage: mobileImage,
+        webImage: webImage,
+        id: '${selectedBlogImages.length + 1}',
+        onRemove: removeImage,
+      ),
+    ];
+
+    var updatedSelectedImages = selectedImages;
+
+    if (mobileImage != null) {
+      updatedSelectedImages?.add(mobileImage);
+    }
+
+    setState(() {
+      selectedBlogImages = updatedImages;
+      selectedImages = updatedSelectedImages;
+    });
+  }
 
   @override
   void initState() {
@@ -92,7 +149,7 @@ class _CommentInputState extends State<CommentInput>
             blogId: blogState.id!,
             userId: authState.user!.id,
             comment: comment,
-            image: selectedImage,
+            images: selectedImages,
           );
         }
 
@@ -114,32 +171,15 @@ class _CommentInputState extends State<CommentInput>
       } finally {
         formKey.currentState!.reset();
         focusNode.unfocus();
+
+        setState(() {
+          selectedImages = [];
+          selectedBlogImages = [];
+        });
         if (context.mounted) {
           context.read<CommentProvider>().resetState();
         }
       }
-    }
-  }
-
-  void openImagePicker() async {
-    final ImagePicker picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
-    // mobile
-    if (!kIsWeb) {
-      if (image != null) {
-        setState(() {
-          selectedImage = File(image.path);
-          selectedImagePath = image.path;
-        });
-      }
-    } else {
-      // web
-      // if (image != null) {
-      //   var f = await image.readAsBytes();
-      //   setState(() {
-      //     webImage = f;
-      //   });
-      // }
     }
   }
 
@@ -153,64 +193,87 @@ class _CommentInputState extends State<CommentInput>
       });
     }
 
-    return Padding(
-      padding: EdgeInsetsGeometry.fromLTRB(
-        8,
-        4,
-        8,
-        4 + MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Form(
-        key: formKey,
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: openImagePicker,
-              icon: Icon(Icons.camera_alt),
-            ),
-            Expanded(
-              child: SizedBox(
-                height: 40,
-                child: TextFormField(
-                  focusNode: focusNode,
-                  controller: commentController,
-                  decoration: InputDecoration(
-                    labelText: "Comment",
-                    border: OutlineInputBorder(),
-                    isDense: true,
-                    contentPadding: EdgeInsets.all(8.0),
-                    suffixIconConstraints: BoxConstraints(
-                      minWidth: 24,
-                      minHeight: 24,
-                    ),
-                    suffixIcon: commentState.loading
-                        ? Padding(
-                            padding: EdgeInsets.all(10),
-                            child: SizedBox(
-                              width: 14,
-                              height: 14,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          )
-                        : IconButton(
-                            onPressed: () {
-                              onSubmit(context);
-                            },
-                            icon: Icon(Icons.send),
-                          ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Type your comment';
-                    }
-                    return null;
-                  },
-                ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        if (selectedBlogImages.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: SizedBox(
+              height: 70,
+              width: double.infinity,
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: selectedBlogImages.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    selectedBlogImages[index],
               ),
             ),
-          ],
+          ),
+        Padding(
+          padding: EdgeInsetsGeometry.fromLTRB(
+            8,
+            4,
+            8,
+            4 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Form(
+            key: formKey,
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: handleAddImage,
+                  icon: Icon(Icons.camera_alt),
+                ),
+                Expanded(
+                  child: SizedBox(
+                    height: 40,
+                    child: TextFormField(
+                      focusNode: focusNode,
+                      controller: commentController,
+                      decoration: InputDecoration(
+                        labelText: "Comment",
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                        contentPadding: EdgeInsets.all(8.0),
+                        suffixIconConstraints: BoxConstraints(
+                          minWidth: 24,
+                          minHeight: 24,
+                        ),
+                        suffixIcon: commentState.loading
+                            ? Padding(
+                                padding: EdgeInsets.all(10),
+                                child: SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            : IconButton(
+                                onPressed: () {
+                                  onSubmit(context);
+                                },
+                                icon: Icon(Icons.send),
+                              ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Type your comment';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

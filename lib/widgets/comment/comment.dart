@@ -44,7 +44,10 @@ class Comment extends StatelessWidget {
                 Text(toUpperCaseFirstChar(comment.comment)),
                 const SizedBox(height: 6),
                 if (comment.imageUrls != null && comment.imageUrls!.isNotEmpty)
-                  CommentImage(imageUrl: comment.imageUrls![0]),
+                  ...comment.imageUrls!.map((img) {
+                    return CommentImage(imageUrl: img);
+                  }),
+
                 const SizedBox(height: 6),
                 CommentActions(comment: comment),
                 const SizedBox(height: 6),

@@ -28,14 +28,17 @@ class CommentProvider extends ChangeNotifier {
     required String blogId,
     required String userId,
     String? comment,
-    File? image,
+    final List<File>? images,
   }) async {
     setState(state.copyWith(loading: true));
     try {
-      String? imageUrl; // add later.
+      List<dynamic>? imageUrls;
 
-      if (image != null) {
-        imageUrl = await uploadImageToCloudinary(image);
+      if (images != null && images.isNotEmpty) {
+        List<Future<dynamic>> futures = images
+            .map((img) => uploadImageToCloudinary(img))
+            .toList();
+        imageUrls = await Future.wait(futures);
       }
 
       final res = await supabase
@@ -45,7 +48,7 @@ class CommentProvider extends ChangeNotifier {
             'blog_id': blogId,
             'comment': comment,
             'user_id': userId,
-            'image_urls': [?imageUrl],
+            'image_urls': ?imageUrls,
           })
           .select(
             "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
