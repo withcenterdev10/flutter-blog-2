@@ -7,7 +7,6 @@ import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
-import 'package:flutter_blog_2/widgets/blog/blog.dart';
 import 'package:flutter_blog_2/widgets/blog/blog_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -119,18 +118,18 @@ class _CommentInputState extends State<CommentInput>
     final isVisible = bottomInset > 0;
 
     if (_keyboardVisible && !isVisible) {
-      context.read<CommentProvider>().resetState();
       focusNode.unfocus();
       if (!commentState.isEditting) {
+        context.read<CommentProvider>().resetState();
         commentController = TextEditingController();
         setState(() {
           selectedBlogImages = [];
         });
+      } else {
+        setState(() {
+          initialSelectedBlogImagesLoaded = false;
+        });
       }
-
-      setState(() {
-        initialSelectedBlogImagesLoaded = false;
-      });
     }
 
     _keyboardVisible = isVisible;
@@ -147,12 +146,24 @@ class _CommentInputState extends State<CommentInput>
         CommentModel returnedComment;
 
         if (commentState.isEditting) {
+          List<String> remainingPreviousImgUrls = [];
+
+          if (selectedBlogImages.isNotEmpty) {
+            for (var i = 0; i < selectedBlogImages.length; i++) {
+              if (selectedBlogImages[i].networImage != null) {
+                remainingPreviousImgUrls.add(
+                  selectedBlogImages[i].networImage as String,
+                );
+              }
+            }
+          }
+
           returnedComment = await context.read<CommentProvider>().updateComment(
             commentId: commentState.id!,
             userId: authState.user!.id,
             comment: comment,
-            image: selectedImage,
-            existingImageUrls: commentState.imageUrls,
+            newImages: selectedImages,
+            networkImages: remainingPreviousImgUrls,
           );
         } else {
           returnedComment = await context.read<CommentProvider>().createComment(

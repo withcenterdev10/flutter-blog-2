@@ -69,26 +69,24 @@ class CommentProvider extends ChangeNotifier {
     required String commentId,
     required String userId,
     String? comment,
-    File? image,
-    List<String>? existingImageUrls,
+    final List<File>? newImages,
+    final List<String>? networkImages,
   }) async {
     setState(state.copyWith(loading: true));
     try {
-      String? imageUrl; // add later.
-
-      if (image != null) {
-        imageUrl = await uploadImageToCloudinary(image);
+      List<String> imageUrls = [];
+      if (newImages != null && newImages.isNotEmpty) {
+        List<Future<String>> futures = newImages
+            .map((img) => uploadImageToCloudinary(img))
+            .toList();
+        imageUrls = await Future.wait(futures);
       }
 
-      final toUpdateImageUrls = [...?existingImageUrls, ?imageUrl];
+      final images = [...?networkImages, ...imageUrls];
 
       final res = await supabase
           .from(Pages.comments.name)
-          .update({
-            'comment': comment,
-            'user_id': userId,
-            'image_urls': toUpdateImageUrls,
-          })
+          .update({'comment': comment, 'user_id': userId, 'image_urls': images})
           .eq("id", commentId)
           .select(
             "id, blog_id, parent_id, comment, created_at, image_urls, user: profiles (id, display_name, image_url)",
