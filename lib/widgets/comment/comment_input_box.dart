@@ -123,14 +123,15 @@ class _CommentInputState extends State<CommentInput>
         PlatformDispatcher.instance.views.first.viewInsets.bottom;
     final isVisible = bottomInset > 0;
 
-    if (!isPickingImage) {
-      context.read<CommentProvider>().resetState();
-    }
-
     if (_keyboardVisible && !isVisible) {
+      if (!isPickingImage) {
+        context.read<CommentProvider>().resetState();
+        commentController = TextEditingController();
+      }
+
       focusNode.unfocus();
       if (!commentState.isEditting) {
-        commentController = TextEditingController();
+        // commentController = TextEditingController();
 
         setState(() {
           selectedBlogImages = [];
