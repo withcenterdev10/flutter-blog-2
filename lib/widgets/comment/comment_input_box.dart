@@ -226,13 +226,13 @@ class _CommentInputState extends State<CommentInput>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         focusNode.requestFocus();
         List<BlogImage> tempList = [];
-        if (commentState.imageUrls != null) {
+
+        if (commentState.imageUrls != null && commentState.isEditting) {
           for (var i = 0; i < commentState.imageUrls!.length; i++) {
             final imageUrl = commentState.imageUrls![i];
             final isExist = selectedBlogImages.contains(
               (e) => e.id == imageUrl,
             );
-
             if (!isExist) {
               tempList.add(
                 BlogImage(
