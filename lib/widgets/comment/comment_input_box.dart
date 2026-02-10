@@ -32,6 +32,7 @@ class _CommentInputState extends State<CommentInput>
   List<BlogImage> selectedBlogImages = [];
   List<File>? selectedImages = [];
   bool initialSelectedBlogImagesLoaded = false;
+  bool isPickingImage = false;
 
   void removeImage(String imageId) {
     setState(() {
@@ -63,6 +64,10 @@ class _CommentInputState extends State<CommentInput>
   }
 
   void handleAddImage() async {
+    setState(() {
+      isPickingImage = true;
+    });
+
     var (:mobileImage, :webImage) = await openImagePicker();
     List<BlogImage> updatedImages = [
       ...selectedBlogImages,
@@ -83,6 +88,7 @@ class _CommentInputState extends State<CommentInput>
     setState(() {
       selectedBlogImages = updatedImages;
       selectedImages = updatedSelectedImages;
+      isPickingImage = false;
     });
   }
 
@@ -117,11 +123,15 @@ class _CommentInputState extends State<CommentInput>
         PlatformDispatcher.instance.views.first.viewInsets.bottom;
     final isVisible = bottomInset > 0;
 
+    if (!isPickingImage) {
+      context.read<CommentProvider>().resetState();
+    }
+
     if (_keyboardVisible && !isVisible) {
       focusNode.unfocus();
       if (!commentState.isEditting) {
-        context.read<CommentProvider>().resetState();
         commentController = TextEditingController();
+
         setState(() {
           selectedBlogImages = [];
         });
