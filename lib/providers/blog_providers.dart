@@ -302,6 +302,7 @@ class BlogProvider extends ChangeNotifier {
       }
       List<CommentModel> comments = [];
       List<String> rootCommentIds = [];
+      List<String> secondLevelIds = [];
 
       final res = await supabase
           .from(Tables.blogs.name)
@@ -323,15 +324,26 @@ class BlogProvider extends ChangeNotifier {
       }
 
       if (rootCommentIds.isNotEmpty) {
-        final childrenComments =
+        final secondLevelComments =
             await CommentProvider.getCommentsUsingParentIds(
               parentIds: rootCommentIds,
             );
 
-        comments = CommentProvider.buildRootComments(
-          rootComments,
-          childrenComments,
-        );
+        if (secondLevelComments.isNotEmpty) {
+          secondLevelIds = secondLevelComments.map((c) {
+            return c['id'] as String;
+          }).toList();
+        }
+
+        final thirdLevelComments =
+            await CommentProvider.getCommentsUsingParentIds(
+              parentIds: secondLevelIds,
+            );
+
+        comments = CommentProvider.buildRootComments(rootComments, [
+          ...secondLevelComments,
+          ...thirdLevelComments,
+        ]);
       }
 
       _setBlogState(BlogModel.fromJson(res).copyWith(comments: comments));
