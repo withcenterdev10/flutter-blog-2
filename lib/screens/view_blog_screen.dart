@@ -6,6 +6,7 @@ import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_content.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_screen_action.dart';
 import 'package:flutter_blog_2/widgets/comment/comment_input_box.dart';
+import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -38,10 +39,16 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     final blogTitle = blogState.title != null
         ? truncateText(toUpperCaseFirstChar(blogState.title!), limit: 20)
         : "";
+    bool isDesktop(BuildContext context) {
+      return MediaQuery.of(context).size.width >= 900;
+    }
 
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(title: Text(blogTitle), actions: [ViewBlogScreenAction()]),
+      appBar: isDesktop(context)
+          ? MyAppbar(scaffoldKey: scaffoldKey)
+          : AppBar(title: Text(blogTitle), actions: [ViewBlogScreenAction()]),
+
       body: PopScope(
         onPopInvokedWithResult: (bool didPop, Object? result) async {
           if (didPop) {
@@ -62,7 +69,20 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
               ),
       ),
       bottomNavigationBar: authState.user != null
-          ? SafeArea(child: const CommentInput())
+          ? Row(
+              children: [
+                Spacer(),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width >= 500
+                        ? 720
+                        : MediaQuery.of(context).size.width,
+                  ),
+                  child: const CommentInput(),
+                ),
+                Spacer(),
+              ],
+            )
           : null,
     );
   }

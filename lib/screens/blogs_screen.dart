@@ -36,6 +36,7 @@ class _BlogsScreenState extends State<BlogsScreen> {
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
     final authState = context.watch<AuthProvider>().getState;
+    final scaffoldKey = GlobalKey<ScaffoldState>();
 
     Widget content = Center(
       child: const SizedBox(
@@ -59,9 +60,9 @@ class _BlogsScreenState extends State<BlogsScreen> {
     }
 
     return Scaffold(
-      key: sharedScaffoldKey,
+      key: scaffoldKey,
       endDrawer: authState.user != null ? const MyDrawer() : null,
-      appBar: MyAppbar(scaffoldKey: sharedScaffoldKey),
+      appBar: MyAppbar(scaffoldKey: scaffoldKey),
       body: content,
       bottomNavigationBar: authState.user != null && !isDesktop(context)
           ? BottomNavigation()

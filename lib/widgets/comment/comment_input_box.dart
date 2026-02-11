@@ -254,87 +254,90 @@ class _CommentInputState extends State<CommentInput>
       });
     }
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        if (selectedBlogImages.isNotEmpty)
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 720),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          if (selectedBlogImages.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: SizedBox(
+                height: 70,
+                width: double.infinity,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: selectedBlogImages.length,
+                  itemBuilder: (BuildContext context, int index) =>
+                      selectedBlogImages[index],
+                ),
+              ),
+            ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: SizedBox(
-              height: 70,
-              width: double.infinity,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: selectedBlogImages.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    selectedBlogImages[index],
+            padding: EdgeInsetsGeometry.fromLTRB(
+              8,
+              4,
+              8,
+              4 + MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Form(
+              key: formKey,
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: handleAddImage,
+                    icon: Icon(Icons.camera_alt),
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: TextFormField(
+                        focusNode: focusNode,
+                        controller: commentController,
+                        decoration: InputDecoration(
+                          labelText: "Comment",
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(8.0),
+                          suffixIconConstraints: BoxConstraints(
+                            minWidth: 24,
+                            minHeight: 24,
+                          ),
+                          suffixIcon: commentState.loading
+                              ? Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: SizedBox(
+                                    width: 14,
+                                    height: 14,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    onSubmit(context);
+                                  },
+                                  icon: Icon(Icons.send),
+                                ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Type your comment';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        Padding(
-          padding: EdgeInsetsGeometry.fromLTRB(
-            8,
-            4,
-            8,
-            4 + MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Form(
-            key: formKey,
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: handleAddImage,
-                  icon: Icon(Icons.camera_alt),
-                ),
-                Expanded(
-                  child: SizedBox(
-                    height: 40,
-                    child: TextFormField(
-                      focusNode: focusNode,
-                      controller: commentController,
-                      decoration: InputDecoration(
-                        labelText: "Comment",
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                        contentPadding: EdgeInsets.all(8.0),
-                        suffixIconConstraints: BoxConstraints(
-                          minWidth: 24,
-                          minHeight: 24,
-                        ),
-                        suffixIcon: commentState.loading
-                            ? Padding(
-                                padding: EdgeInsets.all(10),
-                                child: SizedBox(
-                                  width: 14,
-                                  height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                              )
-                            : IconButton(
-                                onPressed: () {
-                                  onSubmit(context);
-                                },
-                                icon: Icon(Icons.send),
-                              ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Type your comment';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
