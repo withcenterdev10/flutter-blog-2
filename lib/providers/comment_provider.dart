@@ -29,6 +29,7 @@ class CommentProvider extends ChangeNotifier {
     required String userId,
     String? comment,
     final List<File>? images,
+    final List<Uint8List>? newWebImages,
   }) async {
     setState(state.copyWith(loading: true));
     try {
@@ -36,7 +37,14 @@ class CommentProvider extends ChangeNotifier {
 
       if (images != null && images.isNotEmpty) {
         List<Future<dynamic>> futures = images
-            .map((img) => uploadImageToCloudinary(img))
+            .map((img) => uploadImageToCloudinary(image: img))
+            .toList();
+        imageUrls = await Future.wait(futures);
+      }
+
+      if (newWebImages != null && newWebImages.isNotEmpty) {
+        List<Future<dynamic>> futures = newWebImages
+            .map((img) => uploadImageToCloudinary(webImage: img))
             .toList();
         imageUrls = await Future.wait(futures);
       }
@@ -70,14 +78,23 @@ class CommentProvider extends ChangeNotifier {
     required String userId,
     String? comment,
     final List<File>? newImages,
+    final List<Uint8List>? newWebImages,
     final List<String>? networkImages,
   }) async {
     setState(state.copyWith(loading: true));
     try {
       List<String> imageUrls = [];
+
       if (newImages != null && newImages.isNotEmpty) {
         List<Future<String>> futures = newImages
-            .map((img) => uploadImageToCloudinary(img))
+            .map((img) => uploadImageToCloudinary(image: img))
+            .toList();
+        imageUrls = await Future.wait(futures);
+      }
+
+      if (newWebImages != null && newWebImages.isNotEmpty) {
+        List<Future<String>> futures = newWebImages
+            .map((img) => uploadImageToCloudinary(webImage: img))
             .toList();
         imageUrls = await Future.wait(futures);
       }
