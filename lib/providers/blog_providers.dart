@@ -65,12 +65,11 @@ class BlogProvider extends ChangeNotifier {
   }
 
   void updateComment(CommentModel comment) {
-    List<CommentModel>? updatedComments = blog.comments;
-    if (blog.comments != null && blog.comments!.isNotEmpty) {
-      updatedComments = blog.comments!.map((com) {
-        return findCommentAndUpdate(com, comment);
-      }).toList();
-    }
+    if (blog.comments == null || blog.comments!.isEmpty) return;
+
+    final updatedComments = blog.comments!
+        .map((com) => findCommentAndUpdate(com, comment))
+        .toList();
 
     _setBlogState(blog.copyWith(comments: updatedComments));
   }
@@ -80,15 +79,15 @@ class BlogProvider extends ChangeNotifier {
     CommentModel toUpdateComment,
   ) {
     if (comment.id == toUpdateComment.id) {
-      return toUpdateComment;
+      return toUpdateComment.copyWith(comments: comment.comments);
     }
 
     if (comment.comments != null && comment.comments!.isNotEmpty) {
-      final updatedComments = comment.comments!.map((com) {
-        return findCommentAndUpdate(com, toUpdateComment);
-      }).toList();
+      final updatedChildren = comment.comments!
+          .map((c) => findCommentAndUpdate(c, toUpdateComment))
+          .toList();
 
-      return comment.copyWith(comments: [...updatedComments]);
+      return comment.copyWith(comments: updatedChildren);
     }
 
     return comment;
