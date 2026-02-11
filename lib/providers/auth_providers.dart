@@ -40,13 +40,21 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateUser({required String name, File? image}) async {
+  Future<void> updateUser({
+    required String name,
+    File? image,
+    Uint8List? webImage,
+  }) async {
     _setState(state.copyWith(loading: true));
     try {
       String? imageUrl; // add later.
 
       if (image != null) {
-        imageUrl = await uploadImageToCloudinary(image);
+        imageUrl = await uploadImageToCloudinary(image: image);
+      }
+
+      if (webImage != null) {
+        imageUrl = await uploadImageToCloudinary(webImage: webImage);
       }
 
       final res = await supabase.auth.updateUser(
