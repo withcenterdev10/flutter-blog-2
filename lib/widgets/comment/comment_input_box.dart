@@ -31,6 +31,7 @@ class _CommentInputState extends State<CommentInput>
   String? selectedImagePath;
   List<BlogImage> selectedBlogImages = [];
   List<File>? selectedImages = [];
+  List<Uint8List>? selectedWebImages = [];
   bool initialSelectedBlogImagesLoaded = false;
   bool isPickingImage = false;
 
@@ -48,22 +49,22 @@ class _CommentInputState extends State<CommentInput>
     File? mobileImage;
     Uint8List? webImage;
 
+    if (image == null) {
+      return (mobileImage: null, webImage: null);
+    }
+
     // mobile
     if (!kIsWeb) {
-      if (image != null) {
-        mobileImage = File(image.path);
-      }
+      mobileImage = File(image.path);
     } else {
       // web
-      if (image != null) {
-        webImage = await image.readAsBytes();
-      }
+      webImage = await image.readAsBytes();
     }
 
     return (mobileImage: mobileImage, webImage: webImage);
   }
 
-  void handleAddImage() async {
+  void handleAddImage(BuildContext context) async {
     setState(() {
       isPickingImage = true;
     });
@@ -80,14 +81,20 @@ class _CommentInputState extends State<CommentInput>
     ];
 
     var updatedSelectedImages = selectedImages;
+    var updatedSelectedWebImages = selectedWebImages;
 
     if (mobileImage != null) {
       updatedSelectedImages?.add(mobileImage);
     }
 
+    if (webImage != null) {
+      updatedSelectedWebImages?.add(webImage);
+    }
+
     setState(() {
       selectedBlogImages = updatedImages;
       selectedImages = updatedSelectedImages;
+      selectedWebImages = updatedSelectedWebImages;
       isPickingImage = false;
     });
   }
@@ -174,6 +181,7 @@ class _CommentInputState extends State<CommentInput>
             userId: authState.user!.id,
             comment: comment,
             newImages: selectedImages,
+            newWebImages: selectedWebImages,
             networkImages: remainingPreviousImgUrls,
           );
         } else {
@@ -185,6 +193,7 @@ class _CommentInputState extends State<CommentInput>
             userId: authState.user!.id,
             comment: comment,
             images: selectedImages,
+            newWebImages: selectedWebImages,
           );
         }
 
@@ -209,6 +218,7 @@ class _CommentInputState extends State<CommentInput>
 
         setState(() {
           selectedImages = [];
+          selectedWebImages = [];
           selectedBlogImages = [];
         });
         if (context.mounted) {
@@ -288,7 +298,9 @@ class _CommentInputState extends State<CommentInput>
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: handleAddImage,
+                    onPressed: () {
+                      handleAddImage(context);
+                    },
                     icon: Icon(Icons.camera_alt),
                   ),
                   Expanded(
