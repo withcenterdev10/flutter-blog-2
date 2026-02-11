@@ -25,6 +25,7 @@ class _AddBlogState extends State<AddBlog> {
   final blogController = TextEditingController();
   List<BlogImage> selectedBlogImages = [];
   List<File>? selectedImages = [];
+  List<Uint8List>? selectedWebImages = [];
 
   void removeImage(String imageId) {
     setState(() {
@@ -68,9 +69,14 @@ class _AddBlogState extends State<AddBlog> {
     ];
 
     var updatedSelectedImages = selectedImages;
+    var updatedSelectedWebImages = selectedWebImages;
 
     if (mobileImage != null) {
       updatedSelectedImages?.add(mobileImage);
+    }
+
+    if (webImage != null) {
+      updatedSelectedWebImages?.add(webImage);
     }
 
     setState(() {
@@ -96,6 +102,7 @@ class _AddBlogState extends State<AddBlog> {
             userId: userId,
             title: title,
             images: selectedImages,
+            webImages: selectedWebImages,
           );
           message = "Create blog success";
           if (context.mounted) {
@@ -115,99 +122,110 @@ class _AddBlogState extends State<AddBlog> {
       }
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              TextFormField(
-                autofocus: true,
-                maxLength: 50,
-                controller: titleController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: "Title",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter title of your blog';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15),
-
-              TextFormField(
-                maxLines: 6,
-                controller: blogController,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  labelText: "Blog",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Blog must not be empty';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-
-              const SizedBox(height: 20),
-              const Divider(),
-              Row(
-                children: [
-                  Text("Upload images"),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: handleAddImage,
-                    icon: Icon(Icons.add_a_photo, size: 20),
-                  ),
-                ],
-              ),
-
-              if (selectedBlogImages.isNotEmpty)
-                SizedBox(
-                  height: 100,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: selectedBlogImages.length,
-                    itemBuilder: (context, index) => selectedBlogImages[index],
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 12),
-                  ),
-                ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: onSubmit,
-                  child: blogState.loading
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              width: 15,
-                              height: 15,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                            SizedBox(width: 8),
-                            Text("Submitting..."),
-                          ],
-                        )
-                      : Text(
-                          "Submit",
-                          style: Theme.of(context).textTheme.bodyLarge,
+    return SafeArea(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 720),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Add new blog",
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      autofocus: true,
+                      maxLength: 50,
+                      controller: titleController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        labelText: "Title",
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter title of your blog';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      maxLines: 6,
+                      controller: blogController,
+                      keyboardType: TextInputType.multiline,
+                      decoration: const InputDecoration(
+                        labelText: "Blog",
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Blog must not be empty';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    Row(
+                      children: [
+                        const Text("Upload images"),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: handleAddImage,
+                          icon: const Icon(Icons.add_a_photo, size: 20),
                         ),
+                      ],
+                    ),
+                    if (selectedBlogImages.isNotEmpty)
+                      SizedBox(
+                        height: 100,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: selectedBlogImages.length,
+                          itemBuilder: (context, index) =>
+                              selectedBlogImages[index],
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(width: 12),
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: onSubmit,
+                        child: blogState.loading
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  SizedBox(
+                                    width: 15,
+                                    height: 15,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text("Submitting..."),
+                                ],
+                              )
+                            : Text(
+                                "Submit",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),

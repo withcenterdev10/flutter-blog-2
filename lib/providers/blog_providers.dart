@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/db.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/models/comment_model.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/utils.dart';
-import 'package:flutter_blog_2/widgets/comment/comment.dart';
 
 const blogLimit = 6;
 
@@ -156,6 +156,7 @@ class BlogProvider extends ChangeNotifier {
     final String? blogContent,
     final String? userId,
     final List<File>? newImages,
+    final List<Uint8List>? newWebImages,
     final List<String>? networkImages,
   }) async {
     _setBlogState(getBlogState.copyWith(loading: true));
@@ -163,7 +164,14 @@ class BlogProvider extends ChangeNotifier {
       List<String> imageUrls = [];
       if (newImages != null && newImages.isNotEmpty) {
         List<Future<String>> futures = newImages
-            .map((img) => uploadImageToCloudinary(img))
+            .map((img) => uploadImageToCloudinary(image: img))
+            .toList();
+        imageUrls = await Future.wait(futures);
+      }
+
+      if (newWebImages != null && newWebImages.isNotEmpty) {
+        List<Future<String>> futures = newWebImages
+            .map((img) => uploadImageToCloudinary(webImage: img))
             .toList();
         imageUrls = await Future.wait(futures);
       }
@@ -219,14 +227,22 @@ class BlogProvider extends ChangeNotifier {
     final String? blog,
     final String? userId,
     final List<File>? images,
+    final List<Uint8List>? webImages,
   }) async {
     _setBlogState(getBlogState.copyWith(loading: true));
     try {
       List<dynamic>? imageUrls;
 
       if (images != null && images.isNotEmpty) {
-        List<Future<dynamic>> futures = images
-            .map((img) => uploadImageToCloudinary(img))
+        List<Future<String>> futures = images
+            .map((img) => uploadImageToCloudinary(image: img))
+            .toList();
+        imageUrls = await Future.wait(futures);
+      }
+
+      if (webImages != null && webImages.isNotEmpty) {
+        List<Future<String>> futures = webImages
+            .map((img) => uploadImageToCloudinary(webImage: img))
             .toList();
         imageUrls = await Future.wait(futures);
       }

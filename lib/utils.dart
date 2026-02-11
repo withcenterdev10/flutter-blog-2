@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_blog_2/dio.dart';
 import 'package:flutter/material.dart';
@@ -16,18 +17,29 @@ final GlobalKey<ScaffoldState> sharedScaffoldKey = GlobalKey<ScaffoldState>();
 
 const int imageLimit = 3;
 
-Future<String> uploadImageToCloudinary(File? image) async {
-  if (image == null) return "";
-
+Future<String> uploadImageToCloudinary({
+  File? image,
+  Uint8List? webImage,
+}) async {
   try {
     final cloudName = dotenv.env['CLOUDINARY_NAME'];
     final updatePreset = dotenv.env['CLOUDINARY_PRESET'];
 
-    final formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(
+    late MultipartFile multipartFile;
+
+    if (webImage != null) {
+      multipartFile = MultipartFile.fromBytes(webImage, filename: "upload.jpg");
+    }
+
+    if (image != null) {
+      multipartFile = await MultipartFile.fromFile(
         image.path,
         filename: image.path.split('/').last,
-      ),
+      );
+    }
+
+    final formData = FormData.fromMap({
+      'file': multipartFile,
       'upload_preset': updatePreset,
       'cloud_name': cloudName,
     });
