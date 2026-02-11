@@ -15,6 +15,8 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
   @override
   Widget build(BuildContext context) {
+    final authState = context.watch<AuthProvider>().getState;
+
     bool isDesktop(BuildContext context) {
       return MediaQuery.of(context).size.width >= 900;
     }
@@ -48,7 +50,7 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
                 },
               ),
               const Spacer(),
-              if (isDesktop(context))
+              if (isDesktop(context) && authState.user != null)
                 TextButton(
                   onPressed: () {
                     handleNavigationClick(context, 1);
