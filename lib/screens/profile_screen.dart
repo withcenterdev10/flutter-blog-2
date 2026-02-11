@@ -100,6 +100,7 @@ class _ProfileState extends State<Profile> {
           await context.read<AuthProvider>().updateUser(
             name: name,
             image: selectedImage,
+            webImage: webImage,
           );
 
           message = "User updated successfully";
