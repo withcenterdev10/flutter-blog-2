@@ -78,7 +78,7 @@ class _SignUpState extends State<SignUpScreen> {
     final authState = context.watch<AuthProvider>().getState;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Sign Up")),
+      appBar: AppBar(),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(

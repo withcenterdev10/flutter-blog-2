@@ -75,7 +75,7 @@ class _SignInState extends State<SignInScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("Sign In")),
+      appBar: AppBar(),
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
