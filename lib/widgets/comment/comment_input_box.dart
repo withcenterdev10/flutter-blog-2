@@ -138,7 +138,7 @@ class _CommentInputState extends State<CommentInput>
 
       focusNode.unfocus();
       if (!commentState.isEditting) {
-        // commentController = TextEditingController();
+        commentController = TextEditingController();
 
         setState(() {
           selectedBlogImages = [];
@@ -175,7 +175,7 @@ class _CommentInputState extends State<CommentInput>
               }
             }
           }
-
+          formKey.currentState!.reset();
           returnedComment = await context.read<CommentProvider>().updateComment(
             commentId: commentState.id!,
             userId: authState.user!.id,
@@ -196,7 +196,7 @@ class _CommentInputState extends State<CommentInput>
             newWebImages: selectedWebImages,
           );
         }
-
+        commentController = TextEditingController();
         if (context.mounted) {
           if (commentState.isEditting) {
             context.read<BlogProvider>().updateComment(returnedComment);
