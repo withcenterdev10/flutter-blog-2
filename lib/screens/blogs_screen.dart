@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
-import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
+import 'package:flutter_blog_2/widgets/layout/appbar.dart';
+import 'package:flutter_blog_2/widgets/my_drawer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_blog_2/widgets/blog/blog.dart";
+
+import '../utils.dart';
 
 class BlogsScreen extends StatefulWidget {
   const BlogsScreen({super.key});
@@ -25,6 +28,10 @@ class BlogsScreen extends StatefulWidget {
 }
 
 class _BlogsScreenState extends State<BlogsScreen> {
+  bool isDesktop(BuildContext context) {
+    return MediaQuery.of(context).size.width >= 900;
+  }
+
   @override
   Widget build(BuildContext context) {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
@@ -52,19 +59,23 @@ class _BlogsScreenState extends State<BlogsScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My blogs'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              AddBlogScreen.push(context);
-            },
-            icon: Icon(Icons.add),
-          ),
-        ],
-      ),
+      key: sharedScaffoldKey,
+      endDrawer: authState.user != null ? const MyDrawer() : null,
+      appBar: MyAppbar(scaffoldKey: sharedScaffoldKey),
       body: content,
-      bottomNavigationBar: authState.user != null ? BottomNavigation() : null,
+      bottomNavigationBar: authState.user != null && !isDesktop(context)
+          ? BottomNavigation()
+          : null,
     );
   }
 }
+
+
+//  actions: [
+//           IconButton(
+//             onPressed: () {
+//               AddBlogScreen.push(context);
+//             },
+//             icon: Icon(Icons.add),
+//           ),
+//         ],

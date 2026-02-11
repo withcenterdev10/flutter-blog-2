@@ -6,9 +6,12 @@ import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/widgets/blog/blog.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
 import 'package:flutter_blog_2/widgets/home_avatar.dart';
+import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+
+import '../utils.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,8 +30,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
   bool isDesktop(BuildContext context) {
     return MediaQuery.of(context).size.width >= 900;
   }
@@ -71,42 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        actions: [const SizedBox()],
-        title: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: Row(
-              children: [
-                GestureDetector(
-                  child: Text("Home"),
-                  onTap: () {
-                    handleNavigationClick(context, 0);
-                  },
-                ),
-                const Spacer(),
-                if (isDesktop(context))
-                  TextButton(
-                    onPressed: () {
-                      handleNavigationClick(context, 1);
-                    },
-                    child: const Text("My Blogs"),
-                  ),
-                HomeAvatar(scaffoldKey: scaffoldKey),
-              ],
-            ),
-          ),
-        ),
-
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(height: 1, thickness: 1),
-        ),
-      ),
-
+      key: sharedScaffoldKey,
+      appBar: MyAppbar(scaffoldKey: sharedScaffoldKey),
       endDrawer: authState.user != null ? const MyDrawer() : null,
       body: SafeArea(
         child: Center(

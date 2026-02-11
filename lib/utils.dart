@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_blog_2/dio.dart';
+import 'package:flutter/material.dart';
 
 enum ExtraAuthProperties { displayName }
 
@@ -10,6 +11,8 @@ enum Pages { profile, blogs, comments }
 enum Tables { blogs }
 
 enum CommentParentType { blog, comment }
+
+final GlobalKey<ScaffoldState> sharedScaffoldKey = GlobalKey<ScaffoldState>();
 
 const int imageLimit = 3;
 
