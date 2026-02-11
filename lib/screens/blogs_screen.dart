@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
+import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
 import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
@@ -37,9 +38,11 @@ class _BlogsScreenState extends State<BlogsScreen> {
     final blogsState = context.watch<BlogProvider>().getBlogsState;
     final authState = context.watch<AuthProvider>().getState;
     final scaffoldKey = GlobalKey<ScaffoldState>();
+    bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
-    Widget content = Center(
-      child: const SizedBox(
+    Widget content = Align(
+      alignment: AlignmentGeometry.center,
+      child: SizedBox(
         width: 15,
         height: 15,
         child: CircularProgressIndicator(strokeWidth: 2),
@@ -63,20 +66,34 @@ class _BlogsScreenState extends State<BlogsScreen> {
       key: scaffoldKey,
       endDrawer: authState.user != null ? const MyDrawer() : null,
       appBar: MyAppbar(scaffoldKey: scaffoldKey),
-      body: content,
-      bottomNavigationBar: authState.user != null && !isDesktop(context)
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Column(
+              children: [
+                if (isDesktop) ...<Widget>[
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Spacer(),
+                      TextButton.icon(
+                        onPressed: () => AddBlogScreen.push(context),
+                        icon: const Icon(Icons.add),
+                        label: const Text("Add Blog"),
+                      ),
+                    ],
+                  ),
+                ],
+                Expanded(child: content),
+              ],
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: authState.user != null && !isDesktop
           ? BottomNavigation()
           : null,
     );
   }
 }
-
-
-//  actions: [
-//           IconButton(
-//             onPressed: () {
-//               AddBlogScreen.push(context);
-//             },
-//             icon: Icon(Icons.add),
-//           ),
-//         ],
