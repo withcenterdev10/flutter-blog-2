@@ -221,6 +221,7 @@ class _CommentInputState extends State<CommentInput>
   @override
   Widget build(BuildContext context) {
     final commentState = context.watch<CommentProvider>().getState;
+    bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     if (commentState.id != null && !commentState.isDeleting) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -280,7 +281,7 @@ class _CommentInputState extends State<CommentInput>
               8,
               4,
               8,
-              4 + MediaQuery.of(context).viewInsets.bottom,
+              (isDesktop ? 12 : 4) + MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Form(
               key: formKey,
