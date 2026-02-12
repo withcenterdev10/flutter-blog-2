@@ -25,6 +25,7 @@ class _EditBlogState extends State<EditBlog> {
   late TextEditingController blogController;
   List<BlogImage> selectedBlogImages = [];
   List<File> selectedImages = [];
+  List<Uint8List> selectedWebImages = [];
 
   void removeImage(String imageId) {
     setState(() {
@@ -86,14 +87,20 @@ class _EditBlogState extends State<EditBlog> {
     ];
 
     var updatedSelectedImages = selectedImages;
+    var updatedSelectedWebImages = selectedWebImages;
 
     if (mobileImage != null) {
       updatedSelectedImages.insert(0, mobileImage);
     }
 
+    if (webImage != null) {
+      updatedSelectedWebImages.insert(0, webImage);
+    }
+
     setState(() {
       selectedBlogImages = updatedImages;
       selectedImages = updatedSelectedImages;
+      selectedWebImages = updatedSelectedWebImages;
     });
   }
 
@@ -128,6 +135,7 @@ class _EditBlogState extends State<EditBlog> {
             userId: userId,
             title: title,
             newImages: selectedImages,
+            newWebImages: selectedWebImages,
             networkImages: remainingPreviousImgUrls,
           );
           message = "Update blog success";
@@ -156,6 +164,7 @@ class _EditBlogState extends State<EditBlog> {
               key: formKey,
               child: SingleChildScrollView(
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
@@ -227,7 +236,6 @@ class _EditBlogState extends State<EditBlog> {
                     const SizedBox(height: 16),
 
                     SizedBox(
-                      width: double.infinity,
                       child: ElevatedButton(
                         onPressed: onSubmit,
                         child: blogState.loading
