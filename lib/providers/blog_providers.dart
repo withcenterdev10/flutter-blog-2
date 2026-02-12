@@ -198,6 +198,7 @@ class BlogProvider extends ChangeNotifier {
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
     } catch (err) {
       debugPrint(err.toString());
+      rethrow;
     } finally {
       _setBlogState(getBlogState.copyWith(loading: false));
     }

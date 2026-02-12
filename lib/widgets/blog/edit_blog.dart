@@ -134,6 +134,7 @@ class _EditBlogState extends State<EditBlog> {
         } catch (error) {
           message = "Update blog failed";
           debugPrint(error.toString());
+          throw Exception("Update blog failed");
         } finally {
           if (context.mounted) {
             Navigator.of(context).pop();
