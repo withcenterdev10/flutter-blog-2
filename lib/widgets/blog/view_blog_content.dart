@@ -5,6 +5,7 @@ import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
+import 'package:flutter_blog_2/screens/home_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/avatar.dart';
 import 'package:flutter_blog_2/widgets/comment/comments.dart';
@@ -135,6 +136,14 @@ class _VewBlogContentState extends State<ViewBlogContent> {
             // Blog title
             Row(
               children: [
+                if (isDesktop)
+                  IconButton(
+                    onPressed: () {
+                      HomeScreen.go(context);
+                    },
+                    icon: Icon(Icons.arrow_back_ios_new_sharp),
+                  ),
+
                 Expanded(
                   child: Text(
                     softWrap: true,
