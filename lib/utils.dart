@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_blog_2/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +21,8 @@ Future<String> uploadImageToCloudinary({
   Uint8List? webImage,
 }) async {
   try {
-    final cloudName = dotenv.env['CLOUDINARY_NAME'];
-    final updatePreset = dotenv.env['CLOUDINARY_PRESET'];
+    final cloudName = String.fromEnvironment('CLOUDINARY_PRESET');
+    final updatePreset = String.fromEnvironment('CLOUDINARY_NAME');
 
     late MultipartFile multipartFile;
 

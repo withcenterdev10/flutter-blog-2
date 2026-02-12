@@ -4,15 +4,18 @@ import 'package:flutter_blog_2/providers/comment_provider.dart';
 import 'package:flutter_blog_2/providers/screen_provider.dart';
 import 'package:flutter_blog_2/router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 
+const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+const supabasePublishableDefaultKey = String.fromEnvironment(
+  'SUPABASE_PUBLISHABLE_DEFAULT_KEY',
+);
+
 Future<void> main() async {
-  await dotenv.load(fileName: ".env");
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_PUBLISHABLE_DEFAULT_KEY']!,
+    url: supabaseUrl,
+    anonKey: supabasePublishableDefaultKey,
   );
   runApp(
     MultiProvider(
