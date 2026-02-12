@@ -7,7 +7,6 @@ import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/widgets/blog/blog_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class EditBlog extends StatefulWidget {
@@ -236,6 +235,7 @@ class _EditBlogState extends State<EditBlog> {
                     const SizedBox(height: 16),
 
                     SizedBox(
+                      width: double.infinity,
                       child: ElevatedButton(
                         onPressed: onSubmit,
                         child: blogState.loading
