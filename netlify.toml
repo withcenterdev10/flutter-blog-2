@@ -1,5 +1,5 @@
 [build]
-command = "flutter build web --release"
+command = "flutter build web --release --dart-define=SUPABASE_URL=https://uoobzhkglbiwhwjrvljg.supabase.co --dart-define=SUPABASE_PUBLISHABLE_DEFAULT_KEY=sb_publishable_SFBM6cLLZ51aIrvpfDz4KQ_TlEEOQc0 --dart-define=CLOUDINARY_NAME=dmys15ako --dart-define=CLOUDINARY_PRESET=iblog_"
 publish = "build/web"
 
 [[plugins]]
