@@ -121,16 +121,31 @@ class _ProfileState extends State<Profile> {
 
     Widget avatar = Stack(
       children: [
-        CircleAvatar(
-          radius: 40,
-          child: Text(displayName.substring(0, 2).toString().toUpperCase()),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: CircleAvatar(
+            radius: 40,
+            child: Text(displayName.substring(0, 2).toString().toUpperCase()),
+          ),
         ),
         Positioned(
-          bottom: -4,
-          right: -4,
-          child: IconButton(
-            onPressed: openImagePicker,
-            icon: Icon(Icons.camera),
+          bottom: 0,
+          right: 0,
+          child: Container(
+            width: 25, // Width and height should be equal for a perfect circle
+            height: 25,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey.shade200, // The background color
+            ),
+            child: IconButton(
+              style: IconButton.styleFrom(
+                padding: EdgeInsets.zero, // Remove internal padding
+                minimumSize: Size(0, 0),
+              ),
+              onPressed: openImagePicker,
+              icon: Icon(Icons.camera, size: 20),
+            ),
           ),
         ),
       ],
@@ -146,9 +161,20 @@ class _ProfileState extends State<Profile> {
           Positioned(
             bottom: -4,
             right: -4,
-            child: IconButton(
-              onPressed: openImagePicker,
-              icon: Icon(Icons.camera),
+            child: Container(
+              height: 20,
+              width: 20,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                ),
+              ),
+              child: IconButton(
+                onPressed: openImagePicker,
+                icon: Icon(Icons.camera),
+              ),
             ),
           ),
         ],
