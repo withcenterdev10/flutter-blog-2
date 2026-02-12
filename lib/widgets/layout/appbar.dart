@@ -17,9 +17,7 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final authState = context.watch<AuthProvider>().getState;
 
-    bool isDesktop(BuildContext context) {
-      return MediaQuery.of(context).size.width >= 900;
-    }
+    bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     void handleNavigationClick(BuildContext context, int screenIndex) {
       context.read<ScreenProvider>().setScreen(screenIndex);
@@ -44,13 +42,18 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               GestureDetector(
-                child: Text("Home"),
+                child: isDesktop
+                    ? Text("Home")
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text("Home"),
+                      ),
                 onTap: () {
                   handleNavigationClick(context, 0);
                 },
               ),
               const Spacer(),
-              if (isDesktop(context) && authState.user != null)
+              if (isDesktop && authState.user != null)
                 TextButton(
                   onPressed: () {
                     handleNavigationClick(context, 1);
