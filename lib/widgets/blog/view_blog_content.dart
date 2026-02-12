@@ -133,29 +133,34 @@ class _VewBlogContentState extends State<ViewBlogContent> {
             ],
 
             // Blog title
-            Row(
-              children: [
-                Text(
-                  toUpperCaseFirstChar(widget.blog.title!),
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      softWrap: true,
+                      toUpperCaseFirstChar(widget.blog.title!),
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                  ),
 
-                if (isDesktop) ...<Widget>[
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      EditBlogScreen.push(context);
-                    },
-                    icon: const Icon(Icons.edit, size: 20),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      showDeleteDialog(context, widget.blog, authState);
-                    },
-                    icon: const Icon(Icons.delete, size: 20),
-                  ),
+                  if (isDesktop) ...<Widget>[
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {
+                        EditBlogScreen.push(context);
+                      },
+                      icon: const Icon(Icons.edit, size: 20),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDeleteDialog(context, widget.blog, authState);
+                      },
+                      icon: const Icon(Icons.delete, size: 20),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
 
             const SizedBox(height: 8),
