@@ -122,9 +122,9 @@ class _CommentInputState extends State<CommentInput>
       focusNode.requestFocus();
     }
 
-    if (commentState.isEditting) {
-      commentController = TextEditingController(text: commentState.comment);
-    }
+    // if (commentState.isEditting) {
+    //   commentController = TextEditingController(text: commentState.comment);
+    // }
 
     final bottomInset =
         PlatformDispatcher.instance.views.first.viewInsets.bottom;
@@ -232,6 +232,10 @@ class _CommentInputState extends State<CommentInput>
   Widget build(BuildContext context) {
     final commentState = context.watch<CommentProvider>().getState;
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
+
+    if (commentController.text != commentState.comment) {
+      commentController.text = commentState.comment;
+    }
 
     if (commentState.id != null && !commentState.isDeleting) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
