@@ -122,10 +122,6 @@ class _CommentInputState extends State<CommentInput>
       focusNode.requestFocus();
     }
 
-    // if (commentState.isEditting) {
-    //   commentController = TextEditingController(text: commentState.comment);
-    // }
-
     final bottomInset =
         PlatformDispatcher.instance.views.first.viewInsets.bottom;
     final isVisible = bottomInset > 0;
@@ -133,12 +129,12 @@ class _CommentInputState extends State<CommentInput>
     if (_keyboardVisible && !isVisible) {
       if (!isPickingImage) {
         context.read<CommentProvider>().resetState();
-        commentController = TextEditingController();
+        commentController.text = "";
       }
 
       focusNode.unfocus();
       if (!commentState.isEditting) {
-        commentController = TextEditingController();
+        commentController.text = "";
 
         setState(() {
           selectedBlogImages = [];
@@ -175,7 +171,7 @@ class _CommentInputState extends State<CommentInput>
               }
             }
           }
-          formKey.currentState!.reset();
+
           returnedComment = await context.read<CommentProvider>().updateComment(
             commentId: commentState.id!,
             userId: authState.user!.id,
@@ -213,7 +209,7 @@ class _CommentInputState extends State<CommentInput>
           ).showSnackBar(SnackBar(content: Text("Comment failed")));
         }
       } finally {
-        formKey.currentState!.reset();
+        commentController.clear();
         focusNode.unfocus();
 
         setState(() {
@@ -233,14 +229,15 @@ class _CommentInputState extends State<CommentInput>
     final commentState = context.watch<CommentProvider>().getState;
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
-    if (commentController.text != commentState.comment) {
-      commentController.text = commentState.comment;
-    }
-
     if (commentState.id != null && !commentState.isDeleting) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         focusNode.requestFocus();
         List<BlogImage> tempList = [];
+
+        if (commentController.text != commentState.comment &&
+            !commentState.loading) {
+          commentController.text = commentState.comment;
+        }
 
         if (commentState.imageUrls != null && commentState.isEditting) {
           for (var i = 0; i < commentState.imageUrls!.length; i++) {
