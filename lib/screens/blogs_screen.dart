@@ -40,12 +40,14 @@ class _BlogsScreenState extends State<BlogsScreen> {
       key: scaffoldKey,
       endDrawer: userAuthenticated != null ? const MyDrawer() : null,
       appBar: MyAppbar(scaffoldKey: scaffoldKey),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          AddBlogScreen.push(context);
-        },
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: !isDesktop
+          ? FloatingActionButton(
+              onPressed: () {
+                AddBlogScreen.push(context);
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(

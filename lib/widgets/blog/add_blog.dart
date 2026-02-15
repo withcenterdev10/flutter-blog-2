@@ -126,83 +126,88 @@ class _AddBlogState extends State<AddBlog> {
     }
 
     return SafeArea(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 720),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Add new blog",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    autofocus: true,
-                    maxLength: 50,
-                    controller: titleController,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(
-                      labelText: "Title",
-                      border: OutlineInputBorder(),
+      child: Align(
+        alignment: .topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 720),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: .max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Add new blog",
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter title of your blog';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    maxLines: 6,
-                    controller: blogController,
-                    keyboardType: TextInputType.multiline,
-                    decoration: const InputDecoration(
-                      labelText: "Blog",
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Blog must not be empty';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  const Divider(),
-                  Row(
-                    children: [
-                      const Text("Upload images"),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: handleAddImage,
-                        icon: const Icon(Icons.add_a_photo, size: 20),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      autofocus: true,
+                      maxLength: 50,
+                      controller: titleController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        labelText: "Title",
+                        border: OutlineInputBorder(),
                       ),
-                    ],
-                  ),
-                  if (selectedBlogImages.isNotEmpty)
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter title of your blog';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      maxLines: 6,
+                      controller: blogController,
+                      keyboardType: TextInputType.multiline,
+                      decoration: const InputDecoration(
+                        labelText: "Blog",
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Blog must not be empty';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    Row(
+                      children: [
+                        const Text("Upload images"),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: handleAddImage,
+                          icon: const Icon(Icons.add_a_photo, size: 20),
+                        ),
+                      ],
+                    ),
+                    if (selectedBlogImages.isNotEmpty)
+                      SizedBox(
+                        height: 100,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: selectedBlogImages.length,
+                          itemBuilder: (context, index) =>
+                              selectedBlogImages[index],
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(width: 12),
+                        ),
+                      ),
+                    const SizedBox(height: 16),
                     SizedBox(
-                      height: 100,
-                      child: ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: selectedBlogImages.length,
-                        itemBuilder: (context, index) =>
-                            selectedBlogImages[index],
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
-                      ),
+                      width: double.infinity,
+                      child: SubmitButton(onSubmit: onSubmit, loading: loading),
                     ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: SubmitButton(onSubmit: onSubmit, loading: loading),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
