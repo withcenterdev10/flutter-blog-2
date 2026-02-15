@@ -154,7 +154,8 @@ class _EditBlogState extends State<EditBlog> {
     }
 
     return SafeArea(
-      child: Center(
+      child: Align(
+        alignment: .topCenter,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 720),
           child: Padding(
@@ -164,7 +165,7 @@ class _EditBlogState extends State<EditBlog> {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: .start,
                   children: [
                     Text(
                       "Update Blog",
@@ -222,14 +223,12 @@ class _EditBlogState extends State<EditBlog> {
                     ),
 
                     if (selectedBlogImages.isNotEmpty)
-                      SizedBox(
-                        height: 100,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: selectedBlogImages.length,
-                          itemBuilder: (context, index) =>
-                              selectedBlogImages[index],
-                        ),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: selectedBlogImages.map((selectBlogImage) {
+                          return selectBlogImage;
+                        }).toList(),
                       ),
 
                     const SizedBox(height: 16),
