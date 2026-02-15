@@ -9,18 +9,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 
 class ProfileImageBottomSheet extends StatefulWidget {
-  const ProfileImageBottomSheet({
-    super.key,
-    this.profileImage,
-    this.selectedImage,
-    this.webImage,
-    required this.displayName,
-  });
-
-  final String? profileImage;
+  const ProfileImageBottomSheet({super.key, this.selectedImage, this.webImage});
   final Uint8List? webImage;
   final File? selectedImage;
-  final String displayName;
   @override
   State<ProfileImageBottomSheet> createState() =>
       _ProfileImageBottomSheetState();
@@ -86,7 +77,17 @@ class _ProfileImageBottomSheetState extends State<ProfileImageBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthProvider>().getState;
+    final (:profileImage, :displayName) = context
+        .select<AuthProvider, ({String? profileImage, String displayName})>((
+          provider,
+        ) {
+          final user = provider.getState.user;
+          return (
+            profileImage: user?.userMetadata?['image_url'],
+            displayName: user?.userMetadata?['display_name'],
+          );
+        });
+
     return Column(
       children: [
         Align(
@@ -108,10 +109,10 @@ class _ProfileImageBottomSheetState extends State<ProfileImageBottomSheet> {
                 Stack(
                   children: [
                     ProfileImageBuilder(
-                      profileImage: widget.profileImage,
+                      profileImage: profileImage,
                       selectedImage: selectedImage,
                       webImage: webImage,
-                      displayName: widget.displayName,
+                      displayName: displayName,
                     ),
                     if (selectedImage != null || webImage != null)
                       Positioned(
@@ -165,10 +166,15 @@ class _ProfileImageBottomSheetState extends State<ProfileImageBottomSheet> {
                 ],
 
                 if ((selectedImage != null || webImage != null))
-                  SubmitButton(
-                    loading: authState.loading,
-                    onSubmit: () {
-                      onSubmit(context);
+                  Selector<AuthProvider, bool>(
+                    selector: (_, provider) => provider.getState.loading,
+                    builder: (_, loading, _) {
+                      return SubmitButton(
+                        loading: loading,
+                        onSubmit: () {
+                          onSubmit(context);
+                        },
+                      );
                     },
                   ),
               ],

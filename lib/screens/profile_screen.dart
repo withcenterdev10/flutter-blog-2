@@ -53,8 +53,6 @@ class _ProfileState extends State<Profile> {
     final scaffoldKey = GlobalKey<ScaffoldState>();
 
     final authState = context.watch<AuthProvider>().getState;
-    final profileImage = authState.user?.userMetadata?['image_url'];
-    final displayName = authState.user?.userMetadata?['display_name'];
 
     void onSubmit() async {
       if (formKey.currentState!.validate()) {
@@ -77,10 +75,14 @@ class _ProfileState extends State<Profile> {
       }
     }
 
+    final userId = context.select<AuthProvider, String?>(
+      (provider) => provider.getState.user?.id,
+    );
+
     return Scaffold(
       key: scaffoldKey,
       appBar: MyAppbar(scaffoldKey: scaffoldKey),
-      endDrawer: authState.user != null ? const MyDrawer() : null,
+      endDrawer: userId != null ? MyDrawer() : null,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -88,12 +90,7 @@ class _ProfileState extends State<Profile> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               children: [
-                Center(
-                  child: ProfileImage(
-                    displayName: displayName,
-                    profileImage: profileImage,
-                  ),
-                ),
+                Center(child: ProfileImage()),
                 const SizedBox(height: 20),
                 const Divider(),
                 const SizedBox(height: 20),

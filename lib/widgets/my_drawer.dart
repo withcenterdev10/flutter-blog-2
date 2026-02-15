@@ -15,7 +15,6 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<AuthProvider>().getState;
     void handleLogout() async {
       String? message;
       try {
