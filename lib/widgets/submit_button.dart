@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class SubmitButton extends StatelessWidget {
   const SubmitButton({
     super.key,
+    this.text,
     required this.onSubmit,
     required this.loading,
   });
 
   final void Function() onSubmit;
   final bool loading;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class SubmitButton extends StatelessWidget {
                 ],
               )
             : Text(
-                "Submit",
+                text ?? "Submit",
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
