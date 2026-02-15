@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/models/blog_user_model.dart';
+import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/avatar.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewBlogHeader extends StatelessWidget {
   const ViewBlogHeader({super.key, required this.showDeleteDialog});
@@ -12,6 +14,10 @@ class ViewBlogHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userAuthenticated = context.select<AuthProvider, User?>(
+      (p) => p.getState.user,
+    );
+
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -55,7 +61,7 @@ class ViewBlogHeader extends StatelessWidget {
               ],
             ),
           ),
-          if (isDesktop) ...<Widget>[
+          if (isDesktop && userAuthenticated != null) ...<Widget>[
             IconButton(
               onPressed: () {
                 EditBlogScreen.push(context);
