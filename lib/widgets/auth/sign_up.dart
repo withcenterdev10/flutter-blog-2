@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/widgets/auth/sign_in.dart';
+import 'package:flutter_blog_2/widgets/submit_button.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -54,6 +55,9 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    final loading = context.select<AuthProvider, bool>(
+      (p) => p.getState.loading,
+    );
     void onSubmit() async {
       if (formKey.currentState!.validate()) {
         final name = nameController.text;
@@ -84,7 +88,6 @@ class _SignUpState extends State<SignUp> {
       }
     }
 
-    final authState = context.watch<AuthProvider>().getState;
     return Form(
       key: formKey,
       child: Padding(
@@ -161,26 +164,7 @@ class _SignUpState extends State<SignUp> {
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: onSubmit,
-                child: authState.loading
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: 15,
-                            height: 15,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                          SizedBox(width: 8),
-                          Text("Submitting..."),
-                        ],
-                      )
-                    : Text(
-                        "Submit",
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-              ),
+              child: SubmitButton(onSubmit: onSubmit, loading: loading),
             ),
             const SizedBox(height: 16),
             TextButton(

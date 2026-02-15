@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/screens/auth/sign_up.dart';
 import 'package:flutter_blog_2/screens/home_screen.dart';
+import 'package:flutter_blog_2/widgets/submit_button.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -45,8 +46,9 @@ class _SignInState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthProvider>().getState;
-
+    final loading = context.select<AuthProvider, bool>(
+      (p) => p.getState.loading,
+    );
     void onSubmit() async {
       if (formKey.currentState!.validate()) {
         final email = emailController.text;
@@ -147,30 +149,12 @@ class _SignInState extends State<SignInScreen> {
                     // ===== SUBMIT BUTTON =====
                     SizedBox(
                       height: 48,
-                      child: ElevatedButton(
-                        onPressed: onSubmit,
-                        child: authState.loading
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text("Submitting..."),
-                                ],
-                              )
-                            : Text(
-                                "Sign In",
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
+                      child: SubmitButton(
+                        onSubmit: onSubmit,
+                        loading: loading,
+                        text: "Sign In",
                       ),
                     ),
-
                     const SizedBox(height: 16),
 
                     // ===== NAV =====
