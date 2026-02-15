@@ -6,6 +6,7 @@ import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:flutter_blog_2/widgets/blog/blog_image.dart';
+import 'package:flutter_blog_2/widgets/submit_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -41,16 +42,16 @@ class _AddBlogState extends State<AddBlog> {
     File? mobileImage;
     Uint8List? webImage;
 
+    if (image == null) {
+      return (mobileImage: null, webImage: null);
+    }
+
     // mobile
     if (!kIsWeb) {
-      if (image != null) {
-        mobileImage = File(image.path);
-      }
+      mobileImage = File(image.path);
     } else {
       // web
-      if (image != null) {
-        webImage = await image.readAsBytes();
-      }
+      webImage = await image.readAsBytes();
     }
 
     return (mobileImage: mobileImage, webImage: webImage);
@@ -87,11 +88,13 @@ class _AddBlogState extends State<AddBlog> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = context.watch<AuthProvider>().getState;
-    final blogState = context.watch<BlogProvider>().getBlogState;
+    final loading = context.select<BlogProvider, bool>(
+      (p) => p.getBlogState.loading,
+    );
 
     void onSubmit() async {
       if (formKey.currentState!.validate()) {
+        final userState = context.read<AuthProvider>().getState;
         final title = titleController.text;
         final blog = titleController.text;
         final userId = userState.user!.id;
@@ -199,28 +202,7 @@ class _AddBlogState extends State<AddBlog> {
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: onSubmit,
-                        child: blogState.loading
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  SizedBox(
-                                    width: 15,
-                                    height: 15,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text("Submitting..."),
-                                ],
-                              )
-                            : Text(
-                                "Submit",
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                      ),
+                      child: SubmitButton(onSubmit: onSubmit, loading: loading),
                     ),
                   ],
                 ),

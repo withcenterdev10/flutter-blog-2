@@ -30,9 +30,7 @@ class BlogsScreen extends StatefulWidget {
 }
 
 class _BlogsScreenState extends State<BlogsScreen> {
-  bool isDesktop(BuildContext context) {
-    return MediaQuery.of(context).size.width >= 900;
-  }
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +40,6 @@ class _BlogsScreenState extends State<BlogsScreen> {
     final userAuthenticated = context.select<AuthProvider, User?>(
       (p) => p.getState.user,
     );
-    final scaffoldKey = GlobalKey<ScaffoldState>();
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     Widget content = Align(
