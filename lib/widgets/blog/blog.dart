@@ -44,13 +44,18 @@ class Blog extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: .start,
                       children: [
                         Text(
-                          truncateText(blog.title!),
+                          toUpperCaseFirstChar(truncateText(blog.title!)),
                           maxLines: 1,
                           softWrap: false,
                           overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          timeAgo(blog.createdAt!),
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
                     ),

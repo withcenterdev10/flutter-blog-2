@@ -9,6 +9,7 @@ class BlogModel {
     required this.user,
     required this.imageUrls,
     required this.comments,
+    required this.createdAt,
     this.loading = false,
   });
   final String? id;
@@ -18,6 +19,7 @@ class BlogModel {
   final bool loading;
   final List<String>? imageUrls;
   final List<CommentModel>? comments;
+  final String? createdAt;
 
   factory BlogModel.initial() {
     return BlogModel(
@@ -28,6 +30,7 @@ class BlogModel {
       comments: null,
       loading: false,
       imageUrls: null,
+      createdAt: null,
     );
   }
 
@@ -37,6 +40,7 @@ class BlogModel {
       'blog': final String blog,
       'title': final String title,
       'image_urls': final List<dynamic>? imageUrls,
+      'created_at': final String createdAt,
       'user': final Map<String, dynamic> user,
     }) {
       return BlogModel(
@@ -47,6 +51,7 @@ class BlogModel {
             ? imageUrls.map((img) => img as String).toList()
             : [],
         comments: [],
+        createdAt: createdAt,
         user: BlogUserModel.formJson(user),
       );
     } else {
@@ -63,10 +68,12 @@ class BlogModel {
     BlogUserModel? user,
     bool? loading,
     List<String>? imageUrls,
+    String? createdAt,
     List<CommentModel>? comments,
   }) {
     return BlogModel(
       imageUrls: imageUrls ?? this.imageUrls,
+      createdAt: createdAt ?? this.createdAt,
       id: id ?? this.id,
       comments: comments ?? this.comments,
       title: title ?? this.title,
