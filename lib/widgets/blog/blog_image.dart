@@ -58,24 +58,22 @@ class _BlogImageState extends State<BlogImage> {
 
     return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Container(
-            margin: EdgeInsets.zero,
-            decoration: BoxDecoration(
-              border: BoxBorder.all(width: 1),
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-            ),
-            child: image,
+        Container(
+          margin: EdgeInsets.zero,
+          decoration: BoxDecoration(
+            border: BoxBorder.all(width: 1),
+            borderRadius: BorderRadius.all(Radius.circular(4)),
           ),
+          child: image,
         ),
         Positioned(
-          top: -2,
+          top: 0,
           right: 0,
           child: Container(
             height: 20,
             width: 20,
             decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
               color: const Color.fromARGB(255, 255, 255, 255),
               shape: BoxShape.circle,
             ),

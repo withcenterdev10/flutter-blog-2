@@ -192,13 +192,11 @@ class _AddBlogState extends State<AddBlog> {
                       SizedBox(
                         height: 100,
                         child: ListView.separated(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           scrollDirection: Axis.horizontal,
                           itemCount: selectedBlogImages.length,
                           itemBuilder: (context, index) =>
                               selectedBlogImages[index],
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(width: 12),
+                          separatorBuilder: (_, __) => const SizedBox(width: 6),
                         ),
                       ),
                     const SizedBox(height: 16),
