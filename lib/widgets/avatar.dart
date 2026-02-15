@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Avatar extends StatefulWidget {
+class Avatar extends StatelessWidget {
   const Avatar({
     super.key,
     required this.profileImage,
@@ -11,21 +11,12 @@ class Avatar extends StatefulWidget {
   final String displayName;
 
   @override
-  State<StatefulWidget> createState() {
-    return _AvatarState();
-  }
-}
-
-class _AvatarState extends State<Avatar> {
-  @override
   build(BuildContext context) {
-    if (widget.profileImage != null) {
-      return CircleAvatar(backgroundImage: NetworkImage(widget.profileImage!));
+    if (profileImage != null) {
+      return CircleAvatar(backgroundImage: NetworkImage(profileImage!));
     } else {
       return CircleAvatar(
-        child: Text(
-          widget.displayName.substring(0, 2).toString().toUpperCase(),
-        ),
+        child: Text(displayName.substring(0, 2).toString().toUpperCase()),
       );
     }
   }
