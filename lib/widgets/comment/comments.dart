@@ -21,27 +21,30 @@ class _CommentsState extends State<Comments> {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              Icon(Icons.message),
-              const SizedBox(width: 5),
-              Text("Comments"),
-            ],
-          ),
-          const Divider(),
-          if (blogState.comments != null)
-            ...blogState.comments!.map((comment) {
-              return Column(
-                spacing: 8,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Comment(comment: comment)],
-              );
-            }),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                Icon(Icons.message),
+                const SizedBox(width: 5),
+                Text("Comments"),
+              ],
+            ),
+            const Divider(),
+            if (blogState.comments != null)
+              ...blogState.comments!.map((comment) {
+                return Column(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [Comment(comment: comment)],
+                );
+              }),
+          ],
+        ),
       ),
     );
   }

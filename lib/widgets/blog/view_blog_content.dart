@@ -4,6 +4,7 @@ import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
+import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_header.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_images.dart';
 import 'package:flutter_blog_2/widgets/comment/comments.dart';
@@ -100,7 +101,6 @@ class _VewBlogContentState extends State<ViewBlogContent> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 720),
         child: ListView(
-          padding: const EdgeInsets.all(16),
           children: [
             ViewBlogHeader(
               showDeleteDialog: () {
@@ -112,9 +112,11 @@ class _VewBlogContentState extends State<ViewBlogContent> {
               const Divider(),
               const SizedBox(height: 12),
             ],
-            const SizedBox(height: 16),
             // Blog content
-            Text(widget.blog.blog!),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(toUpperCaseFirstChar(widget.blog.blog!)),
+            ),
             const SizedBox(height: 16),
 
             // Blog images
