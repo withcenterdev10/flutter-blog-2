@@ -103,6 +103,7 @@ class _ProfileImageBottomSheetState extends State<ProfileImageBottomSheet> {
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              spacing: 8,
               children: [
                 Stack(
                   children: [
