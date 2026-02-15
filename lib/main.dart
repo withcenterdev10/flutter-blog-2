@@ -7,10 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 
-const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
-const supabasePublishableDefaultKey = String.fromEnvironment(
-  'SUPABASE_PUBLISHABLE_DEFAULT_KEY',
-);
+const supabaseUrl = "https://uoobzhkglbiwhwjrvljg.supabase.co";
+const supabasePublishableDefaultKey =
+    "sb_publishable_SFBM6cLLZ51aIrvpfDz4KQ_TlEEOQc0";
 
 Future<void> main() async {
   await Supabase.initialize(

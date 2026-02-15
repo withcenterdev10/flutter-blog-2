@@ -8,7 +8,7 @@
             "name": "flutter_blog_2",
             "request": "launch",
             "type": "dart",
-            "deviceId": "chrome",
+            "deviceId": "chrome"
         },
         {
             "name": "flutter_blog_2 (profile mode)",

@@ -21,8 +21,10 @@ Future<String> uploadImageToCloudinary({
   Uint8List? webImage,
 }) async {
   try {
-    final cloudName = String.fromEnvironment('CLOUDINARY_PRESET');
-    final updatePreset = String.fromEnvironment('CLOUDINARY_NAME');
+    // final cloudName = String.fromEnvironment('CLOUDINARY_PRESET');
+    // final updatePreset = String.fromEnvironment('CLOUDINARY_NAME');
+    final cloudName = "dmys15ako";
+    final updatePreset = "iblog_";
 
     late MultipartFile multipartFile;
 
