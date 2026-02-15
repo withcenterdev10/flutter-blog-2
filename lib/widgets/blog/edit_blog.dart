@@ -138,6 +138,9 @@ class _EditBlogState extends State<EditBlog> {
           newWebImages: selectedWebImages,
           networkImages: remainingPreviousImgUrls,
         );
+
+        debugPrint("${selectedWebImages.length}");
+
         message = "Update blog success";
       } catch (error) {
         message = "Update blog failed";

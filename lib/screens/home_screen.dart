@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/screen_provider.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
-import 'package:flutter_blog_2/widgets/blog/blog.dart';
 import 'package:flutter_blog_2/widgets/blog/blog_content.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
 import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
-import 'package:flutter_blog_2/widgets/spinner.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
