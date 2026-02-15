@@ -4,10 +4,9 @@ import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
-import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
-import 'package:flutter_blog_2/screens/home_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
-import 'package:flutter_blog_2/widgets/avatar.dart';
+import 'package:flutter_blog_2/widgets/blog/view_blog_author.dart';
+import 'package:flutter_blog_2/widgets/blog/view_blog_title_and_actions.dart';
 import 'package:flutter_blog_2/widgets/comment/comments.dart';
 import 'package:provider/provider.dart';
 
@@ -57,11 +56,10 @@ class _VewBlogContentState extends State<ViewBlogContent> {
     }
   }
 
-  Future<void> showDeleteDialog(
-    BuildContext context,
-    BlogModel blogState,
-    AuthModel authState,
-  ) async {
+  Future<void> showDeleteDialog(BuildContext context) async {
+    final authState = context.read<AuthProvider>().getState;
+    final blogState = context.read<BlogProvider>().getBlogState;
+
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -99,75 +97,23 @@ class _VewBlogContentState extends State<ViewBlogContent> {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
-    final authState = context.watch<AuthProvider>().getState;
-
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 720),
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            if (!isDesktop)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Avatar(
-                    profileImage: widget.blog.user!.imageUrl,
-                    displayName: widget.blog.user!.displayName!,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      toUpperCaseFirstChar(widget.blog.user!.displayName!),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                ],
-              ),
-
+            if (!isDesktop) ViewBlogAuthor(),
             if (!isDesktop) ...<Widget>[
               const SizedBox(height: 12),
               const Divider(),
               const SizedBox(height: 12),
             ],
 
-            // Blog title
-            Row(
-              children: [
-                if (isDesktop)
-                  IconButton(
-                    onPressed: () {
-                      HomeScreen.go(context);
-                    },
-                    icon: Icon(Icons.arrow_back_ios_new_sharp),
-                  ),
-
-                Expanded(
-                  child: Text(
-                    softWrap: true,
-                    toUpperCaseFirstChar(widget.blog.title!),
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                ),
-
-                if (isDesktop) ...<Widget>[
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      EditBlogScreen.push(context);
-                    },
-                    icon: const Icon(Icons.edit, size: 20),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      showDeleteDialog(context, widget.blog, authState);
-                    },
-                    icon: const Icon(Icons.delete, size: 20),
-                  ),
-                ],
-              ],
+            ViewBlogTitleAndActions(
+              showDeleteDialog: () {
+                showDeleteDialog(context);
+              },
             ),
 
             const SizedBox(height: 8),

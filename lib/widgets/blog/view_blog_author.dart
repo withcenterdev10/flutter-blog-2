@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/models/blog_user_model.dart';
+import 'package:flutter_blog_2/providers/blog_providers.dart';
+import 'package:flutter_blog_2/utils.dart';
+import 'package:flutter_blog_2/widgets/avatar.dart';
+import 'package:provider/provider.dart';
+
+class ViewBlogAuthor extends StatelessWidget {
+  const ViewBlogAuthor({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Selector<BlogProvider, BlogUserModel?>(
+          selector: (_, provider) => provider.getBlogState.user,
+          builder: (_, user, _) {
+            return Avatar(
+              profileImage: user?.imageUrl,
+              displayName: user!.displayName!,
+            );
+          },
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Selector<BlogProvider, BlogUserModel?>(
+            selector: (_, provider) => provider.getBlogState.user,
+            builder: (_, user, _) {
+              return Text(
+                toUpperCaseFirstChar(user!.displayName!),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
