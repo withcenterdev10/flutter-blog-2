@@ -24,16 +24,30 @@ class ViewBlogAuthor extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: Selector<BlogProvider, BlogUserModel?>(
-            selector: (_, provider) => provider.getBlogState.user,
-            builder: (_, user, _) {
-              return Text(
-                toUpperCaseFirstChar(user!.displayName!),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium,
-              );
-            },
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Selector<BlogProvider, BlogUserModel?>(
+                selector: (_, provider) => provider.getBlogState.user,
+                builder: (_, user, _) {
+                  return Text(
+                    toUpperCaseFirstChar(user!.displayName!),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  );
+                },
+              ),
+              Selector<BlogProvider, String>(
+                selector: (_, provider) => provider.getBlogState.createdAt!,
+                builder: (_, createdAt, _) {
+                  return Text(
+                    timeAgo(createdAt),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  );
+                },
+              ),
+            ],
           ),
         ),
       ],

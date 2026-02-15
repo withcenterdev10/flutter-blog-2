@@ -116,11 +116,13 @@ class _VewBlogContentState extends State<ViewBlogContent> {
               },
             ),
 
-            const SizedBox(height: 8),
-            Text(
-              "Author: ${toUpperCaseFirstChar(widget.blog.user!.displayName!)}",
-            ),
-            const SizedBox(height: 16),
+            if (isDesktop) ...<Widget>[
+              const SizedBox(height: 8),
+              Text(
+                "Author: ${toUpperCaseFirstChar(widget.blog.user!.displayName!)}",
+              ),
+              const SizedBox(height: 16),
+            ],
             // Blog content
             Text(widget.blog.blog!),
             const SizedBox(height: 16),

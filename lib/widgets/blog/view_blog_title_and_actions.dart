@@ -22,18 +22,17 @@ class ViewBlogTitleAndActions extends StatelessWidget {
             icon: Icon(Icons.arrow_back_ios_new_sharp),
           ),
 
-        Expanded(
-          child: Selector<BlogProvider, String>(
-            selector: (_, provider) => provider.getBlogState.title!,
-            builder: (_, title, _) => Text(
-              softWrap: true,
-              toUpperCaseFirstChar(title),
-              style: Theme.of(context).textTheme.headlineLarge,
+        if (isDesktop) ...<Widget>[
+          Expanded(
+            child: Selector<BlogProvider, String>(
+              selector: (_, provider) => provider.getBlogState.title!,
+              builder: (_, title, _) => Text(
+                softWrap: true,
+                toUpperCaseFirstChar(title),
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
             ),
           ),
-        ),
-
-        if (isDesktop) ...<Widget>[
           const Spacer(),
           IconButton(
             onPressed: () {
