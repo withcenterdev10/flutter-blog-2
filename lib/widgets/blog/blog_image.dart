@@ -71,7 +71,7 @@ class _BlogImageState extends State<BlogImage> {
         ),
         Positioned(
           top: -2,
-          right: 4,
+          right: 0,
           child: Container(
             height: 20,
             width: 20,
