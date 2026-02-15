@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/screen_provider.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/widgets/blog/blog.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
-import 'package:flutter_blog_2/widgets/home_avatar.dart';
 import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
+import 'package:flutter_blog_2/widgets/spinner.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-
-import '../utils.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,9 +30,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isDesktop(BuildContext context) {
-    return MediaQuery.of(context).size.width >= 900;
-  }
+  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   void handleNavigationClick(BuildContext context, int screenIndex) {
     context.read<ScreenProvider>().setScreen(screenIndex);
@@ -49,21 +47,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final blogsState = context.watch<BlogProvider>().getBlogsState;
-    final authState = context.watch<AuthProvider>().getState;
-    final scaffoldKey = GlobalKey<ScaffoldState>();
-
-    Widget content = const SizedBox(
-      width: 15,
-      height: 15,
-      child: CircularProgressIndicator(strokeWidth: 2),
+    bool isDesktop = MediaQuery.of(context).size.width >= 900;
+    final blogsState = context.select<BlogProvider, BlogsModel>(
+      (p) => p.getBlogsState,
+    );
+    final userAuthenticated = context.select<AuthProvider, User?>(
+      (p) => p.getState.user,
     );
 
+    Widget content = const Spinner();
+
     if (blogsState.blogs.isNotEmpty && !blogsState.loading) {
-      content = ListView.builder(
-        itemCount: blogsState.blogs.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Blog(blog: blogsState.blogs[index]);
+      content = Selector<BlogProvider, BlogsModel>(
+        selector: (_, provider) => provider.getBlogsState,
+        builder: (_, value, _) {
+          return ListView.builder(
+            itemCount: 1,
+            itemBuilder: (BuildContext context, int index) {
+              return Blog(blog: value.blogs[0]);
+            },
+          );
         },
       );
     }
@@ -75,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: MyAppbar(scaffoldKey: scaffoldKey),
-      endDrawer: authState.user != null ? const MyDrawer() : null,
+      endDrawer: userAuthenticated != null ? const MyDrawer() : null,
       body: SafeArea(
         child: Center(
           child: ConstrainedBox(
@@ -84,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: authState.user != null && !isDesktop(context)
+      bottomNavigationBar: userAuthenticated != null && !isDesktop
           ? BottomNavigation()
           : null,
     );
