@@ -5,6 +5,7 @@ import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/avatar.dart';
 import 'package:provider/provider.dart';
+import 'dart:ui';
 
 class Blog extends StatelessWidget {
   const Blog({super.key, required this.blog});
@@ -23,8 +24,11 @@ class Blog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
+    bool isDesktop = MediaQuery.of(context).size.width >= 900;
     const horizontalValues = 12.0;
     final imageWidth = (deviceWidth - (horizontalValues * 2)) / 2;
+    final imageLength = blog.imageUrls!.length > 2 ? 2 : blog.imageUrls!.length;
+
     return Card(
       margin: EdgeInsets.all(12),
       clipBehavior: Clip.hardEdge,
@@ -87,12 +91,37 @@ class Blog extends StatelessWidget {
             if (blog.imageUrls != null)
               Wrap(
                 children: [
-                  for (var i = 0; i < blog.imageUrls!.length; i++)
-                    Image.network(
-                      blog.imageUrls![i],
-                      width: imageWidth,
-                      height: 150,
-                      fit: BoxFit.cover,
+                  for (var i = 0; i < imageLength; i++)
+                    Stack(
+                      children: [
+                        Image.network(
+                          blog.imageUrls![i],
+                          width: isDesktop ? 348 : imageWidth,
+                          height: isDesktop ? 325 : 150,
+                          fit: BoxFit.cover,
+                        ),
+
+                        if (i == 1 && blog.imageUrls!.length > 2)
+                          Positioned.fill(
+                            child: ClipRect(
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+                                child: Container(
+                                  color: Colors.black.withAlpha(10),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "${blog.imageUrls!.length - 2}+",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                 ],
               ),
