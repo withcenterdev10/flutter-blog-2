@@ -41,7 +41,9 @@ class _BlogsScreenState extends State<BlogsScreen> {
       endDrawer: userAuthenticated != null ? const MyDrawer() : null,
       appBar: MyAppbar(scaffoldKey: scaffoldKey),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          AddBlogScreen.push(context);
+        },
         child: Icon(Icons.add),
       ),
       body: SafeArea(
