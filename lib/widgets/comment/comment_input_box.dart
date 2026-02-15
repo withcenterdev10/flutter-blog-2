@@ -235,7 +235,8 @@ class _CommentInputState extends State<CommentInput>
         List<BlogImage> tempList = [];
 
         if (commentController.text != commentState.comment &&
-            !commentState.loading) {
+            !commentState.loading &&
+            commentState.isEditting) {
           commentController.text = commentState.comment;
         }
 
