@@ -36,14 +36,14 @@ class _BlogImageState extends State<BlogImage> {
         image = Image.memory(
           widget.webImage!,
           height: 70,
-          width: 80,
+          width: 70,
           fit: BoxFit.cover,
         );
       } else if (!kIsWeb && widget.mobileImage != null) {
         image = Image.file(
           widget.mobileImage!,
           height: 70,
-          width: 80,
+          width: 70,
           fit: BoxFit.cover,
         );
       }
@@ -51,7 +51,7 @@ class _BlogImageState extends State<BlogImage> {
       image = Image.network(
         widget.networImage!,
         height: 70,
-        width: 80,
+        width: 70,
         fit: BoxFit.cover,
       );
     }

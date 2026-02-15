@@ -137,7 +137,7 @@ class _AddBlogState extends State<AddBlog> {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: .max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: .start,
                   children: [
                     Text(
                       "Add new blog",
@@ -189,15 +189,12 @@ class _AddBlogState extends State<AddBlog> {
                       ],
                     ),
                     if (selectedBlogImages.isNotEmpty)
-                      SizedBox(
-                        height: 100,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: selectedBlogImages.length,
-                          itemBuilder: (context, index) =>
-                              selectedBlogImages[index],
-                          separatorBuilder: (_, __) => const SizedBox(width: 6),
-                        ),
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: selectedBlogImages.map((selectBlogImage) {
+                          return selectBlogImage;
+                        }).toList(),
                       ),
                     const SizedBox(height: 16),
                     SizedBox(
