@@ -79,7 +79,8 @@ class _SignInState extends State<SignInScreen> {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: .topCenter,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 420),
             child: Form(
