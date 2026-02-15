@@ -41,14 +41,13 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> updateUser({
-    required String name,
+    String? name,
     File? image,
     Uint8List? webImage,
   }) async {
+    String? imageUrl;
     _setState(state.copyWith(loading: true));
     try {
-      String? imageUrl; // add later.
-
       if (image != null) {
         imageUrl = await uploadImageToCloudinary(image: image);
       }
@@ -57,8 +56,13 @@ class AuthProvider extends ChangeNotifier {
         imageUrl = await uploadImageToCloudinary(webImage: webImage);
       }
 
+      if (name == null && imageUrl == null) {
+        _setState(state.copyWith(loading: false));
+        return;
+      }
+
       final res = await supabase.auth.updateUser(
-        UserAttributes(data: {'display_name': name, 'image_url': ?imageUrl}),
+        UserAttributes(data: {'display_name': ?name, 'image_url': ?imageUrl}),
       );
 
       _setState(state.copyWith(user: res.user));

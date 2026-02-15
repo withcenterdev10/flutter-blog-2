@@ -2,22 +2,16 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
-import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
+import 'package:flutter_blog_2/widgets/profile/profile_image.dart';
+import 'package:flutter_blog_2/widgets/submit_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
-
-  // static const routeName = '/profile/:id';
-
-  // static Function(BuildContext context, String id) go = (context, id) =>
-  //     context.go(routeName.replaceFirst(':id', id));
 
   static const routeName = '/profile';
 
@@ -54,36 +48,6 @@ class _ProfileState extends State<Profile> {
     super.dispose();
   }
 
-  void openImagePicker() async {
-    final ImagePicker picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
-    // mobile
-    if (!kIsWeb) {
-      if (image != null) {
-        setState(() {
-          selectedImage = File(image.path);
-          selectedImagePath = image.path;
-        });
-      }
-    } else {
-      // web
-      if (image != null) {
-        var f = await image.readAsBytes();
-        setState(() {
-          webImage = f;
-        });
-      }
-    }
-  }
-
-  void removeSelectedImage() {
-    setState(() {
-      selectedImage = null;
-      selectedImagePath = null;
-      webImage = null;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -97,11 +61,7 @@ class _ProfileState extends State<Profile> {
         final name = nameController.text;
         String message = "";
         try {
-          await context.read<AuthProvider>().updateUser(
-            name: name,
-            image: selectedImage,
-            webImage: webImage,
-          );
+          await context.read<AuthProvider>().updateUser(name: name);
 
           message = "User updated successfully";
         } catch (error) {
@@ -113,107 +73,8 @@ class _ProfileState extends State<Profile> {
               context,
             ).showSnackBar(SnackBar(content: Text(message)));
           }
-
-          removeSelectedImage();
         }
       }
-    }
-
-    Widget avatar = Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: CircleAvatar(
-            radius: 40,
-            child: Text(displayName.substring(0, 2).toString().toUpperCase()),
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: Container(
-            width: 25, // Width and height should be equal for a perfect circle
-            height: 25,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey.shade200, // The background color
-            ),
-            child: IconButton(
-              style: IconButton.styleFrom(
-                padding: EdgeInsets.zero, // Remove internal padding
-                minimumSize: Size(0, 0),
-              ),
-              onPressed: openImagePicker,
-              icon: Icon(Icons.camera, size: 20),
-            ),
-          ),
-        ),
-      ],
-    );
-
-    if (profileImage != null) {
-      avatar = Stack(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(profileImage!),
-          ),
-          Positioned(
-            bottom: -4,
-            right: -4,
-            child: Container(
-              height: 20,
-              width: 20,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 255, 255),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(100),
-                ),
-              ),
-              child: IconButton(
-                onPressed: openImagePicker,
-                icon: Icon(Icons.camera),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
-
-    if (selectedImage != null || webImage != null) {
-      avatar = Stack(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundImage: kIsWeb
-                ? MemoryImage(webImage!)
-                : FileImage(selectedImage!),
-          ),
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              height: 20,
-              width: 20,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 255, 255),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(100),
-                ),
-              ),
-              child: IconButton(
-                padding: EdgeInsets.all(2),
-                constraints: BoxConstraints(),
-                iconSize: 14,
-                onPressed: removeSelectedImage,
-                icon: Icon(Icons.close_sharp, color: Colors.red),
-              ),
-            ),
-          ),
-        ],
-      );
     }
 
     return Scaffold(
@@ -227,13 +88,16 @@ class _ProfileState extends State<Profile> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               children: [
-                // Avatar at the top
-                Center(child: avatar),
+                Center(
+                  child: ProfileImage(
+                    displayName: displayName,
+                    profileImage: profileImage,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 const Divider(),
                 const SizedBox(height: 20),
 
-                // Form section
                 Form(
                   key: formKey,
                   child: Column(
@@ -255,27 +119,9 @@ class _ProfileState extends State<Profile> {
                       const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: onSubmit,
-                          child: authState.loading
-                              ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      width: 15,
-                                      height: 15,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Text("Submitting..."),
-                                  ],
-                                )
-                              : Text(
-                                  "Submit",
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
+                        child: SubmitButton(
+                          onSubmit: onSubmit,
+                          loading: authState.loading,
                         ),
                       ),
                     ],
