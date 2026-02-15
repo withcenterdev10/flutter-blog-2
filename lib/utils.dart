@@ -52,7 +52,7 @@ Future<String> uploadImageToCloudinary({
     );
 
     if (response.statusCode == 200) {
-      return response.data['url'];
+      return response.data['secure_url'];
     } else {
       throw Exception('Something went wrong while uploading the image');
     }
