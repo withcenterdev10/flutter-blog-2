@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/models/auth_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/screen_provider.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/screens/home_screen.dart';
 import 'package:flutter_blog_2/widgets/home_avatar.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppbar({super.key, required this.scaffoldKey});
@@ -15,7 +17,9 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthProvider>().getState;
+    final userAuthenticated = context.select<AuthProvider, User?>(
+      (p) => p.getState.user,
+    );
 
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
@@ -53,7 +57,8 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
                 },
               ),
               const Spacer(),
-              if (isDesktop && authState.user != null)
+
+              if (isDesktop && userAuthenticated != null)
                 TextButton(
                   onPressed: () {
                     handleNavigationClick(context, 1);
