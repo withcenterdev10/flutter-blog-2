@@ -9,7 +9,6 @@ class AddBlogScreen extends StatefulWidget {
   static const callRouteName = '/$routeName';
 
   static Function(BuildContext context) go = (context) => context.go(routeName);
-
   static Function(BuildContext context) push = (context) =>
       context.push(routeName);
 

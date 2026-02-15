@@ -4,6 +4,7 @@ import 'package:flutter_blog_2/screens/auth/sign_in.dart';
 import 'package:flutter_blog_2/screens/auth/sign_up.dart';
 import 'package:flutter_blog_2/screens/edit_blog_screen.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
+import 'package:flutter_blog_2/screens/view_image_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blog_2/screens/home_screen.dart';
 import 'package:flutter_blog_2/screens/profile_screen.dart';
@@ -60,6 +61,12 @@ final GoRouter router = GoRouter(
       path: ViewBlogScreen.routeName,
       builder: (BuildContext context, GoRouterState state) {
         return ViewBlogScreen(id: state.pathParameters['id']!);
+      },
+    ),
+    GoRoute(
+      path: ViewImageScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return ViewImageScreen(imageUrl: state.pathParameters['imageUrl']!);
       },
     ),
   ],
