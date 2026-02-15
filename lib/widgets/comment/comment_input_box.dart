@@ -289,9 +289,9 @@ class _CommentInputState extends State<CommentInput>
             ),
           Padding(
             padding: EdgeInsetsGeometry.fromLTRB(
-              8,
               4,
-              8,
+              4,
+              4,
               (isDesktop ? 12 : 4) + MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Form(

@@ -46,12 +46,10 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               GestureDetector(
-                child: isDesktop
-                    ? Text("Home")
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text("Home"),
-                      ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text("Home"),
+                ),
                 onTap: () {
                   handleNavigationClick(context, 0);
                 },
