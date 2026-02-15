@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
+import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:flutter_blog_2/widgets/blog/blog_content.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
@@ -28,6 +29,16 @@ class BlogsScreen extends StatefulWidget {
 
 class _BlogsScreenState extends State<BlogsScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authState = context.read<AuthProvider>().getState;
+      context.read<BlogProvider>().getBlogs(authState.user?.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

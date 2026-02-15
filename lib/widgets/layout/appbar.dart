@@ -24,14 +24,12 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
 
     void handleNavigationClick(BuildContext context, int screenIndex) {
       context.read<ScreenProvider>().setScreen(screenIndex);
-      final authState = context.read<AuthProvider>().getState;
+
       if (screenIndex == 1) {
         BlogsScreen.go(context);
-        context.read<BlogProvider>().getBlogs(authState.user?.id);
       }
       if (screenIndex == 0) {
         HomeScreen.go(context);
-        context.read<BlogProvider>().getBlogs(null);
       }
     }
 

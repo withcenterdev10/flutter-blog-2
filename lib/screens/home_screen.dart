@@ -28,18 +28,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authState = context.read<AuthProvider>().getState;
+      context.read<BlogProvider>().getBlogs(authState.user?.id);
+    });
+  }
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   void handleNavigationClick(BuildContext context, int screenIndex) {
     context.read<ScreenProvider>().setScreen(screenIndex);
-    final authState = context.read<AuthProvider>().getState;
     if (screenIndex == 1) {
       BlogsScreen.go(context);
-      context.read<BlogProvider>().getBlogs(authState.user?.id);
     }
     if (screenIndex == 0) {
       HomeScreen.go(context);
-      context.read<BlogProvider>().getBlogs(null);
     }
   }
 
