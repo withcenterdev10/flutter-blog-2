@@ -5,6 +5,7 @@ import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/screen_provider.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
 import 'package:flutter_blog_2/widgets/blog/blog.dart';
+import 'package:flutter_blog_2/widgets/blog/blog_content.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
 import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
@@ -48,32 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
-    final blogsState = context.select<BlogProvider, BlogsModel>(
-      (p) => p.getBlogsState,
-    );
     final userAuthenticated = context.select<AuthProvider, User?>(
       (p) => p.getState.user,
     );
-
-    Widget content = const Spinner();
-
-    if (blogsState.blogs.isNotEmpty && !blogsState.loading) {
-      content = Selector<BlogProvider, BlogsModel>(
-        selector: (_, provider) => provider.getBlogsState,
-        builder: (_, value, _) {
-          return ListView.builder(
-            itemCount: value.blogs.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Blog(blog: value.blogs[index]);
-            },
-          );
-        },
-      );
-    }
-
-    if (blogsState.blogs.isEmpty && !blogsState.loading) {
-      content = Text("No blogs found");
-    }
 
     return Scaffold(
       key: scaffoldKey,
@@ -83,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 720),
-            child: content,
+            child: BlogContent(),
           ),
         ),
       ),
