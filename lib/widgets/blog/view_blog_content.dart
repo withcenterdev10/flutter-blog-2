@@ -4,9 +4,8 @@ import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
-import 'package:flutter_blog_2/utils.dart';
-import 'package:flutter_blog_2/widgets/blog/view_blog_author.dart';
-import 'package:flutter_blog_2/widgets/blog/view_blog_title_and_actions.dart';
+import 'package:flutter_blog_2/widgets/blog/view_blog_header.dart';
+import 'package:flutter_blog_2/widgets/blog/view_blog_images.dart';
 import 'package:flutter_blog_2/widgets/comment/comments.dart';
 import 'package:provider/provider.dart';
 
@@ -103,53 +102,24 @@ class _VewBlogContentState extends State<ViewBlogContent> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            if (!isDesktop) ViewBlogAuthor(),
+            ViewBlogHeader(
+              showDeleteDialog: () {
+                showDeleteDialog(context);
+              },
+            ),
             if (!isDesktop) ...<Widget>[
               const SizedBox(height: 12),
               const Divider(),
               const SizedBox(height: 12),
             ],
-
-            ViewBlogTitleAndActions(
-              showDeleteDialog: () {
-                showDeleteDialog(context);
-              },
-            ),
-
-            if (isDesktop) ...<Widget>[
-              const SizedBox(height: 8),
-              Text(
-                "Author: ${toUpperCaseFirstChar(widget.blog.user!.displayName!)}",
-              ),
-              const SizedBox(height: 16),
-            ],
+            const SizedBox(height: 16),
             // Blog content
             Text(widget.blog.blog!),
             const SizedBox(height: 16),
 
             // Blog images
             if (widget.blog.imageUrls != null)
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: widget.blog.imageUrls!.map((url) {
-                  return ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxWidth: 325,
-                      maxHeight: 325,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(4)),
-                      child: Image.network(
-                        url,
-                        width: double.infinity,
-                        height: 325,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+              ViewBlogImages(imageUrls: widget.blog.imageUrls!),
 
             const SizedBox(height: 16),
 
