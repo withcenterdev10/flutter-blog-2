@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blog_2/models/blogs_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/add_blog_screen.dart';
 import 'package:flutter_blog_2/widgets/bottom_navigation.dart';
 import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
+import 'package:flutter_blog_2/widgets/spinner.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import "package:flutter_blog_2/widgets/blog/blog.dart";
-
-import '../utils.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BlogsScreen extends StatefulWidget {
   const BlogsScreen({super.key});
@@ -35,36 +36,41 @@ class _BlogsScreenState extends State<BlogsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final blogsState = context.watch<BlogProvider>().getBlogsState;
-    final authState = context.watch<AuthProvider>().getState;
+    final blogsState = context.select<BlogProvider, BlogsModel>(
+      (p) => p.getBlogsState,
+    );
+    final userAuthenticated = context.select<AuthProvider, User?>(
+      (p) => p.getState.user,
+    );
     final scaffoldKey = GlobalKey<ScaffoldState>();
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     Widget content = Align(
       alignment: AlignmentGeometry.center,
-      child: SizedBox(
-        width: 15,
-        height: 15,
-        child: CircularProgressIndicator(strokeWidth: 2),
-      ),
+      child: Spinner(),
     );
 
     if (blogsState.blogs.isNotEmpty && !blogsState.loading) {
-      content = ListView.builder(
-        itemCount: blogsState.blogs.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Blog(blog: blogsState.blogs[index]);
+      content = Selector<BlogProvider, BlogsModel>(
+        selector: (_, provider) => provider.getBlogsState,
+        builder: (_, value, _) {
+          return ListView.builder(
+            itemCount: value.blogs.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Blog(blog: value.blogs[index]);
+            },
+          );
         },
       );
     }
 
     if (blogsState.blogs.isEmpty && !blogsState.loading) {
-      content = Center(child: Text("No blogs found"));
+      content = Text("No blogs found");
     }
 
     return Scaffold(
       key: scaffoldKey,
-      endDrawer: authState.user != null ? const MyDrawer() : null,
+      endDrawer: userAuthenticated != null ? const MyDrawer() : null,
       appBar: MyAppbar(scaffoldKey: scaffoldKey),
       body: SafeArea(
         child: Center(
@@ -91,7 +97,7 @@ class _BlogsScreenState extends State<BlogsScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: authState.user != null && !isDesktop
+      bottomNavigationBar: userAuthenticated != null && !isDesktop
           ? BottomNavigation()
           : null,
     );
