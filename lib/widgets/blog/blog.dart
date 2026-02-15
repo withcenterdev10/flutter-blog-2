@@ -22,6 +22,9 @@ class Blog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
+    const horizontalValues = 12.0;
+    final imageWidth = (deviceWidth - (horizontalValues * 2)) / 2;
     return Card(
       margin: EdgeInsets.all(12),
       clipBehavior: Clip.hardEdge,
@@ -30,19 +33,24 @@ class Blog extends StatelessWidget {
         onTap: () {
           handleSelectBlog(context, blog.id!);
         },
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                horizontalValues,
+                8,
+                horizontalValues,
+                0,
+              ),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Avatar(
                     profileImage: blog.user?.imageUrl,
                     displayName: blog.user!.displayName!,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: horizontalValues),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: .start,
@@ -62,33 +70,33 @@ class Blog extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
 
-              Padding(
-                padding: EdgeInsetsGeometry.symmetric(vertical: 4),
-                child: const Divider(),
+            const Divider(),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                horizontalValues,
+                0,
+                horizontalValues,
+                8,
               ),
-              Text(blog.blog!),
+              child: Text(toUpperCaseFirstChar(blog.blog!)),
+            ),
 
-              if (blog.imageUrls != null)
-                Wrap(
-                  children: [
-                    for (var i = 0; i < blog.imageUrls!.length; i++)
-                      Padding(
-                        padding: EdgeInsetsGeometry.all(4),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
-                          child: Image.network(
-                            blog.imageUrls![i],
-                            width: 140,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-            ],
-          ),
+            if (blog.imageUrls != null)
+              Wrap(
+                children: [
+                  for (var i = 0; i < blog.imageUrls!.length; i++)
+                    Image.network(
+                      blog.imageUrls![i],
+                      width: imageWidth,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
+                ],
+              ),
+          ],
         ),
       ),
     );
