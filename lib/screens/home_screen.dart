@@ -62,9 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
         selector: (_, provider) => provider.getBlogsState,
         builder: (_, value, _) {
           return ListView.builder(
-            itemCount: 1,
+            itemCount: value.blogs.length,
             itemBuilder: (BuildContext context, int index) {
-              return Blog(blog: value.blogs[0]);
+              return Blog(blog: value.blogs[index]);
             },
           );
         },
