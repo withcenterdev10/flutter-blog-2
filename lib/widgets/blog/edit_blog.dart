@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/widgets/blog/blog_image.dart';
+import 'package:flutter_blog_2/widgets/submit_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -41,11 +41,15 @@ class _EditBlogState extends State<EditBlog> {
     blogController = TextEditingController(text: blogState.blog);
 
     if (blogState.imageUrls != null) {
-      blogState.imageUrls!.forEach((b) {
+      for (var i = 0; i < blogState.imageUrls!.length; i++) {
         selectedBlogImages.add(
-          BlogImage(id: b, networImage: b, onRemove: removeImage),
+          BlogImage(
+            id: blogState.imageUrls![i],
+            networImage: blogState.imageUrls![i],
+            onRemove: removeImage,
+          ),
         );
-      });
+      }
     }
 
     super.initState();
@@ -103,55 +107,58 @@ class _EditBlogState extends State<EditBlog> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final userState = context.watch<AuthProvider>().getState;
-    final blogState = context.watch<BlogProvider>().getBlogState;
+  void onSubmit(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      final userState = context.read<AuthProvider>().getState;
+      final blogState = context.read<BlogProvider>().getBlogState;
+      final title = titleController.text;
+      final blog = blogController.text;
+      final userId = userState.user!.id;
 
-    void onSubmit() async {
-      if (formKey.currentState!.validate()) {
-        final title = titleController.text;
-        final blog = blogController.text;
-        final userId = userState.user!.id;
+      List<String> remainingPreviousImgUrls = [];
 
-        List<String> remainingPreviousImgUrls = [];
-
-        if (selectedBlogImages.isNotEmpty) {
-          for (var i = 0; i < selectedBlogImages.length; i++) {
-            if (selectedBlogImages[i].networImage != null) {
-              remainingPreviousImgUrls.add(
-                selectedBlogImages[i].networImage as String,
-              );
-            }
-          }
-        }
-
-        String message = "";
-        try {
-          await context.read<BlogProvider>().updateBlog(
-            id: blogState.id!,
-            blogContent: blog,
-            userId: userId,
-            title: title,
-            newImages: selectedImages,
-            newWebImages: selectedWebImages,
-            networkImages: remainingPreviousImgUrls,
-          );
-          message = "Update blog success";
-        } catch (error) {
-          message = "Update blog failed";
-          debugPrint(error.toString());
-          throw Exception("Update blog failed");
-        } finally {
-          if (context.mounted) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(message)));
+      if (selectedBlogImages.isNotEmpty) {
+        for (var i = 0; i < selectedBlogImages.length; i++) {
+          if (selectedBlogImages[i].networImage != null) {
+            remainingPreviousImgUrls.add(
+              selectedBlogImages[i].networImage as String,
+            );
           }
         }
       }
+
+      String message = "";
+      try {
+        await context.read<BlogProvider>().updateBlog(
+          id: blogState.id!,
+          blogContent: blog,
+          userId: userId,
+          title: title,
+          newImages: selectedImages,
+          newWebImages: selectedWebImages,
+          networkImages: remainingPreviousImgUrls,
+        );
+        message = "Update blog success";
+      } catch (error) {
+        message = "Update blog failed";
+        debugPrint(error.toString());
+        throw Exception("Update blog failed");
+      } finally {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(message)));
+        }
+      }
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final loading = context.select<BlogProvider, bool>(
+      (p) => p.getBlogState.loading,
+    );
 
     return SafeArea(
       child: Align(
@@ -235,27 +242,11 @@ class _EditBlogState extends State<EditBlog> {
 
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: onSubmit,
-                        child: blogState.loading
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  SizedBox(
-                                    width: 15,
-                                    height: 15,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text("Submitting..."),
-                                ],
-                              )
-                            : Text(
-                                "Submit",
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
+                      child: SubmitButton(
+                        onSubmit: () {
+                          onSubmit(context);
+                        },
+                        loading: loading,
                       ),
                     ),
                   ],
