@@ -32,6 +32,8 @@ class _CommentInputState extends State<CommentInput>
   List<BlogImage> selectedBlogImages = [];
   List<File>? selectedImages = [];
   List<Uint8List>? selectedWebImages = [];
+  bool isImageOnlyCommentImagesLoaded = false;
+  List<String> prevImageOnlyCommentImages = [];
   bool isPickingImage = false;
 
   void removeImage(String imageId) {
@@ -137,11 +139,29 @@ class _CommentInputState extends State<CommentInput>
 
         setState(() {
           selectedBlogImages = [];
+          isImageOnlyCommentImagesLoaded = false;
+        });
+      } else {
+        setState(() {
+          isImageOnlyCommentImagesLoaded = false;
         });
       }
     }
 
     _keyboardVisible = isVisible;
+  }
+
+  bool isListMatched(List<String> list1, List<String> list2) {
+    if (list1.isEmpty || list2.isEmpty) {
+      return false;
+    }
+
+    for (var i = 0; i < list1.length; i++) {
+      final result = list2.contains(list1[i]);
+      if (!result) return false;
+    }
+
+    return true;
   }
 
   void onSubmit(BuildContext context) async {
@@ -242,11 +262,13 @@ class _CommentInputState extends State<CommentInput>
 
     void buildPreviewImage() {
       List<BlogImage> tempList = [];
+      List<String> tempImageUrls = [];
       if (commentState.imageUrls != null) {
         for (var i = 0; i < commentState.imageUrls!.length; i++) {
           final imageUrl = commentState.imageUrls![i];
           final isExist = selectedBlogImages.contains((e) => e.id == imageUrl);
           if (!isExist) {
+            tempImageUrls.add(imageUrl);
             tempList.add(
               BlogImage(
                 id: imageUrl,
@@ -259,6 +281,8 @@ class _CommentInputState extends State<CommentInput>
 
         setState(() {
           selectedBlogImages = tempList;
+          isImageOnlyCommentImagesLoaded = true;
+          prevImageOnlyCommentImages = tempImageUrls;
         });
       }
     }
@@ -266,6 +290,33 @@ class _CommentInputState extends State<CommentInput>
     if (commentState.id != null && !commentState.isDeleting) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         focusNode.requestFocus();
+
+        final isEditingAnImageOnlyComment =
+            commentState.isEditting && commentState.comment == "";
+
+        final isEditingAnImageOnlyCommentImagesNotLoaded =
+            isEditingAnImageOnlyComment && !isImageOnlyCommentImagesLoaded;
+
+        final isEditingAnImageOnlyCommentWithSelectedImageOnly =
+            isEditingAnImageOnlyComment && isImageOnlyCommentImagesLoaded;
+
+        if (isEditingAnImageOnlyCommentImagesNotLoaded) {
+          buildPreviewImage();
+        }
+
+        // might need to update this solution.
+        // though this will only going to run when selecting image only comment
+        // while already selected an image only comment
+        if (isEditingAnImageOnlyCommentWithSelectedImageOnly) {
+          final isMatched = isListMatched(
+            prevImageOnlyCommentImages,
+            commentState.imageUrls!,
+          );
+
+          if (!isMatched) {
+            buildPreviewImage();
+          }
+        }
 
         if (commentController.text != commentState.comment &&
             !commentState.loading &&
