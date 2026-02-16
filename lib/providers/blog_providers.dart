@@ -193,7 +193,7 @@ class BlogProvider extends ChangeNotifier {
           .single();
 
       final updatedBlog = BlogModel.fromJson(res);
-      _setBlogState(updatedBlog);
+      _setBlogState(updatedBlog.copyWith(comments: blog.comments));
       final updatedBlogs = blogs.updateBlog(updatedBlog);
       _setBlogsState(getBlogsState.copyWith(blogs: updatedBlogs));
     } catch (err) {
