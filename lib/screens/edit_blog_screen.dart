@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/widgets/blog/edit_blog.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_blog_2/widgets/unfocus_close_keyboard.dart';
 import 'package:go_router/go_router.dart';
 
 class EditBlogScreen extends StatefulWidget {
@@ -41,29 +40,8 @@ class _EditBlogScreenState extends State<EditBlogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.watch<AuthProvider>().getState;
-
-    void onSubmit() async {
-      if (formKey.currentState!.validate()) {
-        String message = "";
-        try {
-          message = "Sign in success";
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        } catch (error) {
-          message = "Sign in failed";
-          debugPrint(error.toString());
-        } finally {
-          if (context.mounted) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(message)));
-          }
-        }
-      }
-    }
-
-    return Scaffold(appBar: AppBar(), body: EditBlog());
+    return UnfocusCloseKeyboard(
+      child: Scaffold(appBar: AppBar(), body: EditBlog()),
+    );
   }
 }
