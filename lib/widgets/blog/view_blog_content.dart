@@ -4,6 +4,7 @@ import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
+import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_header.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_images.dart';
 import 'package:flutter_blog_2/widgets/comment/comments.dart';
@@ -109,7 +110,11 @@ class ViewBlogContent extends StatelessWidget {
             ],
 
             // Blog content
-            if (blog != null) Text(blog),
+            if (blog != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(toUpperCaseFirstChar(blog)),
+              ),
 
             // Text(toUpperCaseFirstChar(value)
             const SizedBox(height: 16),
