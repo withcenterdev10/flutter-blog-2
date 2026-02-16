@@ -19,6 +19,7 @@ class CommentActions extends StatelessWidget {
   ) async {
     if (context.mounted) {
       if (commentState.comments != null && commentState.comments!.isNotEmpty) {
+        context.read<CommentProvider>().resetState();
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
