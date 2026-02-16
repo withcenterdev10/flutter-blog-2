@@ -17,6 +17,10 @@ class ViewBlogHeader extends StatelessWidget {
     final userAuthenticated = context.select<AuthProvider, User?>(
       (p) => p.getState.user,
     );
+    final (:blogUser, :createdAt) = context
+        .select<BlogProvider, ({BlogUserModel? blogUser, String? createdAt})>(
+          (p) => (blogUser: p.blog.user, createdAt: p.blog.createdAt),
+        );
 
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
     return Padding(
@@ -24,40 +28,28 @@ class ViewBlogHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Selector<BlogProvider, BlogUserModel?>(
-            selector: (_, provider) => provider.getBlogState.user,
-            builder: (_, user, _) {
-              return Avatar(
-                profileImage: user?.imageUrl,
-                displayName: user!.displayName!,
-              );
-            },
-          ),
+          if (blogUser != null)
+            Avatar(
+              profileImage: blogUser.imageUrl,
+              displayName: blogUser.displayName!,
+            ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: .start,
               children: [
-                Selector<BlogProvider, BlogUserModel?>(
-                  selector: (_, provider) => provider.getBlogState.user,
-                  builder: (_, user, _) {
-                    return Text(
-                      toUpperCaseFirstChar(user!.displayName!),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    );
-                  },
-                ),
-                Selector<BlogProvider, String>(
-                  selector: (_, provider) => provider.getBlogState.createdAt!,
-                  builder: (_, createdAt, _) {
-                    return Text(
-                      timeAgo(createdAt),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    );
-                  },
-                ),
+                if (blogUser != null)
+                  Text(
+                    toUpperCaseFirstChar(blogUser.displayName!),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                if (createdAt != null)
+                  Text(
+                    timeAgo(createdAt),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
               ],
             ),
           ),

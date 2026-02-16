@@ -31,10 +31,25 @@ class ViewBlogScreen extends StatefulWidget {
 }
 
 class _ViewBlogScreenState extends State<ViewBlogScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BlogProvider>().getBlog(widget.id);
+    });
+
+    super.initState();
+  }
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    final blogTitle = context.select<BlogProvider, String?>(
+      (p) => p.blog.title,
+    );
+
+    final loading = context.select<BlogProvider, bool>((p) => p.blog.loading);
+
     bool isDesktop(BuildContext context) {
       return MediaQuery.of(context).size.width >= 900;
     }
@@ -45,10 +60,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
         appBar: isDesktop(context)
             ? MyAppbar(scaffoldKey: scaffoldKey)
             : AppBar(
-                title: Selector<BlogProvider, String>(
-                  selector: (_, provider) => provider.getBlogState.title!,
-                  builder: (_, title, _) => Text(title),
-                ),
+                title: blogTitle != null ? Text(blogTitle) : null,
                 actions: [ViewBlogScreenAction()],
               ),
 
@@ -61,16 +73,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
             }
           },
 
-          child: Selector<BlogProvider, bool>(
-            selector: (_, provider) => provider.getBlogState.loading,
-            builder: (_, loading, _) {
-              if (loading) {
-                return ViewBlogContent();
-              } else {
-                return Center(child: Spinner());
-              }
-            },
-          ),
+          child: loading ? Center(child: Spinner()) : ViewBlogContent(),
         ),
 
         bottomNavigationBar: Selector<AuthProvider, bool>(

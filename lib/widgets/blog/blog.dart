@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/models/blog_model.dart';
-import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/view_blog_screen.dart';
 import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/avatar.dart';
-import 'package:provider/provider.dart';
 import 'dart:ui';
 
 class Blog extends StatelessWidget {
@@ -12,13 +10,8 @@ class Blog extends StatelessWidget {
 
   final BlogModel blog;
 
-  void handleSelectBlog(BuildContext context, String id) async {
-    try {
-      ViewBlogScreen.push(context, blog.id!);
-      await context.read<BlogProvider>().getBlog(id);
-    } catch (error) {
-      debugPrint(error.toString());
-    }
+  void handleSelectBlog(BuildContext context, String id) {
+    ViewBlogScreen.push(context, blog.id!);
   }
 
   @override

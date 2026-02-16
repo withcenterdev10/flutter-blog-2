@@ -4,7 +4,6 @@ import 'package:flutter_blog_2/models/blog_model.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/screens/blogs_screen.dart';
-import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_header.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_images.dart';
 import 'package:flutter_blog_2/widgets/comment/comments.dart';
@@ -88,6 +87,11 @@ class ViewBlogContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
+
+    final (:imageUrls, :blog) = context
+        .select<BlogProvider, ({List<String>? imageUrls, String? blog})>(
+          (p) => (imageUrls: p.blog.imageUrls, blog: p.blog.blog),
+        );
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 720),
@@ -103,26 +107,14 @@ class ViewBlogContent extends StatelessWidget {
               const Divider(),
               const SizedBox(height: 12),
             ],
+
             // Blog content
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Selector<BlogProvider, String>(
-                selector: (_, provider) => provider.getBlogState.blog!,
-                builder: (_, value, _) => Text(toUpperCaseFirstChar(value)),
-              ),
-            ),
+            if (blog != null) Text(blog),
 
+            // Text(toUpperCaseFirstChar(value)
             const SizedBox(height: 16),
-
-            Selector<BlogProvider, List<String>?>(
-              selector: (_, provider) => provider.getBlogState.imageUrls,
-              builder: (_, imageUrls, _) {
-                return (imageUrls?.isNotEmpty ?? false)
-                    ? ViewBlogImages(imageUrls: imageUrls!)
-                    : const SizedBox.shrink();
-              },
-            ),
-
+            if (imageUrls != null && imageUrls.isNotEmpty)
+              ViewBlogImages(imageUrls: imageUrls),
             const SizedBox(height: 16),
 
             // Comments
