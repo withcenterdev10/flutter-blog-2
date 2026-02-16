@@ -33,7 +33,7 @@ class BlogContent extends StatelessWidget {
     }
 
     if (blogsState.blogs.isEmpty && !blogsState.loading) {
-      content = Text("No blogs found");
+      content = Center(child: Text("No blogs found"));
     }
 
     return content;
