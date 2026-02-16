@@ -121,7 +121,9 @@ class CommentActions extends StatelessWidget {
                   comment.copyWith(isToDeep: true),
                 );
               } else {
-                context.read<CommentProvider>().setState(comment);
+                context.read<CommentProvider>().setState(
+                  comment.copyWith(isEditting: false, isDeleting: false),
+                );
               }
             },
             icon: Icon(Icons.reply, size: 18),
@@ -137,7 +139,7 @@ class CommentActions extends StatelessWidget {
           IconButton(
             onPressed: () {
               context.read<CommentProvider>().setState(
-                comment.copyWith(isEditting: true),
+                comment.copyWith(isEditting: true, isDeleting: false),
               );
             },
             style: TextButton.styleFrom(
@@ -154,7 +156,7 @@ class CommentActions extends StatelessWidget {
           IconButton(
             onPressed: () {
               context.read<CommentProvider>().setState(
-                comment.copyWith(isDeleting: true),
+                comment.copyWith(isDeleting: true, isEditting: false),
               );
               showDeleteDialog(context, comment, authState);
             },
