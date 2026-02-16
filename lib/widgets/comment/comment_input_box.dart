@@ -260,6 +260,10 @@ class _CommentInputState extends State<CommentInput>
       });
     }
 
+    print(
+      "comment: ${commentState.id}. ${commentController.text} -- ${commentState.comment}",
+    );
+
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 720),
       child: Column(
