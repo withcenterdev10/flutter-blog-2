@@ -6,6 +6,7 @@ import 'package:flutter_blog_2/widgets/layout/appbar.dart';
 import 'package:flutter_blog_2/widgets/my_drawer.dart';
 import 'package:flutter_blog_2/widgets/profile/profile_image.dart';
 import 'package:flutter_blog_2/widgets/submit_button.dart';
+import 'package:flutter_blog_2/widgets/unfocus_close_keyboard.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -79,52 +80,57 @@ class _ProfileState extends State<Profile> {
       (provider) => provider.getState.user?.id,
     );
 
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: MyAppbar(scaffoldKey: scaffoldKey),
-      endDrawer: userId != null ? MyDrawer() : null,
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              children: [
-                Center(child: ProfileImage()),
-                const SizedBox(height: 20),
-                const Divider(),
-                const SizedBox(height: 20),
-
-                Form(
-                  key: formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextFormField(
-                        controller: nameController,
-                        decoration: InputDecoration(
-                          labelText: "Name",
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your name';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: double.infinity,
-                        child: SubmitButton(
-                          onSubmit: onSubmit,
-                          loading: authState.loading,
-                        ),
-                      ),
-                    ],
-                  ),
+    return UnfocusCloseKeyboard(
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: MyAppbar(scaffoldKey: scaffoldKey),
+        endDrawer: userId != null ? MyDrawer() : null,
+        body: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
                 ),
-              ],
+                children: [
+                  Center(child: ProfileImage()),
+                  const SizedBox(height: 20),
+                  const Divider(),
+                  const SizedBox(height: 20),
+
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextFormField(
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            labelText: "Name",
+                            border: OutlineInputBorder(),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your name';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: SubmitButton(
+                            onSubmit: onSubmit,
+                            loading: authState.loading,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
