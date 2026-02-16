@@ -61,7 +61,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
           },
 
           child: blogState.blog != null
-              ? ViewBlogContent(blog: blogState)
+              ? ViewBlogContent()
               : Center(
                   child: const SizedBox(
                     width: 15,

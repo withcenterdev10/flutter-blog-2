@@ -10,18 +10,9 @@ import 'package:flutter_blog_2/widgets/blog/view_blog_images.dart';
 import 'package:flutter_blog_2/widgets/comment/comments.dart';
 import 'package:provider/provider.dart';
 
-class ViewBlogContent extends StatefulWidget {
-  const ViewBlogContent({super.key, required this.blog});
+class ViewBlogContent extends StatelessWidget {
+  const ViewBlogContent({super.key});
 
-  final BlogModel blog;
-
-  @override
-  State<ViewBlogContent> createState() {
-    return _VewBlogContentState();
-  }
-}
-
-class _VewBlogContentState extends State<ViewBlogContent> {
   void handleDelete(
     BuildContext context,
     BlogModel blogState,
@@ -115,13 +106,22 @@ class _VewBlogContentState extends State<ViewBlogContent> {
             // Blog content
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(toUpperCaseFirstChar(widget.blog.blog!)),
+              child: Selector<BlogProvider, String>(
+                selector: (_, provider) => provider.getBlogState.blog!,
+                builder: (_, value, _) => Text(toUpperCaseFirstChar(value)),
+              ),
             ),
+
             const SizedBox(height: 16),
 
-            // Blog images
-            if (widget.blog.imageUrls != null)
-              ViewBlogImages(imageUrls: widget.blog.imageUrls!),
+            Selector<BlogProvider, List<String>?>(
+              selector: (_, provider) => provider.getBlogState.imageUrls,
+              builder: (_, imageUrls, _) {
+                return (imageUrls?.isNotEmpty ?? false)
+                    ? ViewBlogImages(imageUrls: imageUrls!)
+                    : const SizedBox.shrink();
+              },
+            ),
 
             const SizedBox(height: 16),
 
