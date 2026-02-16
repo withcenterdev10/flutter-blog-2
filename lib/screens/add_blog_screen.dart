@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/widgets/blog/add_blog.dart';
+import 'package:flutter_blog_2/widgets/unfocus_close_keyboard.dart';
 import 'package:go_router/go_router.dart';
 
 class AddBlogScreen extends StatefulWidget {
@@ -21,6 +22,8 @@ class AddBlogScreen extends StatefulWidget {
 class _AddBlogScreenState extends State<AddBlogScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(), body: AddBlog());
+    return UnfocusCloseKeyboard(
+      child: Scaffold(appBar: AppBar(), body: AddBlog()),
+    );
   }
 }
