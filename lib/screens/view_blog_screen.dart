@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blog_2/providers/auth_providers.dart';
 import 'package:flutter_blog_2/providers/blog_providers.dart';
 import 'package:flutter_blog_2/providers/comment_provider.dart';
+import 'package:flutter_blog_2/utils.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_content.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_screen_action.dart';
 import 'package:flutter_blog_2/widgets/comment/comment_input_box.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_blog_2/widgets/spinner.dart';
 import 'package:flutter_blog_2/widgets/unfocus_close_keyboard.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewBlogScreen extends StatefulWidget {
   const ViewBlogScreen({super.key, required this.id});
@@ -64,7 +64,9 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
         appBar: isDesktop(context)
             ? MyAppbar(scaffoldKey: scaffoldKey)
             : AppBar(
-                title: blogTitle != null ? Text(blogTitle) : null,
+                title: blogTitle != null
+                    ? Text(toUpperCaseFirstChar(blogTitle))
+                    : null,
                 actions: [ViewBlogScreenAction()],
               ),
 
