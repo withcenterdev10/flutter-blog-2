@@ -78,7 +78,14 @@ class _BlogsScreenState extends State<BlogsScreen> {
                     ],
                   ),
                 ],
-                Expanded(child: BlogContent()),
+                Expanded(
+                  child: isDesktop
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: BlogContent(),
+                        )
+                      : BlogContent(),
+                ),
               ],
             ),
           ),

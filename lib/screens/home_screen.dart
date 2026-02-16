@@ -65,7 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 720),
-            child: BlogContent(),
+            child: isDesktop
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: 30),
+                    child: BlogContent(),
+                  )
+                : BlogContent(),
           ),
         ),
       ),
