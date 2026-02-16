@@ -7,6 +7,7 @@ import 'package:flutter_blog_2/widgets/blog/view_blog_content.dart';
 import 'package:flutter_blog_2/widgets/blog/view_blog_screen_action.dart';
 import 'package:flutter_blog_2/widgets/comment/comment_input_box.dart';
 import 'package:flutter_blog_2/widgets/layout/appbar.dart';
+import 'package:flutter_blog_2/widgets/unfocus_close_keyboard.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -43,47 +44,49 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
       return MediaQuery.of(context).size.width >= 900;
     }
 
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: isDesktop(context)
-          ? MyAppbar(scaffoldKey: scaffoldKey)
-          : AppBar(title: Text(blogTitle), actions: [ViewBlogScreenAction()]),
+    return UnfocusCloseKeyboard(
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: isDesktop(context)
+            ? MyAppbar(scaffoldKey: scaffoldKey)
+            : AppBar(title: Text(blogTitle), actions: [ViewBlogScreenAction()]),
 
-      body: PopScope(
-        onPopInvokedWithResult: (bool didPop, Object? result) async {
-          if (didPop) {
-            context.read<BlogProvider>().resetBlogState();
-            context.read<CommentProvider>().resetState();
-            return;
-          }
-        },
+        body: PopScope(
+          onPopInvokedWithResult: (bool didPop, Object? result) async {
+            if (didPop) {
+              context.read<BlogProvider>().resetBlogState();
+              context.read<CommentProvider>().resetState();
+              return;
+            }
+          },
 
-        child: blogState.blog != null
-            ? ViewBlogContent(blog: blogState)
-            : Center(
-                child: const SizedBox(
-                  width: 15,
-                  height: 15,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              ),
-      ),
-      bottomNavigationBar: authState.user != null
-          ? Row(
-              children: [
-                Spacer(),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width >= 500
-                        ? 720
-                        : MediaQuery.of(context).size.width,
+          child: blogState.blog != null
+              ? ViewBlogContent(blog: blogState)
+              : Center(
+                  child: const SizedBox(
+                    width: 15,
+                    height: 15,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
-                  child: const CommentInput(),
                 ),
-                Spacer(),
-              ],
-            )
-          : null,
+        ),
+        bottomNavigationBar: authState.user != null
+            ? Row(
+                children: [
+                  Spacer(),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width >= 500
+                          ? 720
+                          : MediaQuery.of(context).size.width,
+                    ),
+                    child: const CommentInput(),
+                  ),
+                  Spacer(),
+                ],
+              )
+            : null,
+      ),
     );
   }
 }
