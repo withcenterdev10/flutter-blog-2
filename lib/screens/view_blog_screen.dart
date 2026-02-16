@@ -10,6 +10,7 @@ import 'package:flutter_blog_2/widgets/spinner.dart';
 import 'package:flutter_blog_2/widgets/unfocus_close_keyboard.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ViewBlogScreen extends StatefulWidget {
   const ViewBlogScreen({super.key, required this.id});
@@ -47,6 +48,9 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
     final blogTitle = context.select<BlogProvider, String?>(
       (p) => p.blog.title,
     );
+    final isAuth = context.select<AuthProvider, bool>(
+      (p) => p.getState.user != null,
+    );
 
     final loading = context.select<BlogProvider, bool>((p) => p.blog.loading);
 
@@ -76,11 +80,8 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
           child: loading ? Center(child: Spinner()) : ViewBlogContent(),
         ),
 
-        bottomNavigationBar: Selector<AuthProvider, bool>(
-          selector: (_, provider) => provider.getState.user != null,
-          builder: (context, value, child) {
-            if (value) {
-              return Row(
+        bottomNavigationBar: isAuth
+            ? Row(
                 children: [
                   Spacer(),
                   ConstrainedBox(
@@ -93,12 +94,8 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                   ),
                   Spacer(),
                 ],
-              );
-            } else {
-              return SizedBox.shrink();
-            }
-          },
-        ),
+              )
+            : null,
       ),
     );
   }
