@@ -90,7 +90,7 @@ class _ViewBlogScreenState extends State<ViewBlogScreen> {
                           ? 720
                           : MediaQuery.of(context).size.width,
                     ),
-                    child: const CommentInput(),
+                    child: SafeArea(child: const CommentInput()),
                   ),
                   Spacer(),
                 ],
