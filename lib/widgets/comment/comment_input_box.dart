@@ -32,7 +32,6 @@ class _CommentInputState extends State<CommentInput>
   List<BlogImage> selectedBlogImages = [];
   List<File>? selectedImages = [];
   List<Uint8List>? selectedWebImages = [];
-  bool initialSelectedBlogImagesLoaded = false;
   bool isPickingImage = false;
 
   void removeImage(String imageId) {
@@ -139,10 +138,6 @@ class _CommentInputState extends State<CommentInput>
         setState(() {
           selectedBlogImages = [];
         });
-      } else {
-        setState(() {
-          initialSelectedBlogImagesLoaded = false;
-        });
       }
     }
 
@@ -229,43 +224,45 @@ class _CommentInputState extends State<CommentInput>
     final commentState = context.watch<CommentProvider>().getState;
     bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
+    void buildPreviewImage() {
+      List<BlogImage> tempList = [];
+      if (commentState.imageUrls != null) {
+        for (var i = 0; i < commentState.imageUrls!.length; i++) {
+          final imageUrl = commentState.imageUrls![i];
+          final isExist = selectedBlogImages.contains((e) => e.id == imageUrl);
+          if (!isExist) {
+            tempList.add(
+              BlogImage(
+                id: imageUrl,
+                networImage: imageUrl,
+                onRemove: removeImage,
+              ),
+            );
+          }
+        }
+
+        setState(() {
+          selectedBlogImages = tempList;
+        });
+      }
+    }
+
     if (commentState.id != null && !commentState.isDeleting) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         focusNode.requestFocus();
-        List<BlogImage> tempList = [];
 
         if (commentController.text != commentState.comment &&
             !commentState.loading &&
             commentState.isEditting) {
           commentController.text = commentState.comment;
-        }
-
-        if (commentState.imageUrls != null && commentState.isEditting) {
-          for (var i = 0; i < commentState.imageUrls!.length; i++) {
-            final imageUrl = commentState.imageUrls![i];
-            final isExist = selectedBlogImages.contains(
-              (e) => e.id == imageUrl,
-            );
-            if (!isExist) {
-              tempList.add(
-                BlogImage(
-                  id: imageUrl,
-                  networImage: imageUrl,
-                  onRemove: removeImage,
-                ),
-              );
-            }
-          }
-
-          if (!initialSelectedBlogImagesLoaded) {
-            setState(() {
-              selectedBlogImages = tempList;
-              initialSelectedBlogImagesLoaded = true;
-            });
-          }
+          buildPreviewImage();
         }
       });
     }
+
+    print(
+      "comment: ${commentState.id}. ${commentController.text} -- ${commentState.comment}",
+    );
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 720),
