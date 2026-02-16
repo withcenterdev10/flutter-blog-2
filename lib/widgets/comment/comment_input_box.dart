@@ -153,6 +153,22 @@ class _CommentInputState extends State<CommentInput>
       final comment = commentController.text;
       try {
         CommentModel returnedComment;
+        final isNoSelectedImages =
+            selectedImages == null ||
+            (selectedImages != null && selectedImages!.isEmpty);
+
+        final isNoSelectedWebImages =
+            selectedWebImages == null ||
+            (selectedWebImages != null && selectedWebImages!.isEmpty);
+
+        final noExistingImages = selectedBlogImages.isEmpty;
+
+        if (isNoSelectedImages &&
+            isNoSelectedWebImages &&
+            noExistingImages &&
+            comment == "") {
+          return;
+        }
 
         if (commentState.isEditting) {
           List<String> remainingPreviousImgUrls = [];
@@ -331,12 +347,6 @@ class _CommentInputState extends State<CommentInput>
                                   icon: Icon(Icons.send),
                                 ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Type your comment';
-                          }
-                          return null;
-                        },
                       ),
                     ),
                   ),
